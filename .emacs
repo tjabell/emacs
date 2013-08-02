@@ -5,7 +5,7 @@
 											 "/home/trevor/" 		 "c:/users/trevor.abell/")
 	"Home directory — the root emacs load-path.")
 
-(labels ((add-path (p)
+(cl-labels ((add-path (p)
 	 (add-to-list 'load-path
 			(concat emacs-root p))))
  (add-path "emacs/lisp") ;; all my personal elisp code
@@ -16,6 +16,7 @@
 (load-library "ekeys")
 (load-library "sys-config")
 (load-library "pkg-config")
+(load-library "yegge-funcs")
 
 ; put any package initialization in this file
 (add-hook 'after-init-hook 
