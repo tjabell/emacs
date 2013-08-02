@@ -1,0 +1,45 @@
+;; Packages to install first
+(if (>= emacs-major-version 24)
+    (progn ;; Add a larger package list
+      (setq package-archives '(("ELPA" . "http://tromey.com/elpa/")
+															 ("gnu" . "http://elpa.gnu.org/packages/")
+															 ("marmalade" . "http://marmalade-repo.org/packages/")
+															 ("melpa" . "http://melpa.milkbox.net/packages/")))
+      (package-refresh-contents)
+			(cl-labels ((install (package)
+												(when (not (require package nil t))
+													(package-install package))))
+				(install 'yasnippet)
+				(install 'auto-complete)
+				(install 'color-theme)
+				(install 'csharp-mode)
+				(install 'paredit)
+				(if (or (eq system-type 'windows-nt)
+								(eq system-type 'cygwin))
+						(progn
+							(install 'powershell-mode)
+							(install 'powershell))
+					nil))))
+
+;; configure packages
+(when (require 'color-theme nil t)
+  (color-theme-initialize)
+  (color-theme-calm-forest))
+
+(when (require 'auto-complete nil t)
+	(progn
+		(add-hook 'c-mode-common-hook (lambda ()
+																	(auto-complete-mode 1)))
+		(add-hook 'emacs-lisp-mode-hook (lambda ()
+																	(auto-complete-mode 1)
+																	(show-paren-mode)))
+
+		(add-hook 'python-mode-hook (lambda ()
+																	(auto-complete-mode 1)))))
+
+(when (require 'paredit nil t)
+	(add-hook 'emacs-lisp-mode-hook (lambda ()
+																		(paredit-mode))))
+
+(when (require 'powershell-mode nil t)
+	(add-to-list 'auto-mode-alist '("\\.ps1" . powershell-mode)))
