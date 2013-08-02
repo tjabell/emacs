@@ -1,34 +1,19 @@
 (require 'cl)
 
-(global-set-key (kbd "C-X C-m") 'execute-extended-command)
-(global-set-key (kbd "<f11>") 'revert-buffer)
+(defvar emacs-root (if (or (eq system-type 'gnu/linux)
+													 (eq system-type 'linux))
+											 "/home/trevor/" 		 "c:/users/trevor.abell/")
+	"Home directory — the root emacs load-path.")
 
-(tool-bar-mode 0)
-(scroll-bar-mode 0)
+(labels ((add-path (p)
+	 (add-to-list 'load-path
+			(concat emacs-root p))))
+ (add-path "emacs/lisp") ;; all my personal elisp code
+ )
 
-(if (or (eq system-type 'windows-nt)
-				(eq system-type 'cygwin))
-    (progn 
-      (defun open-explorer ()
-				(interactive)
-				(shell-command "explorer ."))
-      (global-set-key (kbd "<f12>") 'open-explorer)
-			(set-face-attribute 'default nil :font "Consolas 8"))	
-  nil)
-
-
-(if (or (eq system-type 'gnu/linux))
-		(set-face-attribute 'default nil :font "courier 8") nil)
-
-(add-to-list 'auto-mode-alist '(".emacs.loadpackages" . emacs-lisp-mode))
-(add-hook 'scheme-mode-hook 'paredit-mode)
-
-(setq scheme-program-name "guile")
-(put 'upcase-region 'disabled nil)
-
-(setq-default indent-tabs-mode t)
-(setq-default tab-width 2)
-(put 'narrow-to-page 'disabled nil)
+(load-library "ekeys")
+(load-library "sys-config")
+(load-library "pkg-config")
 
 
 ; put any package initialization in this file
