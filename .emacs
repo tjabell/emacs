@@ -9,6 +9,8 @@
 	 (add-to-list 'load-path
 			(concat emacs-root p))))
  (add-path "emacs/lisp") ;; all my personal elisp code
+ (add-path "emacs/site-lisp")
+ (add-path "emacs/site-lisp/dosbat")
  )
 
 (load-library "ekeys")
