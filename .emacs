@@ -17,7 +17,6 @@
 (load-library "sys-config")
 (load-library "pkg-config")
 
-
 ; put any package initialization in this file
 (add-hook 'after-init-hook 
 					'(lambda ()    (load "~/emacs/.emacs.loadpackages")))
