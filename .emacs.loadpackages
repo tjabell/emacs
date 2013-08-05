@@ -14,6 +14,7 @@
 				(install 'color-theme)
 				(install 'csharp-mode)
 				(install 'paredit)
+				(install 'magit)
 				(if (or (eq system-type 'windows-nt)
 								(eq system-type 'cygwin))
 						(progn
