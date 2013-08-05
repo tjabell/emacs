@@ -6,4 +6,6 @@
                 (lambda()(interactive)(switch-to-buffer "*scratch*")))
 (global-set-key (kbd "s-E")                       ;; .emacs
                 (lambda()(interactive)(find-file "~/.emacs")))
+(global-set-key (kbd "s-H")                       ;; scratch
+                (lambda()(interactive)(switch-to-buffer "*shell*")))
 
