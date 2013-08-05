@@ -13,7 +13,8 @@
 
 
 (if (or (eq system-type 'gnu/linux))
-		(set-face-attribute 'default nil :font "courier 8") nil)
+		(add-to-list 'default-frame-alist
+			     '(font . "Courier 10")))
 
 (add-to-list 'auto-mode-alist '(".emacs.loadpackages" . emacs-lisp-mode))
 
