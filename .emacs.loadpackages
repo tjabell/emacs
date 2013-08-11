@@ -44,3 +44,12 @@
 
 (when (require 'powershell-mode nil t)
 	(add-to-list 'auto-mode-alist '("\\.ps1" . powershell-mode)))
+
+(when (and (require 'e2wm nil t)
+					 (require 'edbi nil t))
+	(load-library "e2wm-edbi"))
+
+(when (require 'yasnippet nil t)
+	(setq snippet-dirs 
+				`(,(concat emacs-root "emacs/data/snippets/"))))
+
