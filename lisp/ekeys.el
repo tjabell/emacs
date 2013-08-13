@@ -3,6 +3,8 @@
 (global-set-key (kbd "C-1") 'delete-other-windows)
 (global-set-key (kbd "C-X C-m") 'execute-extended-command)
 (global-set-key (kbd "<f11>") 'revert-buffer)
+(global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
+(global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 
 ;; Super + uppercase letter signifies a buffer/file
 (global-set-key (kbd "s-S")                       ;; scratch
