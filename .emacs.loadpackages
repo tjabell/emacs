@@ -15,6 +15,8 @@
 				(install 'csharp-mode)
 				(install 'paredit)
 				(install 'magit)
+				(install 'edit-server)
+				(install 'edit-server-html)
 				(if (or (eq system-type 'windows-nt)
 								(eq system-type 'cygwin))
 						(progn
