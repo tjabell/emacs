@@ -16,7 +16,7 @@
 				(install 'paredit)
 				(install 'magit)
 				(install 'edit-server)
-				(install 'edit-server-html)
+				(install 'edit-server-htmlize)
 				(if (or (eq system-type 'windows-nt)
 								(eq system-type 'cygwin))
 						(progn
