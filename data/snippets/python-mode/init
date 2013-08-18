@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# key: init
+# expand-env: ((yas/indent-line 'auto))
+# --
+	def __init__(self):
+			$0

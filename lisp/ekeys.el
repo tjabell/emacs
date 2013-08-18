@@ -5,6 +5,8 @@
 (global-set-key (kbd "<f11>") 'revert-buffer)
 (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
+(global-set-key (kbd "M-/") 'delete-trailing-whitespace)
+(global-set-key (kbd "C-<") 'delete-backward-char)
 
 ;; Super + uppercase letter signifies a buffer/file
 (global-set-key (kbd "s-S")                       ;; scratch
@@ -18,5 +20,3 @@
 	(progn
 		(global-set-key (kbd "s-d") 'e2wm:dp-edbi)
 		(global-set-key (kbd "s-c") 'e2wm:dp-code)))
-
-
