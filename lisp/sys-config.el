@@ -26,4 +26,4 @@
 (setq scheme-program-name "guile")
 
 (defalias 'rr 'replace-regexp)
-(defalias 'qrr 'replace-regexp)
+(defalias 'qrr 'query-replace-regexp)
