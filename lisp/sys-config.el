@@ -3,12 +3,12 @@
 
 (if (or (eq system-type 'windows-nt)
 				(eq system-type 'cygwin))
-    (progn 
+    (progn
       (defun open-explorer ()
 				(interactive)
 				(shell-command "explorer ."))
       (global-set-key (kbd "<f12>") 'open-explorer)
-			(set-face-attribute 'default nil :font "Consolas 8"))	
+			(set-face-attribute 'default nil :font "Consolas 8"))
   nil)
 
 
@@ -27,3 +27,4 @@
 
 (defalias 'rr 'replace-regexp)
 (defalias 'qrr 'query-replace-regexp)
+(defalias 'wm 'whitespace-mode)
