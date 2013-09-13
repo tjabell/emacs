@@ -16,7 +16,7 @@
 (load-library "ekeys")
 (load-library "sys-config")
 (load-library "pkg-config")
-(load-library "yegge-funcs")
+
 
 ; put any package initialization in this file
 (add-hook 'after-init-hook 
