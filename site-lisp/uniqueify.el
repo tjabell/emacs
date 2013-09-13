@@ -8,11 +8,8 @@
 						(goto-char start)
 						(re-search-forward "^\\(.*\\)\n\\(\\(.*\n\\)*\\)\\1\n" end t))
 				(replace-match "\\1\n\\2")))))
-uniquify-all-lines-region
-
 
 (defun uniquify-all-lines-buffer ()
 	"Delete duplicate lines in buffer and keep first occurrence."
 	(interactive "*")
 	(uniquify-all-lines-region (point-min) (point-max)))
-uniquify-all-lines-buffer

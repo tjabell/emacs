@@ -1,4 +1,4 @@
-(global-set-key (kbd "C-x o") 'open-line)
+(global-set-key (kbd "C-x o") 'other-window)
 (global-set-key (kbd "C-o") 'other-window)
 (global-set-key (kbd "C-1") 'delete-other-windows)
 (global-set-key (kbd "C-X C-m") 'execute-extended-command)
