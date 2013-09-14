@@ -38,7 +38,8 @@
 				`(,(concat emacs-root "emacs/data/snippets/"))))
 
 (when (require 'pymacs nil t)
-	(setenv "PYMACS_PYTHON" "python2"))
+	(setenv "PYMACS_PYTHON" "python2")
+	(pymacs-load "ropemacs" "rope-" t))
 
 (when (require 'nose nil t))
 
