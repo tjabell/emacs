@@ -24,6 +24,8 @@
 							(install 'powershell))
 					nil))))
 
-(load "sys-config.el")
-(load "yegge-funcs.el")
-(load "uniqueify.el")
+(load-library "ekeys")
+(load-library "sys-config")
+(load-library "pkg-config")
+(load-library "yegge-funcs")
+(load-library "uniqueify")

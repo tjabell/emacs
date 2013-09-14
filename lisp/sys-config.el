@@ -28,38 +28,3 @@
 (defalias 'rr 'replace-regexp)
 (defalias 'qrr 'query-replace-regexp)
 (defalias 'wm 'whitespace-mode)
-
-;; configure packages
-(when (require 'color-theme nil t)
-  (color-theme-initialize)
-  (color-theme-calm-forest))
-
-(when (require 'auto-complete nil t)
-	(progn
-		(add-hook 'c-mode-common-hook (lambda ()
-																	(auto-complete-mode 1)))
-		(add-hook 'emacs-lisp-mode-hook (lambda ()
-																	(auto-complete-mode 1)
-																	(show-paren-mode)))
-
-		(add-hook 'python-mode-hook (lambda ()
-																	(auto-complete-mode 1)))))
-
-(when (require 'paredit nil t)
-	(add-hook 'emacs-lisp-mode-hook (lambda ()
-																		(paredit-mode))))
-
-(when (require 'powershell-mode nil t)
-	(add-to-list 'auto-mode-alist '("\\.ps1" . powershell-mode)))
-
-(when (and (require 'e2wm nil t)
-					 (require 'edbi nil t))
-	(load-library "e2wm-edbi"))
-
-(when (require 'yasnippet nil t)
-	(setq snippet-dirs 
-				`(,(concat emacs-root "emacs/data/snippets/"))))
-
-(when (require 'pymacs nil t)
-	(setenv "PYMACS_PYTHON" "python2"))
-
