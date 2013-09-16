@@ -4,7 +4,10 @@
 					(lambda ()   (global-set-key (kbd "C-x C-o") 'hs-toggle-hiding)))
 
 (add-hook 'python-mode-hook
-					(lambda () (hs-minor-mode 1)))
+					(lambda () 
+						(hs-minor-mode 1)
+						(fset 'hide-next
+									"\C-e\C-x\C-o\C-n")))
 
 ;; configure packages
 (when (require 'color-theme nil t)
@@ -41,6 +44,10 @@
 	(setenv "PYMACS_PYTHON" "python2")
 	(pymacs-load "ropemacs" "rope-" t))
 
-(when (require 'nose nil t))
+(when (require 'nose nil t)
+	(defalias 'no 'nosetests-one)
+	(defalias 'na 'nosetests-all)
+	(defalias 'np 'nosetests-pdb-one)
+	(defalias 'nm 'nosetests-module))
 
 (when (require 'virtualenv nil t))
