@@ -13,3 +13,15 @@
 	"Delete duplicate lines in buffer and keep first occurrence."
 	(interactive "*")
 	(uniquify-all-lines-region (point-min) (point-max)))
+
+(defun find-duplicate-lines (&optional insertp interp)
+	(interactive "i\np")
+	(let ((max-pon (line-number-at-pos (point-max)))
+				(gather-dups))
+		(while (< (line-number-at-pos) max-pon) (= (forward-line) 0)
+					 (let ((this-line (buffer-substring-no-properties (line-beginning-position 1) (line-end-position 1)))
+								 (next-line (buffer-substring-no-properties (line-beginning-position 2) (line-end-position 2))))
+						 (when  (equal this-line next-line)  (setq gather-dups (cons this-line gather-dups)))))
+		(if (or insertp interp)
+				(save-excursion (new-line) (princ gather-dups (current-buffer)))
+			gather-dups)))
