@@ -1,0 +1,2 @@
+* Unsafe directory in server start
+** Happened on windows. Solution was to change the ~/.emacs.d/server directory ownership to your user, instead of the administrators group.  Security -> Advanced -> Ownership or something like that.
