@@ -29,3 +29,5 @@
 (defalias 'rs 'replace-string)
 (defalias 'qrr 'query-replace-regexp)
 (defalias 'wm 'whitespace-mode)
+
+(server-start)
