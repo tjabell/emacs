@@ -1,0 +1,35 @@
+# key: tcl
+# name: test-class
+# --
+#
+# Template variables
+`(setq class-name (substring text 2 (length text)))`		
+# 
+using System;
+using System.Linq;
+using Ats.Field.Test.Support;
+using NUnit.Framework;
+using Rhino.Mocks;
+
+namespace Ats.Field.Test
+{
+	[TestFixture]
+	public class ${1:`(file-name-nondirectory (file-name-sans-extension (or (buffer-file-name) "")))`} : TestBase
+	{
+
+		//SUT
+		private ${1:$$(substring yas/text 2 (length yas/text))} _${1:$$(concat (downcase (substring text 0 1)) (substring text 1 (length text)))};
+
+		protected override void given_the_context_of()
+		{
+			_$1 = new $1();
+		}
+
+		[Test]
+		public void can_be_created()
+		{
+			Assert.IsNotNull(_$1);			
+		}
+		$0
+	}
+}

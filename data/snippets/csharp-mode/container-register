@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: container-register
+# key: cr
+# expand-env: ((yas/indent-line 'fixed))
+# --
+Container
+	.Register(
+		Component
+			.For<$1>()
+			.ImplementedBy<$2>()
+			.LifeStyle.Transient);$0

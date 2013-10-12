@@ -1,0 +1,8 @@
+# key: tc
+# name: tc
+# --
+[Test]
+public void $1()
+{
+	$0
+}
