@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: testclass
+# key: testclass
+# --
+import unittest
+from mock import Mock, MagicMock
+
+class Test_a_$1(unittest.TestCase):
+    def setUp(self):
+        # sut
+        self.$2 = $3
+    def test_creation(self):
+        $1()
+    def test_$0
