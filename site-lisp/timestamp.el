@@ -96,8 +96,11 @@
 (defun maybe-update-modifystamps ()
 	"Call 'update-modifystamps' if the buffer has been modified."
 	(if last-change-time
-			(update-modifystamps)))
+			(update-modifystamps last-change-time)))
 
 (add-hook 'local-write-file-hooks 'maybe-update-modifystamps nil t)
 
-MODIFYSTAMP((20:48:51))
+(provide 'timestamp)
+
+; MODIFYSTAMP((20:48:51))
+
