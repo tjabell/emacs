@@ -1,14 +1,20 @@
 # -*- mode: snippet -*-
 # name: testclass
 # key: testclass
+# expand-env: ((yas-indent-line 'fixed))
 # --
 import unittest
 from mock import Mock, MagicMock
-
-class Test_a_$1(unittest.TestCase):
+`(progn
+		(setq test-class-name (capitalize (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))
+			 class-name (replace-regexp-in-string "_" "" (substring test-class-name 5))
+			 class-name-var (copy-sequence class-name))
+		(aset class-name-var 0 (downcase (aref class-name-var 0)))
+		nil)`
+class `test-class-name`(unittest.TestCase):
     def setUp(self):
         # sut
-        self.$2 = $3
+        self.${2:`class-name-var`} = ${3:`class-name`}()
     def test_creation(self):
-        $1()
+        ${4:`class-name`}()
     def test_$0
