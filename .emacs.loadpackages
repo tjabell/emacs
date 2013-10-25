@@ -29,3 +29,5 @@
 (load-library "pkg-config")
 (load-library "yegge-funcs")
 (load-library "uniqueify")
+
+(autoload 'refill-mode "refill" "Refill minor mode." t)
