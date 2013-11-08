@@ -38,7 +38,8 @@
 
 (when (require 'yasnippet nil t)
 	(setq snippet-dirs 
-				`(,(concat emacs-root "emacs/data/snippets/"))))
+				`(,(concat emacs-root "emacs/data/snippets/")))
+	(yas/global-mode))
 
 (when (require 'pymacs nil t)
 	(setenv "PYMACS_PYTHON" "python2")
@@ -51,3 +52,6 @@
 	(defalias 'nm 'nosetests-module))
 
 (when (require 'virtualenv nil t))
+
+(when (require 'csharp-mode nil t)
+	(add-hook 'csharp-mode-hook 'auto-revert-mode))
