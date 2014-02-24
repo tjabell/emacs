@@ -1,6 +1,8 @@
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 
+(setq initial-scratch-message "")
+
 (if (or (eq system-type 'windows-nt)
 				(eq system-type 'cygwin))
     (progn
