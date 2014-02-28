@@ -12,7 +12,7 @@
 ;; configure packages
 (when (require 'color-theme nil t)
   (color-theme-initialize)
-  (color-theme-calm-forest))
+  (color-theme-dark-blue2))
 
 (when (require 'auto-complete nil t)
 	(progn
