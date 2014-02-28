@@ -28,8 +28,8 @@
 (defun crossword-cousin-ref (crossword row column)
 	"Get the cousin of CROSSWORD's ROW, COLUMN position."
 	(let ((cousin-position (crossword-cousin-position crossword row column)))
-		(crossword-ref crossword  
-									 (car cousin-position) 
+		(crossword-ref crossword
+									 (car cousin-position)
 									 (cdr cousin-position))))
 
 (defun crossword--cousin-set (crossword row column elt)
@@ -63,7 +63,7 @@
 																		 (car cousin-position)
 																		 (cdr cousin-position))))
 				(crossword--set crossword row column nil)
-			(crossword--set crossword 
+			(crossword--set crossword
 											(car cousin-position)
 											(cdr cousin-position)
 											nil))))
@@ -208,5 +208,92 @@
 	(interactive "p")
 	(crossword-cursor-down (- arg)))
 
+
+(defun crossword-beginning-of-row ()
+	"Move to beginning of current row."
+	(interacive)
+	(let ((coords (crossword-cursor-coords)))
+		(crossword-place-cursor (car coords) 0)))
+
+(defun crossword-end-of-row ()
+	"Move to end of current row."
+	(interacive)
+	(let ((coords (crossword-cursor-coords)))
+		(crossword-place-cursor (car coords)
+														(- (crossword-size crossword-grid)
+															 1))))
+
+(defun crossword-top-of-column ()
+	"Move to top of current column."
+	(interactive)
+	(let ((coords (crossword-cursor-coords)))
+		(crossword-place-cursor 0 (cdr coords))))
+
+(defun crossword-bottom-of-column ()
+	"Move to bottom of current column"
+	(interactive)
+	(let ((coords (crossword-cursor-coords)))
+		(crossword-place-cursor (- (crossword-size crossword-grid)
+															 1
+															 (cdr coords)))))
+
+(defun beginning-of-grid ()
+	"Move to the beginning of the grid"
+	(interactive)
+	(crossword-place-cursor 0 0))
+
+(defun end-of-grid ()
+	"Move to the end of the grid"
+	(interactive)
+	(let ((size (crossword-size crossword-grid)))
+		(crossword-place-cursor size size)))
+
+(defun crossword-jump-to-cousin ()
+	"Move to cousin of current cell."
+	(interactive)
+	(let* ((coords (crossword-cursor-coords))
+				 (cousin (crossword-cousin-position crossword-grid
+																						(car coords)
+																						(cdr coords))))
+		(crossword-place-cursor (car cousin)
+														(cdr cousin))))
+
+;;; Mode
+(defun crossword (size)
+	"Create a new buffer with an empty crossword grid."
+	(interactive "nGrid size: ")
+	(let* ((grid (make-crossword size))
+				 (buffer (generate-new-buffer "*Crossword*")))
+		(switch-to-buffer buffer)
+		(crossword-insert-grid grid)
+		(crossword-place-cursor 0 0)
+		(crossword--mode-setup grid)))
+
+(defun crossword-mode ()
+	"Major mode for editing crossword puzzles.
+Special Commands:
+\\{crossword-mode-map}"
+	(interactive)
+	(kill-all-local-variables)
+	(crossword--mode-setup (crossword-parse-buffer))
+)
+
+(defun crossword--mode-setup (grid)
+	"Auxiliary function to set up crossword mode"
+	(kill-all-local-variables)
+	(setq major-mode 'crossword-mode)
+	(setq mode-name "Crossword")
+	(use-local-map crossword-mode-map)
+	(make-local-variable 'crossword-grid)
+	(setq crossword-grid grid)
+	(crossword-place-cursor 0 0)
+	(run-hooks 'crossword-mode-hook))
+
+;;; Keybindings
+(defvar crossword-mode-map nil
+	"Keymap for Crossword mode."
+	(if crossword-mode-map
+			nil
+		(setq crossword-mode-map (make-keymap))))
 
 (provide 'crossword)
