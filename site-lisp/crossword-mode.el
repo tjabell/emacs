@@ -290,6 +290,91 @@ Special Commands:
 	(crossword-place-cursor 0 0)
 	(run-hooks 'crossword-mode-hook))
 
+(defun crossword-find-singleton ()
+	"Jump to a one-letter word, if one exists."
+	(interactive)
+	(let ((row 0)
+				(size (crossword-size crossword-grid))
+				(result nil))
+		(while (and (< row size)
+								(null result))
+			(let ((column 0))
+				(while (and (< column size)
+										(null result))
+					(if (crossword-one-letter-p crossword-grid
+																			row
+																			column)
+							(setq result (cons row column))
+						(setq column (+ 1 column)))))
+			(setq row (+ row 1)))
+		(if result
+				(crossword-place-cursor (car result)
+																(cdr result))
+			(message "No one-letter words."))))
+
+(defun crossword-hwords ()
+	"Pop up a buffer listing horizontal words for current cell."
+	(interactive)
+	(let ((coords (crossword-cursor-coords)))
+		(if (eq (crossword-ref crossword-grid
+													 (car coords)
+													 (cdr coords))
+						'block)
+				(error "Cannot use this command on a block"))
+		(let ((start (- (cdr coords) 1))
+					(end (+ (cdr coords) 1)))
+			(while (not (crossword-block-p crossword-grid
+																		 (car coords)
+																		 start))
+				(setq start (- start 1)))
+			(while (not (crossword-block-p crossword-grid
+																		 (car coords)
+																		 end))
+				(setq end (+ end 1)))
+			(let ((corestart (+ start 1))
+						(coreend (- end 1)))
+				(while (null (crossword-ref crossword-grid
+																		(car coords)
+																		corestart))
+					(setq corestart (+ corestart 1)))
+				(while (null (crossword-ref crossword-grid
+																		(car coords)
+																		coreend))
+					(setq coreend (- coreend 1)))
+				(let ((regexp "^")
+							(column (+ start 1)))
+					(while (< column end)
+						(if (or (< column corestart)
+										(> column coreend))
+								(setq regexp
+											(concat regexp ".?"))
+							(let ((cell (crossword-ref crossword-grid
+																				 (car coords)
+																				 column)))
+								(if (numberp cell)
+										(setq regexp (concat regexp
+																				 (char-to-string cell)))
+									(setq regexp (concat regexp ".")))))
+						(setq column (+ column 1)))
+					(setq regexp (concat regexp "$"))
+					(let ((buffer (get-buffer-create "*Crossword words#")))
+						(set-buffer buffer)
+						(erase-buffer)						
+						(let ((process 
+									 (start-process "grep"
+																	buffer
+																	"grep"
+																	"-i" "-E" regexp
+																	"/usr/share/dict/cracklib-small")))
+							(set-process-sentinel process
+																		'crossword--egrep-sentinel))))))))
+
+(defun crossword--egrep-sentinel (process string)
+	"When PROCESS extis, display its buffer."
+	(if (eq (process-status process)
+					'exit)
+			(display-buffer (process-buffer process))))
+
 ;;; Keybindings
 (defvar crossword-mode-map nil
 	"Keymap for Crossword mode.")
@@ -325,7 +410,9 @@ Special Commands:
 	(define-key crossword-mode-map "#" 'crossword-block-command)
 	(define-key crossword-mode-map "\C-ct" 'crossword-top-of-column)
 	(define-key crossword-mode-map "\C-cb" 'crossword-bottom-of-column)
-	(define-key crossword-mode-map "\C-c\C-c" 'crossword-jump-to-cousin))
+	(define-key crossword-mode-map "\C-c\C-c" 'crossword-jump-to-cousin)
+	(define-key crossword-mode-map "\C-c1" 'crossword-find-singleton)
+	(define-key crossword-mode-map "\C-ch" 'crossword-hwords))
 
 (defvar crossword-mouse-location nil
 	"Location of last mouse-down event")
@@ -362,5 +449,16 @@ Special Commands:
 (define-key crossword-mode-map [down-mouse-3] 'crossword-mouse-set-point)
 (define-key crossword-mode-map [mouse-3] 'crossword-mouse-erase)
 
+(defvar crossword-menu-map nil
+	"Menu for Crossword mode.")
+
+(if crossword-menu-map
+		nil
+	(setq crossword-menu-map (make-sparse-keymap "Crossword"))
+	(define-key crossword-menu-map [find-singleton]
+		'("Find singleton" . crossword-find-singleton)))
+
+(define-key crossword-mode-map [menu-bar crossword]
+	(cons "Crossword" crossword-menu-map))
 
 (provide 'crossword)
