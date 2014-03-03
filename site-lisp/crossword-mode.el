@@ -62,7 +62,8 @@
 						 (numberp (crossword-ref crossword
 																		 (car cousin-position)
 																		 (cdr cousin-position))))
-				(crossword--set crossword row column nil)
+				(crossword--set crossword row column 'letter)
+			(crossword--set crossword row column nil)
 			(crossword--set crossword
 											(car cousin-position)
 											(cdr cousin-position)
@@ -157,11 +158,12 @@
 
 (defun crossword-block-command ()
 	"Insert a block in current cell and cousin"
+	(interactive)
 	(let ((coords (crossword-cursor-coords)))
 		(crossword-store-block crossword-grid
 													 (car coords)
-													 (cdr coords)))
-	(crossword-update-display crossword-grid))
+													 (cdr coords))
+		(crossword-update-display crossword-grid)))
 
 (defun crossword-self-insert ()
 	"Selt-insert letter in current cell."
@@ -237,12 +239,12 @@
 															 1
 															 (cdr coords)))))
 
-(defun beginning-of-grid ()
+(defun crossword-beginning-of-grid ()
 	"Move to the beginning of the grid"
 	(interactive)
 	(crossword-place-cursor 0 0))
 
-(defun end-of-grid ()
+(defun crossword-end-of-grid ()
 	"Move to the end of the grid"
 	(interactive)
 	(let ((size (crossword-size crossword-grid)))
@@ -274,7 +276,6 @@
 Special Commands:
 \\{crossword-mode-map}"
 	(interactive)
-	(kill-all-local-variables)
 	(crossword--mode-setup (crossword-parse-buffer))
 )
 
@@ -291,9 +292,75 @@ Special Commands:
 
 ;;; Keybindings
 (defvar crossword-mode-map nil
-	"Keymap for Crossword mode."
-	(if crossword-mode-map
-			nil
-		(setq crossword-mode-map (make-keymap))))
+	"Keymap for Crossword mode.")
+
+(if crossword-mode-map
+		nil
+	(setq crossword-mode-map (make-keymap))
+	(suppress-keymap crossword-mode-map)
+	(let ((equivs
+				 '((forward-char . crossword-cursor-right)
+					 (backward-char . crossword-cursor-left)
+					 (previous-line . crossword-cursor-up)
+					 (next-line . crossword-cursor-down)
+					 (beginning-of-line . crossword-beginning-of-row)
+					 (end-of-line . crossword-end-of-row)
+					 (beginning-of-buffer . crossword-beginning-of-grid)
+					 (end-of-buffer . crossword-end-of-grid))))
+		(while equivs
+			(substitute-key-definition (car (car equivs))
+																(cdr (car equivs))
+																crossword-mode-map
+																(current-global-map))
+			(setq equivs (cdr equivs))))
+	(let ((letters
+				 '(?A ?B ?C ?D ?E ?F ?G ?H ?I ?J ?K ?L ?M ?N ?O ?P ?Q ?R ?S ?T ?U ?V ?W ?X ?Y ?Z 
+							?a ?b ?c ?d ?e ?f ?g ?h ?i ?j ?k ?l ?m ?n ?o ?p ?q ?r ?s ?t ?u ?v ?w ?x ?y ?z )))
+		(while letters
+			(define-key crossword-mode-map
+				(char-to-string (car letters))
+				'crossword-self-insert)
+			(setq letters (cdr letters))))
+	(define-key crossword-mode-map " " 'crossword-erase-command)
+	(define-key crossword-mode-map "#" 'crossword-block-command)
+	(define-key crossword-mode-map "\C-ct" 'crossword-top-of-column)
+	(define-key crossword-mode-map "\C-cb" 'crossword-bottom-of-column)
+	(define-key crossword-mode-map "\C-c\C-c" 'crossword-jump-to-cousin))
+
+(defvar crossword-mouse-location nil
+	"Location of last mouse-down event")
+
+(defun crossword-mouse-set-point (event)
+	"Set point with the mouse."
+	(interactive "@e")
+	(mouse-set-point event)
+	(let ((coords (crossword-cursor-coords)))
+		(setq crossword-mouse-location coords)
+		(crossword-place-cursor (car coords)
+														(cdr coords))))
+
+(defun crossword-mouse-block (event)
+	"Set block with the mouse."
+	(interactive "@e")
+	(mouse-set-point event)
+	(let ((coords (crossword-cursor-coords)))
+		(if (equal coords crossword-mouse-location)
+				(crossword-block-command))))
+
+(defun crossword-mouse-erase (event)
+	"Erase a cell with the mouse."
+	(interactive "@e")
+	(mouse-set-point event)
+	(let ((coords (crossword-cursor-coords)))
+		(if (equal coords crossword-mouse-location)
+				(crossword-erase-command))))
+
+(define-key crossword-mode-map [down-mouse-1] 'crossword-mouse-set-point)
+(define-key crossword-mode-map [mouse-1] 'crossword-mouse-set-point)
+(define-key crossword-mode-map [down-mouse-2] 'crossword-mouse-set-point)
+(define-key crossword-mode-map [mouse-2] 'crossword-mouse-block)
+(define-key crossword-mode-map [down-mouse-3] 'crossword-mouse-set-point)
+(define-key crossword-mode-map [mouse-3] 'crossword-mouse-erase)
+
 
 (provide 'crossword)
