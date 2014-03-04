@@ -9,6 +9,9 @@
 						(fset 'hide-next
 									"\C-e\C-x\C-o\C-n")))
 
+(add-hook 'c++-mode-hook
+					(lambda ()
+						(semantic-mode)))
 ;; configure packages
 (when (require 'color-theme nil t)
   (color-theme-initialize)
@@ -55,3 +58,6 @@
 
 (when (require 'csharp-mode nil t)
 	(add-hook 'csharp-mode-hook 'auto-revert-mode))
+
+(when (require 'hidden-mode-line-mode nil t)
+	(add-hook 'after-change-major-mode-hook 'hidden-mode-line-mode))

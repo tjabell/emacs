@@ -34,4 +34,6 @@
 (defalias 'wm 'whitespace-mode)
 (defalias 'nxml 'nxml-mode)
 
-(server-start)
+(require 'server)
+(unless (server-running-p)
+		(server-start))
