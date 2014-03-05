@@ -1,4 +1,4 @@
-;; Packages to install first
+; Packages to install first
 (if (>= emacs-major-version 24)
     (progn ;; Add a larger package list
       (setq package-archives '(("ELPA" . "http://tromey.com/elpa/")

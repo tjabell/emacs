@@ -11,6 +11,12 @@
 (global-set-key (kbd "M-/") 'delete-trailing-whitespace)
 (global-set-key (kbd "C-<") 'delete-backward-char)
 
+;;; org-mode activate
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
+
 ;; Super + uppercase letter signifies a buffer/file
 (global-set-key (kbd "s-S")                       ;; scratch
                 (lambda()(interactive)(switch-to-buffer "*scratch*")))
