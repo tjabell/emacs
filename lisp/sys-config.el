@@ -21,7 +21,7 @@
 
 (add-to-list 'auto-mode-alist '(".emacs.loadpackages" . emacs-lisp-mode))
 
-(setq-default indent-tabs-mode t)
+(setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
 (put 'upcase-region 'disabled nil)
 (put 'narrow-to-page 'disabled nil)
