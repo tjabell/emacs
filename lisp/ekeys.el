@@ -29,3 +29,5 @@
 	(progn
 		(global-set-key (kbd "s-d") 'e2wm:dp-edbi)
 		(global-set-key (kbd "s-c") 'e2wm:dp-code)))
+
+(global-set-key (kbd "C-!") 'eshell-here)

@@ -38,5 +38,6 @@
 (load-library "yegge-funcs")
 (load-library "uniqueify")
 (load-library "hidden-mode-line-mode")
+(load-library "eshell_cust")
 
 (autoload 'refill-mode "refill" "Refill minor mode." t)
