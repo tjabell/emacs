@@ -1,4 +1,7 @@
+# comment
+alias ll 'ls -l $*'
 alias V view-file-other-window
 alias v view-file $1
 alias d dired $1
 alias ff find-file $1
+alias s (magit-status (eshell/pwd)) > /dev/null
