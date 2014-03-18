@@ -13,6 +13,11 @@
  (add-path "emacs/site-lisp/dosbat")
  )
 
+(setq package-archives '(("ELPA" . "http://tromey.com/elpa/")
+                         ("gnu" . "http://elpa.gnu.org/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")))
+
 ; put any package initialization in this file
 (add-hook 'after-init-hook 
 					'(lambda ()    (load "~/emacs/.emacs.loadpackages")))
