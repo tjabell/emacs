@@ -5,7 +5,7 @@
 															 ("gnu" . "http://elpa.gnu.org/packages/")
 															 ("marmalade" . "http://marmalade-repo.org/packages/")
 															 ("melpa" . "http://melpa.milkbox.net/packages/")))
-      (when  (not package-archive-contents) 
+      (unless package-archive-contents
         (package-refresh-contents))
 			(cl-labels ((install (package)
 												(when (not (require package nil t))
