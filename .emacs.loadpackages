@@ -26,7 +26,7 @@
         (install 'smart-mode-line)
         (install 'maxframe)
         (install 'ace-jump-mode)
-        (install 'projectile-mode)
+        (install 'projectile)
         (install 'helm-projectile)
 				(if (or (eq system-type 'windows-nt)
 								(eq system-type 'cygwin))
@@ -44,3 +44,4 @@
 (load-library "eshell_cust")
 
 (autoload 'refill-mode "refill" "Refill minor mode." t)
+
