@@ -100,6 +100,9 @@
   ;; ;;If you use evil
   ;; (define-key evil-normal-state-map (kbd "SPC") 'ace-jump-mode)
 )
+
 (when (require 'helm nil t)
   (global-set-key (kbd "C-c h") 'helm-mini)
-  (helm-mode 1))
+  (helm-mode 1)
+  (when (require 'projectile nil t)
+    (require 'helm-projectile nil t)))

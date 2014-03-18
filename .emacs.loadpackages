@@ -26,6 +26,8 @@
         (install 'smart-mode-line)
         (install 'maxframe)
         (install 'ace-jump-mode)
+        (install 'projectile-mode)
+        (install 'helm-projectile)
 				(if (or (eq system-type 'windows-nt)
 								(eq system-type 'cygwin))
 						(progn
