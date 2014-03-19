@@ -7,7 +7,7 @@
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
-
+(global-set-key (kbd "C-z") 'repeat)
 (global-set-key (kbd "M-/") 'delete-trailing-whitespace)
 (global-set-key (kbd "C-<") 'delete-backward-char)
 

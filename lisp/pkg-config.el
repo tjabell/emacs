@@ -106,3 +106,6 @@
   (helm-mode 1)
   (when (require 'projectile nil t)
     (require 'helm-projectile nil t)))
+
+(when (require 'magit nil t)
+  (global-set-key (kbd "<f10>") 'magit-status))
