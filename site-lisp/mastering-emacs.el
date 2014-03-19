@@ -13,3 +13,8 @@ This is the same as using \\[set-mark-command] with the prefix argument."
   (set-mark-command 1))
 (global-set-key (kbd "M-`") 'jump-to-mark)
  
+
+(defun kill-this-buffer () 
+  (interactive) 
+  (kill-buffer (current-buffer)))
+(global-set-key (kbd "C-x C-k") 'kill-this-buffer)
