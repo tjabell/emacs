@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: copyright
+# key: keikocopyright
+# --
+/* Copyright 2014 Trevor Abell <trevor@keikocode.com> */
+/* Copied from Advanced Linux Programming - 2001 */

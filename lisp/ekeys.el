@@ -31,3 +31,5 @@
 		(global-set-key (kbd "s-c") 'e2wm:dp-code)))
 
 (global-set-key (kbd "C-!") 'eshell-here)
+(global-set-key (kbd "<f5>") 'compile)
+(global-set-key (kbd "<f6>") 'gud-gdb)
