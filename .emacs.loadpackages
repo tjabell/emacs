@@ -25,6 +25,7 @@
         (install 'ace-jump-mode)
         (install 'projectile)
         (install 'helm-projectile)
+        (install 'pcre2el)
 				(if (or (eq system-type 'windows-nt)
 								(eq system-type 'cygwin))
 						(progn
