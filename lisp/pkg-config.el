@@ -31,9 +31,10 @@
             (my:ac-c-header-init)))
 
 ;; configure packages
-(when (require 'color-theme nil t)
+(when (require 'color-theme nil t)  
   (color-theme-initialize)
-  (color-theme-dark-blue2))
+  (when (require 'color-theme-tango nil t)
+    (color-theme-tango)))
 
 (when (require 'auto-complete nil t)
   (progn

@@ -26,6 +26,7 @@
         (install 'projectile)
         (install 'helm-projectile)
         (install 'pcre2el)
+        (install 'color-theme-tango)
 				(if (or (eq system-type 'windows-nt)
 								(eq system-type 'cygwin))
 						(progn
