@@ -9,6 +9,14 @@
             (fset 'hide-next
                   "\C-e\C-x\C-o\C-n")))
 
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (unless (or (file-exists-p "makefile")
+                        (file-exists-p "Makefile"))
+              (set (make-local-variable 'compile-command)
+                   (concat "make -k CXXFLAGS='-std=c++11 "
+                           (file-name-sans-extension buffer-file-name))))))
+
 (when (require 'flymake-google-cpplint nil t)
 ;;; remember to install google-lint.py
   (progn
