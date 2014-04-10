@@ -62,7 +62,7 @@
 
 (when (require 'yasnippet nil t)
   (setq yas-snippet-dirs
-        '("/home/trevor/emacs/data/snippets/" "/home/trevor/.emacs.d/elpa/yasnippet-20140314.255/snippets"))
+        '("~/emacs/data/snippets/" "~/.emacs.d/elpa/yasnippet-20140314.255/snippets"))
   (yas/global-mode 1))
 
 (when (require 'pymacs nil t)
