@@ -14,7 +14,7 @@
   (progn
     (defun my:flymake-google-init ()
       (require 'flymake-google-cpplint)
-      (custom-set-variables
+      (custom-set-ariables
        '(flymake-google-cpplint-command "/usr/bin/cpplint"))
       (flymake-google-cpplint-load))
     (add-hook 'c++-mode-hook 'my:flymake-google-init)
@@ -110,3 +110,12 @@
 
 (when (require 'magit nil t)
   (global-set-key (kbd "<f10>") 'magit-status))
+
+(when (require 'visual-regexp nil t)
+  (when (require 'visual-regexp-steroids nil t)))
+
+(when (require 'key-chord nil t)
+  (key-chord-define-global "xo" 'other-window)
+  (key-chord-mode 1))
+
+

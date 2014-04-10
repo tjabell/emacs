@@ -27,6 +27,9 @@
         (install 'helm-projectile)
         (install 'pcre2el)
         (install 'color-theme-tango)
+        (install 'key-chord)
+        (install 'visual-regexp)
+        (install 'visual-regexp-steroids)
 				(if (or (eq system-type 'windows-nt)
 								(eq system-type 'cygwin))
 						(progn
