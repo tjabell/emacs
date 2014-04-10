@@ -61,8 +61,8 @@
   (load-library "e2wm-edbi"))
 
 (when (require 'yasnippet nil t)
-  (setq snippet-dirs 
-        `(,(concat emacs-root "emacs/data/snippets/")))
+  (setq yas-snippet-dirs
+        '("/home/trevor/emacs/data/snippets/" "/home/trevor/.emacs.d/elpa/yasnippet-20140314.255/snippets"))
   (yas/global-mode 1))
 
 (when (require 'pymacs nil t)
