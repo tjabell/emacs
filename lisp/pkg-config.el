@@ -14,15 +14,29 @@
             (unless (or (file-exists-p "makefile")
                         (file-exists-p "Makefile"))
               (set (make-local-variable 'compile-command)
-                   (concat "make -k CXXFLAGS='-std=c++11 "
+                   (concat "make -k CXXFLAGS='-std=c++11' "
                            (file-name-sans-extension buffer-file-name))))))
+
+(add-hook 'c-mode-common-hook
+          (semantic-mode 1))
+
+(global-ede-mode 1)
+
+(defun my:add-semantic-to-autocomplate ()
+  (add-to-list 'ac-sources 'ac-source-semantic))
+
+(add-hook 'c-mode-common-hook
+          'my:add-semantic-to-autocomplate)
+
+(ede-cpp-root-project "my project" :file "~/cpp_primer/ch1_getting_started/main.cpp"
+                      :include-path '("/usr/include/"))
 
 (when (require 'flymake-google-cpplint nil t)
 ;;; remember to install google-lint.py
   (progn
     (defun my:flymake-google-init ()
       (require 'flymake-google-cpplint)
-      (custom-set-ariables
+      (custom-set-variables
        '(flymake-google-cpplint-command "/usr/bin/cpplint"))
       (flymake-google-cpplint-load))
     (add-hook 'c++-mode-hook 'my:flymake-google-init)
@@ -92,8 +106,8 @@
   (add-hook 'after-change-major-mode-hook 'hidden-mode-line-mode))
 
 (when (require 'google-c-style nil t)
-  (add-hook 'c-mode-commonhook 'google-c-style)
-  (add-hook 'c-mode-commonhook 'google-make-newline-indent))
+  (add-hook 'c-mode-common-hook 'google-set-c-style)
+  (add-hook 'c-mode-common-hook 'google-make-newline-indent))
 
 (when (require 'smart-mode-line nil t)
   (setq sml/theme 'respectful)
