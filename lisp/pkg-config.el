@@ -1,10 +1,14 @@
+(global-ede-mode 1)
+
+(when (require 'dired-x nil t))
+
 (add-hook 'scheme-mode-hook 'paredit-mode)
 
 (add-hook 'hs-minor-mode-hook
           (lambda ()   (global-set-key (kbd "C-x C-o") 'hs-toggle-hiding)))
 
 (add-hook 'python-mode-hook
-          (lambda () 
+          (lambda ()
             (hs-minor-mode 1)
             (fset 'hide-next
                   "\C-e\C-x\C-o\C-n")))
@@ -20,16 +24,14 @@
 (add-hook 'c-mode-common-hook
           (semantic-mode 1))
 
-(global-ede-mode 1)
-
 (defun my:add-semantic-to-autocomplate ()
   (add-to-list 'ac-sources 'ac-source-semantic))
 
 (add-hook 'c-mode-common-hook
           'my:add-semantic-to-autocomplate)
 
-(ede-cpp-root-project "my project" :file "~/cpp_primer/ch1_getting_started/main.cpp"
-                      :include-path '("/usr/include/"))
+;; (ede-cpp-root-project "my project" :file "/home/trevor/cpp_primer/ch1_getting_started/main.cpp"
+;;                       :include-path '("/usr/include/"))
 
 (when (require 'flymake-google-cpplint nil t)
 ;;; remember to install google-lint.py
@@ -45,18 +47,12 @@
 (defun my:ac-c-header-init ()
   (require 'auto-complete-c-headers)
   (add-to-list 'ac-sources 'ac-source-c-headers)
-(add-to-list 'achead:include-directories '"/usr/lib/gcc/x86_64-pc-linux-gnu/4.7.3/include/g++-v4"))
+  (add-to-list 'achead:include-directories '("/usr/include" "/usr/lib/include")))
 
 (add-hook 'c++-mode-hook
           (lambda ()
             (semantic-mode)
             (my:ac-c-header-init)))
-
-;; configure packages
-(when (require 'color-theme nil t)  
-  (color-theme-initialize)
-  (when (require 'color-theme-tango nil t)
-    (color-theme-tango)))
 
 (when (require 'auto-complete nil t)
   (progn
@@ -99,8 +95,8 @@
 
 (when (require 'virtualenv nil t))
 
-(when (require 'csharp-mode nil t)
-  (add-hook 'csharp-mode-hook 'auto-revert-mode))
+;; (when (require 'csharp-mode nil t)
+;;   (add-hook 'csharp-mode-hook 'auto-revert-mode))
 
 (when (require 'hidden-mode-line-mode nil t)
   (add-hook 'after-change-major-mode-hook 'hidden-mode-line-mode))
@@ -140,4 +136,7 @@
   (key-chord-define-global "xo" 'other-window)
   (key-chord-mode 1))
 
-
+(when (require 'color-theme nil t)
+  (color-theme-initialize)
+  (setq color-theme-is-global t)
+  (color-theme-jsc-dark))

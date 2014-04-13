@@ -10,14 +10,16 @@
 			(concat emacs-root p))))
  (add-path "emacs/lisp") ;; all my personal elisp code
  (add-path "emacs/site-lisp")
- (add-path "emacs/site-lisp/dosbat")
- )
+ (add-path "emacs/site-lisp/dosbat"))
 
-(setq package-archives '(("ELPA" . "http://tromey.com/elpa/")
-                         ("gnu" . "http://elpa.gnu.org/packages/")
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/")))
+                         ("melpa" . "http://melpa.milkbox.net/packages/"))
+      package-archive-contents nil)
 
 ; put any package initialization in this file
 (add-hook 'after-init-hook 
 					'(lambda ()    (load "~/emacs/.emacs.loadpackages")))
+
+(put 'narrow-to-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
