@@ -1,5 +1,5 @@
 ;;; Copyright 2014 Trevor Abell <trevor@keikocode.com>
-                                        ; Packages to install first
+;; Packages to install first
 (if (>= emacs-major-version 24)
     (progn ;; Add a larger package list
       (unless package-archive-contents
@@ -11,7 +11,7 @@
         (install 'yasnippet)
         (install 'auto-complete)
         (install 'color-theme)
-       ;(install 'csharp-mode)
+        (install 'csharp-mode)
         (install 'paredit)
         (install 'magit)
         (install 'edit-server)
@@ -36,16 +36,16 @@
             (progn
               (install 'powershell-mode)
               (install 'powershell))
-          nil))))
+        nil))))
 
 (load-library "ekeys")
 (load-library "sys-config")
 (load-library "pkg-config")
 (load-library "yegge-funcs")
 (load-library "uniqueify")
-(load-library "hidden-mode-line-mode")
 (load-library "eshell_cust")
 (load-library "mastering-emacs")
+(load-library "hidden-mode-line-mode")
 
 (autoload 'refill-mode "refill" "Refill minor mode." t)
 

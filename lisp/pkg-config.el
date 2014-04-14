@@ -1,5 +1,11 @@
 (global-ede-mode 1)
 
+(when (require 'color-theme nil t)
+  (color-theme-initialize)
+  (color-theme-jsc-dark)
+  (when (require 'color-theme-tango)
+    (color-theme-tango)))
+
 (when (require 'dired-x nil t))
 
 (add-hook 'scheme-mode-hook 'paredit-mode)
@@ -16,8 +22,8 @@
 (add-hook 'c-mode-common-hook
           (lambda ()
             (unless (or (file-exists-p "makefile")
-                        (file-exists-p "Makefile"))
-              (set (make-local-variable 'compile-command)
+		(file-exists-p "Makefile"))
+      (set (make-local-variable 'compile-command)
                    (concat "make -k CXXFLAGS='-std=c++11' "
                            (file-name-sans-extension buffer-file-name))))))
 
@@ -136,7 +142,3 @@
   (key-chord-define-global "xo" 'other-window)
   (key-chord-mode 1))
 
-(when (require 'color-theme nil t)
-  (color-theme-initialize)
-  (setq color-theme-is-global t)
-  (color-theme-jsc-dark))
