@@ -1,5 +1,8 @@
 (global-ede-mode 1)
 
+(require 'org-install)
+(require 'ob-tangle)
+
 (when (require 'color-theme nil t)
   (color-theme-initialize)
   (color-theme-jsc-dark)
@@ -25,7 +28,7 @@
 		(file-exists-p "Makefile"))
       (set (make-local-variable 'compile-command)
                    (concat "make -k CXXFLAGS='-std=c++11' "
-                           (file-name-sans-extension buffer-file-name))))))
+                           (file-name-sans-extension (or buffer-file-name "C-BUFFER")))))))
 
 (add-hook 'c-mode-common-hook
           (semantic-mode 1))
@@ -35,9 +38,6 @@
 
 (add-hook 'c-mode-common-hook
           'my:add-semantic-to-autocomplate)
-
-;; (ede-cpp-root-project "my project" :file "/home/trevor/cpp_primer/ch1_getting_started/main.cpp"
-;;                       :include-path '("/usr/include/"))
 
 (when (require 'flymake-google-cpplint nil t)
 ;;; remember to install google-lint.py
@@ -101,8 +101,8 @@
 
 (when (require 'virtualenv nil t))
 
-;; (when (require 'csharp-mode nil t)
-;;   (add-hook 'csharp-mode-hook 'auto-revert-mode))
+(when (require 'csharp-mode nil t)
+  (add-hook 'csharp-mode-hook 'auto-revert-mode))
 
 (when (require 'hidden-mode-line-mode nil t)
   (add-hook 'after-change-major-mode-hook 'hidden-mode-line-mode))
@@ -130,7 +130,11 @@
   (global-set-key (kbd "C-c h") 'helm-mini)
   (helm-mode 1)
   (when (require 'projectile nil t)
-    (require 'helm-projectile nil t)))
+    (require 'helm-projectile nil t)
+    (add-hook 'c-mode-common-hook 'projectile-on)
+    (add-hook 'python-mode-hook 'projectile-on)
+    (add-hook 'emacs-lisp-mode-hook 'projectile-on)
+    (global-set-key (kbd "C-c h") 'helm-projectile)))
 
 (when (require 'magit nil t)
   (global-set-key (kbd "<f10>") 'magit-status))

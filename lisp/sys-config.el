@@ -19,6 +19,7 @@
     (add-to-list 'default-frame-alist
                  '(font . "Inconsolata 9")))
 
+
 (add-to-list 'auto-mode-alist '(".emacs.loadpackages" . emacs-lisp-mode))
 
 (setq-default indent-tabs-mode nil)

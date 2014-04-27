@@ -31,6 +31,9 @@
         (install 'key-chord)
         (install 'visual-regexp)
         (install 'visual-regexp-steroids)
+        (install 'paradox)
+        (install 'projectile)
+        (install 'helm-projectile)
         (if (or (eq system-type 'windows-nt)
                 (eq system-type 'cygwin))
             (progn
