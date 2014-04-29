@@ -2,9 +2,10 @@
 ;; Packages to install first
 (if (>= emacs-major-version 24)
     (progn ;; Add a larger package list
-      (unless package-archive-contents
-        (package-initialize)
-        (package-refresh-contents))
+      (if (or (not (boundp 'package-archive-contents)) package-archive-contents)
+	  (progn 
+	    (package-initialize)
+	    (package-refresh-contents)))
       (cl-labels ((install (package)
                            (when (not (require package nil t))
                              (package-install package))))
