@@ -3,11 +3,7 @@
 (require 'org-install)
 (require 'ob-tangle)
 
-(when (require 'color-theme nil t)
-  (color-theme-initialize)
-  (color-theme-jsc-dark)
-  (when (require 'color-theme-tango)
-    (color-theme-tango)))
+(load-theme 'solarized-dark)
 
 (when (require 'dired-x nil t))
 
@@ -40,7 +36,7 @@
           'my:add-semantic-to-autocomplate)
 
 (when (require 'flymake-google-cpplint nil t)
-;;; remember to install google-lint.py
+;;; remember to install google-lint.py (pip install cpplint)
   (progn
     (defun my:flymake-google-init ()
       (require 'flymake-google-cpplint)
@@ -134,7 +130,8 @@
     (add-hook 'c-mode-common-hook 'projectile-on)
     (add-hook 'python-mode-hook 'projectile-on)
     (add-hook 'emacs-lisp-mode-hook 'projectile-on)
-    (global-set-key (kbd "C-c h") 'helm-projectile)))
+    (global-set-key (kbd "C-c h") 'helm-projectile)
+    (setq projectile-enable-caching t)))
 
 (when (require 'magit nil t)
   (global-set-key (kbd "<f10>") 'magit-status))

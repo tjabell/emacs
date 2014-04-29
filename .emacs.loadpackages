@@ -3,9 +3,9 @@
 (if (>= emacs-major-version 24)
     (progn ;; Add a larger package list
       (if (or (not (boundp 'package-archive-contents)) package-archive-contents)
-	  (progn 
-	    (package-initialize)
-	    (package-refresh-contents)))
+          (progn 
+            (package-initialize)
+            (package-refresh-contents)))
       (cl-labels ((install (package)
                            (when (not (require package nil t))
                              (package-install package))))
@@ -29,6 +29,7 @@
         (install 'helm-projectile)
         (install 'pcre2el)
         (install 'color-theme-tango)
+        (install 'color-theme-solarized)
         (install 'key-chord)
         (install 'visual-regexp)
         (install 'visual-regexp-steroids)
@@ -40,7 +41,7 @@
             (progn
               (install 'powershell-mode)
               (install 'powershell))
-        nil))))
+          nil))))
 
 (load-library "ekeys")
 (load-library "sys-config")
