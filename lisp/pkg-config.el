@@ -1,9 +1,8 @@
 (global-ede-mode 1)
+(load-theme 'solarized-dark t)
 
 (require 'org-install)
 (require 'ob-tangle)
-
-(load-theme 'solarized-dark)
 
 (when (require 'dired-x nil t))
 
@@ -81,9 +80,9 @@
   (load-library "e2wm-edbi"))
 
 (when (require 'yasnippet nil t)
-  (setq yas-snippet-dirs
-        '("~/emacs/data/snippets/" "~/.emacs.d/elpa/yasnippet-20140314.255/snippets"))
-  (yas/global-mode 1))
+  (add-to-list 'yas-snippet-dirs
+               '("~/emacs/data/snippets/")
+               (yas/global-mode 1)))
 
 (when (require 'pymacs nil t)
   (setenv "PYMACS_PYTHON" "python2")
