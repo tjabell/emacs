@@ -33,3 +33,6 @@
 (global-set-key (kbd "C-!") 'eshell-here)
 (global-set-key (kbd "<f5>") 'compile)
 (global-set-key (kbd "<f6>") 'gud-gdb)
+
+(global-set-key [(mouse-5)] '(lambda () (interactive) (smooth-scroll 1)))
+(global-set-key [(mouse-4)] '(lambda () (interactive) (smooth-scroll -1)))
