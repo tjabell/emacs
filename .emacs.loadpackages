@@ -51,6 +51,7 @@
 (load-library "eshell_cust")
 (load-library "mastering-emacs")
 (load-library "hidden-mode-line-mode")
+(load-library "smooth-scroll")
 
 (autoload 'refill-mode "refill" "Refill minor mode." t)
 
