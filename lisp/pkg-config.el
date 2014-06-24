@@ -81,7 +81,7 @@
 
 (when (require 'yasnippet nil t)
   (add-to-list 'yas-snippet-dirs
-               '("~/emacs/data/snippets/")
+               "~/emacs/data/snippets/"
                (yas/global-mode 1)))
 
 (when (require 'pymacs nil t)
@@ -141,4 +141,8 @@
 (when (require 'key-chord nil t)
   (key-chord-define-global "xo" 'other-window)
   (key-chord-mode 1))
+
+
+(when (require 'elpy nil t)
+  (elpy-enable))
 

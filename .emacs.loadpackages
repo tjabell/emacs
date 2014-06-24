@@ -36,6 +36,8 @@
         (install 'paradox)
         (install 'projectile)
         (install 'helm-projectile)
+        (install 'jedi)
+        (install 'elpy)
         (if (or (eq system-type 'windows-nt)
                 (eq system-type 'cygwin))
             (progn
