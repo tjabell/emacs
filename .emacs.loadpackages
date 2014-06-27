@@ -30,6 +30,7 @@
         (install 'pcre2el)
         (install 'color-theme-tango)
         (install 'color-theme-solarized)
+        (install 'zenburn-theme)
         (install 'key-chord)
         (install 'visual-regexp)
         (install 'visual-regexp-steroids)

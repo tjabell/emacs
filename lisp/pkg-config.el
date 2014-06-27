@@ -1,5 +1,5 @@
 (global-ede-mode 1)
-(load-theme 'solarized-dark t)
+(load-theme 'zenburn t)
 
 (require 'org-install)
 (require 'ob-tangle)
