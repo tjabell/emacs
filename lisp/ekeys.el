@@ -1,5 +1,5 @@
 (global-set-key (kbd "C-x o") 'other-window)
-(global-set-key (kbd "C-o") 'other-window)
+(global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "C-1") 'delete-other-windows)
 (global-set-key (kbd "C-X C-m") 'execute-extended-command)
 (global-set-key (kbd "<f11>") 'revert-buffer)
@@ -31,6 +31,7 @@
 		(global-set-key (kbd "s-c") 'e2wm:dp-code)))
 
 (global-set-key (kbd "C-!") 'eshell-here)
+(global-set-key (kbd "<f1>") 'shell)
 (global-set-key (kbd "<f5>") 'compile)
 (global-set-key (kbd "<f6>") 'gud-gdb)
 
