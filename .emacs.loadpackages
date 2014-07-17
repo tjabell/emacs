@@ -39,6 +39,7 @@
         (install 'helm-projectile)
         (install 'jedi)
         (install 'elpy)
+        (install 'multiple-cursors)
         (if (or (eq system-type 'windows-nt)
                 (eq system-type 'cygwin))
             (progn
