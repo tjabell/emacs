@@ -126,9 +126,9 @@
   (helm-mode 1)
   (when (require 'projectile nil t)
     (require 'helm-projectile nil t)
-    (add-hook 'c-mode-common-hook 'projectile-on)
-    (add-hook 'python-mode-hook 'projectile-on)
-    (add-hook 'emacs-lisp-mode-hook 'projectile-on)
+    ;; (add-hook 'c-mode-common-hook 'projectile-on)
+    ;; (add-hook 'python-mode-hook 'projectile-on)
+    ;; (add-hook 'emacs-lisp-mode-hook 'projectile-on)
     (global-set-key (kbd "C-c h") 'helm-projectile)
     (setq projectile-enable-caching t)))
 

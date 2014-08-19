@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: python-copyright
+# key: pycopyright
+# binding: direct-keybinding
+# --
+# copyright 2014 keikocode as modified from generators-uk, David Beazly [2012]
