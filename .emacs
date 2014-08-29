@@ -19,7 +19,7 @@
 
 ; put any package initialization in this file
 (add-hook 'after-init-hook 
-					'(lambda ()    (load "~/emacs/.emacs.loadpackages")))
+					'(lambda ()    (load "~/emacs/emacs.loadpackages")))
 
 (put 'narrow-to-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
