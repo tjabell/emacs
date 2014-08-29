@@ -140,6 +140,10 @@
 
 (when (require 'key-chord nil t)
   (key-chord-define-global "xo" 'other-window)
+  (key-chord-define-global "qo" 'other-window)
+  (key-chord-define-global "qf" 'forward-word)
+  (key-chord-define-global "qr" 'backward-word)
+
   (key-chord-mode 1))
 
 
