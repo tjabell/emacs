@@ -9,7 +9,7 @@
 (global-set-key (kbd "C--") 'text-scale-decrease)
 (global-set-key (kbd "C-z") 'repeat)
 (global-set-key (kbd "M-/") 'delete-trailing-whitespace)
-(global-set-key (kbd "C-<") 'delete-backward-char)
+(global-set-key (kbd "C-c C-f") 'iy-go-to-char)
 
 ;;; org-mode activate
 (global-set-key "\C-cl" 'org-store-link)

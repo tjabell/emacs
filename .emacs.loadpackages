@@ -40,6 +40,7 @@
         (install 'jedi)
         (install 'elpy)
         (install 'multiple-cursors)
+        (install 'iy-go-to-char)
         (if (or (eq system-type 'windows-nt)
                 (eq system-type 'cygwin))
             (progn
