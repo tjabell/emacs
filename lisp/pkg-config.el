@@ -143,7 +143,11 @@
   (key-chord-define-global "qo" 'other-window)
   (key-chord-define-global "qf" 'forward-word)
   (key-chord-define-global "qr" 'backward-word)
-
+  (key-chord-define-global "qm" 'execute-extended-command)
+  (key-chord-define-global "qs" 'save-buffer)
+  (key-chord-define-global "qh" 'shell)
+  (key-chord-define-global "qe" 'eval-defun)
+  (key-chord-define-global "qj" 'eval-print-last-sexp)
   (key-chord-mode 1))
 
 

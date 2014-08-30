@@ -28,7 +28,6 @@
         (install 'projectile)
         (install 'helm-projectile)
         (install 'pcre2el)
-        (install 'color-theme-tango)
         (install 'color-theme-solarized)
         (install 'zenburn-theme)
         (install 'key-chord)
