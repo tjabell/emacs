@@ -4,6 +4,10 @@
 (require 'org-install)
 (require 'ob-tangle)
 
+(when (require 'uniquify nil t)
+  (setq 
+   uniquify-buffer-name-style 'post-forward
+   uniquify-separator ":"))
 (when (require 'dired-x nil t))
 
 (add-hook 'scheme-mode-hook 'paredit-mode)
