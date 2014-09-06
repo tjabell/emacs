@@ -9,7 +9,8 @@
  '((ruby . t)
    (emacs-lisp . t)
    (python . t)
-   (perl . t)))
+   (perl . t)
+   (haskell . t)))
 
 (when (require 'uniquify nil t)
   (setq 
