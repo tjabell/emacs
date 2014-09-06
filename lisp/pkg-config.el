@@ -8,7 +8,8 @@
  'org-babel-load-languages
  '((ruby . t)
    (emacs-lisp . t)
-   (python . t)))
+   (python . t)
+   (perl . t)))
 
 (when (require 'uniquify nil t)
   (setq 
