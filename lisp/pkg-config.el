@@ -4,6 +4,12 @@
 (require 'org-install)
 (require 'ob-tangle)
 
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((ruby . t)
+   (emacs-lisp . t)
+   (python . t)))
+
 (when (require 'uniquify nil t)
   (setq 
    uniquify-buffer-name-style 'post-forward
@@ -145,11 +151,16 @@
 (when (require 'key-chord nil t)
   (key-chord-define-global "xo" 'other-window)
   (key-chord-define-global "qo" 'other-window)
-  (key-chord-define-global "qf" 'forward-word)
-  (key-chord-define-global "qr" 'backward-word)
+  (key-chord-define-global "qf" 'find-file)
+  (key-chord-define-global "xf" 'find-file)
+  (key-chord-define-global "qr" 'previous-buffer)
+  (key-chord-define-global "qn" 'next-buffer)
   (key-chord-define-global "qm" 'execute-extended-command)
+  (key-chord-define-global "xm" 'execute-extended-command)
   (key-chord-define-global "qs" 'save-buffer)
+  (key-chord-define-global "xs" 'save-buffer)
   (key-chord-define-global "qh" 'shell)
+  (key-chord-define-global "xh" 'shell)
   (key-chord-define-global "qe" 'eval-defun)
   (key-chord-define-global "qj" 'eval-print-last-sexp)
   (key-chord-define-global "qb" 'previous-buffer)

@@ -14,6 +14,12 @@
       (set-face-attribute 'default nil :font "Consolas 8"))
   nil)
 
+(set-register ?e '(file . "~/emacs"))
+(set-register ?p '(file . "~/projects"))
+(set-register ?s '(file . "~/software_learning"))
+(set-register ?b '(file . "~/books_learning"))
+(set-register ?h '(file . "~/"))
+
 
 (if (or (eq system-type 'gnu/linux))
     (add-to-list 'default-frame-alist
