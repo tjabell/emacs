@@ -155,6 +155,8 @@
   (key-chord-define-global "qo" 'other-window)
   (key-chord-define-global "qf" 'find-file)
   (key-chord-define-global "xf" 'find-file)
+  (key-chord-define-global "qk" 'kill-this-buffer)
+  (key-chord-define-global "xk" 'kill-this-buffer)
   (key-chord-define-global "qr" 'previous-buffer)
   (key-chord-define-global "qn" 'next-buffer)
   (key-chord-define-global "qm" 'execute-extended-command)
