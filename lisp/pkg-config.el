@@ -1,5 +1,5 @@
 (global-ede-mode 1)
-(load-theme 'zenburn t)
+;; (load-theme 'zenburn t)
 
 (require 'org-install)
 (require 'ob-tangle)
@@ -92,6 +92,9 @@
   (load-library "e2wm-edbi"))
 
 (when (require 'yasnippet nil t)
+  (when (require 'dropdown-list nil t)
+    (setq yas/prompt-functions '(yas/dropdown-prompt                               
+                                 yas/ido-prompt)))
   (add-to-list 'yas-snippet-dirs
                "~/emacs/data/snippets/"
                (yas/global-mode 1)))
@@ -112,7 +115,8 @@
   (add-hook 'csharp-mode-hook 'auto-revert-mode))
 
 (when (require 'hidden-mode-line-mode nil t)
-  (add-hook 'after-change-major-mode-hook 'hidden-mode-line-mode))
+  ;; (add-hook 'after-change-major-mode-hook 'hidden-mode-line-mode)
+)
 
 (when (require 'google-c-style nil t)
   (add-hook 'c-mode-common-hook 'google-set-c-style)
