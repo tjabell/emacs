@@ -174,7 +174,7 @@
   (key-chord-define-global "qb" 'previous-buffer)
   (key-chord-mode 1))
 
-
-(when (require 'elpy nil t)
-  (elpy-enable))
+(if (eq system-type 'gnu/linux)
+    (setq org-agenda-files '("/home/trevor/projects/management/management.org"))
+  nil)
 
