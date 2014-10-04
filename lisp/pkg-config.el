@@ -157,6 +157,7 @@
 (when (require 'key-chord nil t)
   (key-chord-define-global "xo" 'other-window)
   (key-chord-define-global "qo" 'other-window)
+  (key-chord-define-global "qp" 'other-window)
   (key-chord-define-global "qf" 'find-file)
   (key-chord-define-global "xf" 'find-file)
   (key-chord-define-global "qk" 'kill-this-buffer)
