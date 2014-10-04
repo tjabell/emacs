@@ -1,5 +1,5 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# name: require
+# name: require-func
 # key: rf
 # --
 var $1 = require('$2').$1;

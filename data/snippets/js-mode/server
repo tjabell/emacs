@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: server
+# key: svr
+# --
+var server = http.createServer(function(req, res) {
+    $0
+});
+
+server.listen($1);
