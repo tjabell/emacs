@@ -17,7 +17,7 @@
 (define-key global-map (kbd "C-c c")  'org-capture)
 
 (when (require 'uniquify nil t)
-  (setq 
+  (setq
    uniquify-buffer-name-style 'post-forward
    uniquify-separator ":"))
 (when (require 'dired-x nil t))
@@ -100,7 +100,7 @@
 
 (when (require 'yasnippet nil t)
   (when (require 'dropdown-list nil t)
-    (setq yas/prompt-functions '(yas/dropdown-prompt                               
+    (setq yas/prompt-functions '(yas/dropdown-prompt
                                  yas/ido-prompt)))
   (add-to-list 'yas-snippet-dirs
                "~/emacs/data/snippets/"
@@ -187,3 +187,9 @@
   nil)
 
 (add-to-list 'auto-mode-alist '("mutt" . mail-mode))
+
+(when (require 'emmet-mode nil t)
+  (add-to-list 'ac-sources 'ac-emmet)
+  (when (require 'sgml-mode nil t)
+      (add-hook 'html-mode-hook 'emmet-mode)
+      (define-key html-mode-map (kbd "C-/") 'emmet-expand-line)))
