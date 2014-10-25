@@ -41,6 +41,8 @@
         (install 'iy-go-to-char)
         (install 'haskell-mode)
         (install 'skewer-mode)
+        (install 'emmet-mode)
+        (install 'ac-emmet)
         (if (or (eq system-type 'windows-nt)
                 (eq system-type 'cygwin))
             (progn
