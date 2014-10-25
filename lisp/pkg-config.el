@@ -193,3 +193,10 @@
   (when (require 'sgml-mode nil t)
       (add-hook 'html-mode-hook 'emmet-mode)
       (define-key html-mode-map (kbd "C-/") 'emmet-expand-line)))
+
+(when (require 'web-mode nil t)
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'ac-sources 'ac-emmet)
+  (add-hook 'web-mode-hook 'emmet-mode)
+  (define-key web-mode-map (kbd "C-/") 'emmet-expand-line))
+

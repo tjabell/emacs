@@ -43,6 +43,7 @@
         (install 'skewer-mode)
         (install 'emmet-mode)
         (install 'ac-emmet)
+        (install 'web-mode)
         (if (or (eq system-type 'windows-nt)
                 (eq system-type 'cygwin))
             (progn
