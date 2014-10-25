@@ -1,6 +1,7 @@
 (global-ede-mode 1)
 ;; (load-theme 'zenburn t)
 
+;;; Org Mode
 (require 'org-install)
 (require 'ob-tangle)
 
@@ -11,6 +12,9 @@
    (python . t)
    (perl . t)
    (haskell . t)))
+
+(setq org-default-notes-file (concat org-directory "/notes.org"))
+(define-key global-map (kbd "C-c c")  'org-capture)
 
 (when (require 'uniquify nil t)
   (setq 
@@ -39,6 +43,9 @@
 
 (add-hook 'c-mode-common-hook
           (semantic-mode 1))
+
+(add-hook 'haskell-mode-hook
+          (turn-on-haskell-simple-indent))
 
 (defun my:add-semantic-to-autocomplate ()
   (add-to-list 'ac-sources 'ac-source-semantic))
@@ -179,3 +186,4 @@
     (setq org-agenda-files '("/home/trevor/projects/management/management.org"))
   nil)
 
+(add-to-list 'auto-mode-alist '("mutt" . mail-mode))
