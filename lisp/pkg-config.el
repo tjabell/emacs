@@ -200,3 +200,13 @@
   (add-hook 'web-mode-hook 'emmet-mode)
   (define-key web-mode-map (kbd "C-/") 'emmet-expand-line))
 
+(when (require 'js-comint nil t)  
+  (setq inferior-js-mode-hook
+        (lambda ()
+          ;; We like nice colors
+          (ansi-color-for-comint-mode-on)
+          ;; Deal with some prompt nonsense
+          (add-to-list
+           'comint-preoutput-filter-functions
+           (lambda (output)
+             (replace-regexp-in-string "\033\\[[0-9]+[A-Z]" "" output))))))

@@ -44,6 +44,7 @@
         (install 'emmet-mode)
         (install 'ac-emmet)
         (install 'web-mode)
+        (install 'js-comint)        
         (if (or (eq system-type 'windows-nt)
                 (eq system-type 'cygwin))
             (progn
