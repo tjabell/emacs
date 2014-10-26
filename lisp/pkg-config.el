@@ -200,7 +200,8 @@
   (add-hook 'web-mode-hook 'emmet-mode)
   (define-key web-mode-map (kbd "C-/") 'emmet-expand-line))
 
-(when (require 'js-comint nil t)  
+(when (require 'js-comint nil t)
+  ;; From here: http://stackoverflow.com/questions/13862471/using-node-js-with-js-comint-in-emacs
   (setq inferior-js-mode-hook
         (lambda ()
           ;; We like nice colors
@@ -210,3 +211,14 @@
            'comint-preoutput-filter-functions
            (lambda (output)
              (replace-regexp-in-string "\033\\[[0-9]+[A-Z]" "" output))))))
+
+
+(when (require 'js2-mode nil t)
+  ;; From js2-comint file
+  (add-hook 'js2-mode-hook '(lambda () 
+                              (local-set-key "\C-x\C-e" 'js-send-last-sexp)
+                              (local-set-key "\C-\M-x" 'js-send-last-sexp-and-go)
+                              (local-set-key "\C-cb" 'js-send-buffer)
+                              (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
+                              (local-set-key "\C-cl" 'js-load-file-and-go)
+                              )))
