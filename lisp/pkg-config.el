@@ -198,6 +198,8 @@
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
   (add-to-list 'ac-sources 'ac-emmet)
   (add-hook 'web-mode-hook 'emmet-mode)
+  (when (require 'yasnippet nil t)
+    (add-hook 'web-mode-hook #'(lambda ()  (yas-activate-extra-mode 'html-mode))))
   (define-key web-mode-map (kbd "C-/") 'emmet-expand-line))
 
 (when (require 'js-comint nil t)
