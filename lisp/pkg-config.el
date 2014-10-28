@@ -1,4 +1,5 @@
 (global-ede-mode 1)
+(semantic-mode 1)
 ;; (load-theme 'zenburn t)
 
 ;;; Org Mode
@@ -41,8 +42,6 @@
                    (concat "make -k CXXFLAGS='-std=c++11' "
                            (file-name-sans-extension (or buffer-file-name "C-BUFFER")))))))
 
-(add-hook 'c-mode-common-hook
-          (semantic-mode 1))
 
 (add-hook 'haskell-mode-hook
           (turn-on-haskell-simple-indent))
