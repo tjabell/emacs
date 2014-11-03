@@ -156,9 +156,6 @@
   (helm-mode 1)
   (when (require 'projectile nil t)
     (require 'helm-projectile nil t)
-    ;; (add-hook 'c-mode-common-hook 'projectile-on)
-    ;; (add-hook 'python-mode-hook 'projectile-on)
-    ;; (add-hook 'emacs-lisp-mode-hook 'projectile-on)
     (global-set-key (kbd "C-c h") 'helm-projectile)
     (setq projectile-enable-caching t)))
 
@@ -231,8 +228,7 @@
                               (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
                               (local-set-key "\C-cl" 'js-load-file-and-go)
                               (semantic-mode t)
-                              (setq ac-sources (append '(ac-source-semantic) ac-sources))
-                              ))
+                              (setq ac-sources (append '(ac-source-semantic) ac-sources))))
   (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
 
 ;; Custom Themes
