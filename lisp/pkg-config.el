@@ -1,6 +1,12 @@
 (global-ede-mode 1)
-(semantic-mode 1)
-;; (load-theme 'zenburn t)
+
+;;; Semantic
+(semantic-mode t)
+(global-semantic-idle-completions-mode t)
+(global-semantic-decoration-mode t)
+(global-semantic-highlight-func-mode t)
+(global-semantic-show-unmatched-syntax-mode t)
+;;; End Semantic
 
 ;;; Org Mode
 (require 'org-install)
@@ -16,6 +22,8 @@
 
 (setq org-default-notes-file (concat org-directory "/notes.org"))
 (define-key global-map (kbd "C-c c")  'org-capture)
+
+;; End Org mode
 
 (when (require 'uniquify nil t)
   (setq
@@ -222,4 +230,10 @@
                               (local-set-key "\C-cb" 'js-send-buffer)
                               (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
                               (local-set-key "\C-cl" 'js-load-file-and-go)
-                              )))
+                              (semantic-mode t)
+                              (setq ac-sources (append '(ac-source-semantic) ac-sources))
+                              ))
+  (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
+
+;; Custom Themes
+(add-to-list 'custom-theme-load-path (expand-file-name "~/emacs/site-lisp/themes/"))
