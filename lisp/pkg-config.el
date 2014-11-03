@@ -51,8 +51,7 @@
                            (file-name-sans-extension (or buffer-file-name "C-BUFFER")))))))
 
 
-(add-hook 'haskell-mode-hook
-          (turn-on-haskell-simple-indent))
+(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
 
 (defun my:add-semantic-to-autocomplate ()
   (add-to-list 'ac-sources 'ac-source-semantic))
