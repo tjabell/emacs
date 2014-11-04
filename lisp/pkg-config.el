@@ -232,3 +232,12 @@
 
 ;; Custom Themes
 (add-to-list 'custom-theme-load-path (expand-file-name "~/emacs/site-lisp/themes/"))
+
+;;; Ansi colors in compile buffer
+;;; From: http://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-messing-up-emacs-compilation-buffer
+(when (require 'ansi-color nil t)
+  (defun colorize-compilation-buffer ()
+    (toggle-read-only)
+    (ansi-color-apply-on-region (point-min) (point-max))
+    (toggle-read-only))
+  (add-hook 'compilation-filter-hook 'colorize-compilation-buffer))
