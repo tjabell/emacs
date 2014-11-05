@@ -1,8 +1,16 @@
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 (menu-bar-mode 0)
-(setq make-backup-files nil)
 (setq initial-scratch-message "")
+
+;;; Backup settings
+(setq
+ make-backup-files t
+ backup-by-copying t
+ backup-directory-alist '(("." . "~/.saves"))
+ delete-old-versions t
+ auto-save-mode nil
+ auto-save-file-name-transforms '((".*" temporary-file-directory t)))
 
 (if (or (eq system-type 'windows-nt)
         (eq system-type 'cygwin))
@@ -20,6 +28,9 @@
 (set-register ?b '(file . "~/books_learning"))
 (set-register ?h '(file . "~/"))
 
+(if (or (eq system-type 'windows-nt)
+        (eq system-type 'cygwin)
+        (set-register ?s '(file . "c:\\source")))
 
 (if (or (eq system-type 'gnu/linux))
     (add-to-list 'default-frame-alist

@@ -23,6 +23,18 @@
 (setq org-default-notes-file (concat org-directory "/notes.org"))
 (define-key global-map (kbd "C-c c")  'org-capture)
 
+(setq org-capture-templates
+      '(("j" "Journal" entry (file+datetree "~/org/journal.org")
+         "* %?\nEntered on %U\n %i\n %a")
+        ("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
+         "* TODO %?\n %i\n %a")))
+
+(when (require 'org-journal nil t)
+  (setq org-journal-dir (concat org-directory "/journal/")))
+
+(setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
+
+(add-to-list 'org-agenda-files "/home/trevor/org/journal/")
 ;; End Org mode
 
 (when (require 'uniquify nil t)

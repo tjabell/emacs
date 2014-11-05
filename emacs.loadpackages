@@ -44,6 +44,7 @@
         (install 'web-mode)
         (install 'js-comint)        
         (install 'csv-mode)
+        (install 'org-journal)
         (if (or (eq system-type 'windows-nt)
                 (eq system-type 'cygwin))
             (progn
