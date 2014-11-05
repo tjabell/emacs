@@ -3,7 +3,7 @@
 (menu-bar-mode 0)
 (setq initial-scratch-message "")
 
-;;; Backup settings
+;; Backup settings				
 (setq
  make-backup-files t
  backup-by-copying t
@@ -30,7 +30,8 @@
 
 (if (or (eq system-type 'windows-nt)
         (eq system-type 'cygwin)
-        (set-register ?s '(file . "c:\\source")))
+    (set-register ?s '(file . "c:\\source")))
+    nil)
 
 (if (or (eq system-type 'gnu/linux))
     (add-to-list 'default-frame-alist
