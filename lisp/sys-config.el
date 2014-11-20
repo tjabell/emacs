@@ -5,12 +5,12 @@
 
 ;; Backup settings				
 (setq
- make-backup-files t
- backup-by-copying t
- backup-directory-alist '(("." . "~/.saves"))
- delete-old-versions t
- auto-save-mode nil
- auto-save-file-name-transforms '((".*" temporary-file-directory t)))
+make-backup-files t
+backup-by-copying t
+backup-directory-alist '(("." . "~/.saves"))
+delete-old-versions t
+auto-save-mode nil
+auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
 (if (or (eq system-type 'windows-nt)
         (eq system-type 'cygwin))
@@ -33,9 +33,9 @@
     (set-register ?s '(file . "c:\\source")))
     nil)
 
-(if (or (eq system-type 'gnu/linux))
-    (add-to-list 'default-frame-alist
-                 '(font . "Inconsolata 9")))
+;(if (or (eq system-type 'gnu/linux))
+;    (add-to-list 'default-frame-alist
+;                 '(font . "Inconsolata 9")))
 
 
 (add-to-list 'auto-mode-alist '(".emacs.loadpackages" . emacs-lisp-mode))
