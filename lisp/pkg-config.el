@@ -103,7 +103,7 @@
                                   (show-paren-mode)))
 
     (add-hook 'python-mode-hook (lambda ()
-                                  (auto-complete-mode 1)))))
+                                  (company-mode)))))
 
 (when (require 'paredit nil t)
   (add-hook 'emacs-lisp-mode-hook (lambda ()
