@@ -1,4 +1,5 @@
 (global-ede-mode 1)
+(projectile-global-mode)
 
 ;;; Semantic
 (semantic-mode t)
@@ -71,6 +72,8 @@
 (add-hook 'c-mode-common-hook
           'my:add-semantic-to-autocomplate)
 
+
+
 (when (require 'flymake-google-cpplint nil t)
 ;;; remember to install google-lint.py (pip install cpplint)
   (progn
@@ -136,12 +139,36 @@
 
 (when (require 'virtualenv nil t))
 
-(when (require 'csharp-mode nil t)
-  (add-hook 'csharp-mode-hook 'auto-revert-mode))
+(when (require 'company)
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 0))
 
-(when (require 'hidden-mode-line-mode nil t)
-  ;; (add-hook 'after-change-major-mode-hook 'hidden-mode-line-mode)
-)
+(defvar my-csharp-default-compiler nil)
+(setq my-csharp-default-compiler "mono @@FILE@@")
+(defun my-csharp-get-value-from-comments (marker-string line-limit)
+  my-csharp-default-compiler)
+
+(defun my:ac-csharp-init ()
+  (eval-after-load 'company
+    '(add-to-list 'company-backends 'company-omnisharp))
+  (auto-complete-mode 0)
+  (company-mode)
+  (omnisharp-mode)
+  (auto-revert-mode)
+  (if my-csharp-default-compiler
+      (progn
+        (fset 'orig-csharp-get-value-from-comments
+              (symbol-function 'csharp-get-value-from-comments))
+        (fset 'csharp-get-value-from-comments
+              (symbol-function 'my-csharp-get-value-from-comments)))
+    (flymake-mode)))
+
+(when (require 'csharp-mode nil t)
+  (add-hook 'csharp-mode-hook #'my:ac-csharp-init))
+
+;; (when (require 'hidden-mode-line-mode nil t)
+;;   (add-hook 'after-change-major-mode-hook 'hidden-mode-line-mode)
+;; )
 
 (when (require 'google-c-style nil t)
   (add-hook 'c-mode-common-hook 'google-set-c-style)
@@ -253,3 +280,4 @@
     (ansi-color-apply-on-region (point-min) (point-max))
     (toggle-read-only))
   (add-hook 'compilation-filter-hook 'colorize-compilation-buffer))
+

@@ -3,7 +3,7 @@
 (if (>= emacs-major-version 24)
     (progn ;; Add a larger package list
       (if (or (not (boundp 'package-archive-contents)) (not package-archive-contents))
-          (progn 
+          (progn
             (package-initialize)
             (package-refresh-contents)))
       (cl-labels ((install (package)
@@ -25,14 +25,13 @@
         (install 'smart-mode-line)
         (install 'maxframe)
         (install 'ace-jump-mode)
-        (install 'pcre2el)        
+        (install 'pcre2el)
         (install 'key-chord)
         (install 'visual-regexp)
         (install 'visual-regexp-steroids)
-        (install 'paradox)
         (install 'projectile)
         (install 'helm-projectile)
-        (install 'flx-ido)        
+        (install 'flx-ido)
         (install 'jedi)
         (install 'elpy)
         (install 'multiple-cursors)
@@ -42,10 +41,11 @@
         (install 'emmet-mode)
         (install 'ac-emmet)
         (install 'web-mode)
-        (install 'js-comint)        
+        (install 'js-comint)
         (install 'csv-mode)
         (install 'org-journal)
-        (install 'company)        
+        (install 'company)
+        (install 'omnisharp)
         (if (or (eq system-type 'windows-nt)
                 (eq system-type 'cygwin))
             (progn
@@ -65,4 +65,3 @@
 (load-library "any-ini-mode")
 
 (autoload 'refill-mode "refill" "Refill minor mode." t)
-
