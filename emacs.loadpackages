@@ -64,5 +64,6 @@
 (load-library "hidden-mode-line-mode")
 (load-library "smooth-scroll")
 (load-library "any-ini-mode")
+(load-library "pymacs")
 
 (autoload 'refill-mode "refill" "Refill minor mode." t)

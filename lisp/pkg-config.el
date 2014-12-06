@@ -127,9 +127,9 @@
                "~/emacs/data/snippets/"
                (yas/global-mode 1)))
 
-(when (require 'pymacs nil t)
-  (setenv "PYMACS_PYTHON" "python2")
-  (pymacs-load "ropemacs" "rope-" t))
+;; (when (require 'pymacs nil t)
+;;   (setenv "PYMACS_PYTHON" "python2")
+;;   (pymacs-load "ropemacs" "rope-" t))
 
 (when (require 'nose nil t)
   (defalias 'no 'nosetests-one)
