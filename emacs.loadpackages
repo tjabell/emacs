@@ -46,6 +46,7 @@
         (install 'org-journal)
         (install 'company)
         (install 'omnisharp)
+        (install 'evil)
         (if (or (eq system-type 'windows-nt)
                 (eq system-type 'cygwin))
             (progn
