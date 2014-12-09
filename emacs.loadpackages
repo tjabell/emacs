@@ -65,5 +65,6 @@
 (load-library "smooth-scroll")
 (load-library "any-ini-mode")
 (load-library "pymacs")
+(load-library "ediff-extension")
 
 (autoload 'refill-mode "refill" "Refill minor mode." t)
