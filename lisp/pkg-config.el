@@ -148,13 +148,16 @@
 (defun my-csharp-get-value-from-comments (marker-string line-limit)
   my-csharp-default-compiler)
 
-(defun my:ac-csharp-init ()
+(defun my:csharp-init ()
   (eval-after-load 'company
     '(add-to-list 'company-backends 'company-omnisharp))
   (auto-complete-mode 0)
   (company-mode)
   (omnisharp-mode)
   (auto-revert-mode)
+  (setq indent-tabs-mode t)
+  (setq c-basic-offset 4)
+  (setq tab-width 2)
   (if my-csharp-default-compiler
       (progn
         (fset 'orig-csharp-get-value-from-comments
@@ -164,7 +167,7 @@
     (flymake-mode)))
 
 (when (require 'csharp-mode nil t)
-  (add-hook 'csharp-mode-hook #'my:ac-csharp-init))
+  (add-hook 'csharp-mode-hook #'my:csharp-init))
 
 ;; (when (require 'hidden-mode-line-mode nil t)
 ;;   (add-hook 'after-change-major-mode-hook 'hidden-mode-line-mode)
