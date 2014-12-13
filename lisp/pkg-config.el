@@ -154,6 +154,7 @@
   (auto-complete-mode 0)
   (company-mode)
   (omnisharp-mode)
+  (hs-minor-mode 1)
   (auto-revert-mode)
   (setq indent-tabs-mode t)
   (setq c-basic-offset 4)
