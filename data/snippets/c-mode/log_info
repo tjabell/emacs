@@ -1,6 +1,5 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# name: cw
-# key: cw
+# name: log_info
+# key: li
 # --
-Console.WriteLine("$1");
-$0
+log_info("$1",$2);$0

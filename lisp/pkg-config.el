@@ -156,9 +156,7 @@
   (omnisharp-mode)
   (hs-minor-mode 1)
   (auto-revert-mode)
-  (setq indent-tabs-mode t)
-  (setq c-basic-offset 4)
-  (setq tab-width 2)
+  (linum-mode)
   (if my-csharp-default-compiler
       (progn
         (fset 'orig-csharp-get-value-from-comments
