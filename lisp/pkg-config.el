@@ -35,7 +35,6 @@
 
 (setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
 
-(add-to-list 'org-agenda-files "/home/trevor/org/journal/")
 ;; End Org mode
 
 (when (require 'uniquify nil t)
@@ -49,17 +48,22 @@
 (add-hook 'hs-minor-mode-hook
           (lambda ()   (global-set-key (kbd "C-x C-o") 'hs-toggle-hiding)))
 
+(defun my:python-mode ()
+  (hs-minor-mode 1)
+  (setq python-indent-offset 4)
+  (auto-complete-mode 0)
+  (fset 'hide-next
+        "\C-e\C-x\C-o\C-n")
+  (elpy-mode))
+
 (add-hook 'python-mode-hook
-          (lambda ()
-            (hs-minor-mode 1)
-            (fset 'hide-next
-                  "\C-e\C-x\C-o\C-n")))
+          'my:python-mode)
 
 (add-hook 'c-mode-common-hook
           (lambda ()
             (unless (or (file-exists-p "makefile")
-		(file-exists-p "Makefile"))
-      (set (make-local-variable 'compile-command)
+                        (file-exists-p "Makefile"))
+              (set (make-local-variable 'compile-command)
                    (concat "make -k CXXFLAGS='-std=c++11' "
                            (file-name-sans-extension (or buffer-file-name "C-BUFFER")))))))
 
@@ -103,10 +107,7 @@
                                   (auto-complete-mode 1)))
     (add-hook 'emacs-lisp-mode-hook (lambda ()
                                   (auto-complete-mode 1)
-                                  (show-paren-mode)))
-
-    (add-hook 'python-mode-hook (lambda ()
-                                  (company-mode)))))
+                                  (show-paren-mode)))))
 
 (when (require 'paredit nil t)
   (add-hook 'emacs-lisp-mode-hook (lambda ()
@@ -226,6 +227,10 @@
   (key-chord-define-global "qb" 'previous-buffer)
   (key-chord-mode 1))
 
+(when (require 'xah-lee nil t)
+  (key-chord-define-global "qr" 'xah-next-user-buffer)
+  (key-chord-define-global "qn" 'xah-previous-user-buffer))
+
 (if (eq system-type 'gnu/linux)
     (setq org-agenda-files '("/home/trevor/projects/management/management.org"))
   nil)
@@ -283,3 +288,5 @@
     (toggle-read-only))
   (add-hook 'compilation-filter-hook 'colorize-compilation-buffer))
 
+
+(load-theme 'gotham t)
