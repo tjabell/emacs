@@ -1,18 +1,23 @@
-(global-ede-mode 1)
-(projectile-global-mode)
-
-;;; Semantic
-(semantic-mode t)
-(global-semantic-idle-completions-mode t)
-(global-semantic-decoration-mode t)
-(global-semantic-highlight-func-mode t)
-(global-semantic-show-unmatched-syntax-mode t)
-;;; End Semantic
-
-;;; Org Mode
+(require 'google-c-style)
 (require 'org-install)
 (require 'ob-tangle)
+(require 'org-journal)
+(require 'uniquify)
+(require 'dired-x)
+(require 'flymake-google-cpplint)
+(require 'paredit)
+(require 'emmet-mode)
+(require 'js-comint)
+(require 'sgml-mode)
+(require 'web-mode)
+(require 'yasnippet)
+(require 'company)
+(require 'helm)
+(require 'key-chord)
+(require 'smart-mode-line)
+(require 'ace-jump-mode)
 
+;;; Org Mode
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((ruby . t)
@@ -35,86 +40,53 @@
 
 (setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
 
+(if (eq system-type 'gnu/linux)
+    (setq org-agenda-files '("/home/trevor/projects/management/management.org"))
+  nil)
+
 ;; End Org mode
 
 (when (require 'uniquify nil t)
   (setq
    uniquify-buffer-name-style 'post-forward
    uniquify-separator ":"))
+
 (when (require 'dired-x nil t))
-
-(add-hook 'scheme-mode-hook 'paredit-mode)
-
-(add-hook 'hs-minor-mode-hook
-          (lambda ()   (global-set-key (kbd "C-x C-o") 'hs-toggle-hiding)))
-
-(defun my:python-mode ()
-  (hs-minor-mode 1)
-  (setq python-indent-offset 4)
-  (auto-complete-mode 0)
-  (fset 'hide-next
-        "\C-e\C-x\C-o\C-n")
-  (elpy-mode))
-
-(add-hook 'python-mode-hook
-          'my:python-mode)
-
-(add-hook 'c-mode-common-hook
-          (lambda ()
-            (unless (or (file-exists-p "makefile")
-                        (file-exists-p "Makefile"))
-              (set (make-local-variable 'compile-command)
-                   (concat "make -k CXXFLAGS='-std=c++11' "
-                           (file-name-sans-extension (or buffer-file-name "C-BUFFER")))))))
-
-
-(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
-
-(defun my:add-semantic-to-autocomplate ()
-  (add-to-list 'ac-sources 'ac-source-semantic))
-
-(add-hook 'c-mode-common-hook
-          'my:add-semantic-to-autocomplate)
-
-
 
 (when (require 'flymake-google-cpplint nil t)
 ;;; remember to install google-lint.py (pip install cpplint)
-  (progn
-    (defun my:flymake-google-init ()
-      (require 'flymake-google-cpplint)
-      (custom-set-variables
-       '(flymake-google-cpplint-command "/usr/bin/cpplint"))
-      (flymake-google-cpplint-load))
-    (add-hook 'c++-mode-hook 'my:flymake-google-init)
-    (add-hook 'c-mode-hook 'my:flymake-google-init)))
-
-(defun my:ac-c-header-init ()
-  (require 'auto-complete-c-headers)
-  (add-to-list 'ac-sources 'ac-source-c-headers)
-  (add-to-list 'achead:include-directories '("/usr/include" "/usr/lib/include")))
-
-(add-hook 'c++-mode-hook
-          (lambda ()
-            (semantic-mode)
-            (my:ac-c-header-init)))
-
-(when (require 'auto-complete nil t)
-  (progn
-    (require 'auto-complete-config)
-    (ac-config-default)
-    (add-hook 'c-mode-common-hook (lambda ()
-                                  (auto-complete-mode 1)))
-    (add-hook 'emacs-lisp-mode-hook (lambda ()
-                                  (auto-complete-mode 1)
-                                  (show-paren-mode)))))
+  (custom-set-variables
+   '(flymake-google-cpplint-command "/usr/bin/cpplint")))
 
 (when (require 'paredit nil t)
-  (add-hook 'emacs-lisp-mode-hook (lambda ()
-                                    (paredit-mode))))
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'ac-sources 'ac-emmet)
+  (add-hook 'web-mode-hook 'emmet-mode))
+
+(when (require 'emmet-mode)
+  (define-key web-mode-map (kbd "C-/") 'emmet-expand-line))
+
+(when (require 'js-comint nil t)
+  ;; From here: http://stackoverflow.com/questions/13862471/using-node-js-with-js-comint-in-emacs
+  (setq inferior-js-mode-hook
+        (lambda ()
+          ;; We like nice colors
+          (ansi-color-for-comint-mode-on)
+          ;; Deal with some prompt nonsense
+          (add-to-list
+           'comint-preoutput-filter-functions
+           (lambda (output)
+             (replace-regexp-in-string "\033\\[[0-9]+[A-Z]" "" output))))))
 
 (when (require 'powershell-mode nil t)
   (add-to-list 'auto-mode-alist '("\\.ps1" . powershell-mode)))
+
+(when (require 'sgml-mode nil t)
+  (add-hook 'html-mode-hook 'emmet-mode)
+  (define-key html-mode-map (kbd "C-/") 'emmet-expand-line))
+
+(when (require 'web-mode nil t)
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
 
 (when (and (require 'e2wm nil t)
            (require 'edbi nil t))
@@ -125,8 +97,7 @@
     (setq yas/prompt-functions '(yas/dropdown-prompt
                                  yas/ido-prompt)))
   (add-to-list 'yas-snippet-dirs
-               "~/emacs/data/snippets/"
-               (yas/global-mode 1)))
+               "~/emacs/data/snippets/"))
 
 ;; (when (require 'pymacs nil t)
 ;;   (setenv "PYMACS_PYTHON" "python2")
@@ -138,44 +109,9 @@
   (defalias 'np 'nosetests-pdb-one)
   (defalias 'nm 'nosetests-module))
 
-(when (require 'virtualenv nil t))
-
 (when (require 'company)
   (setq company-idle-delay 0)
-  (setq company-minimum-prefix-length 0))
-
-(defvar my-csharp-default-compiler nil)
-(setq my-csharp-default-compiler "mono @@FILE@@")
-(defun my-csharp-get-value-from-comments (marker-string line-limit)
-  my-csharp-default-compiler)
-
-(defun my:csharp-init ()
-  (eval-after-load 'company
-    '(add-to-list 'company-backends 'company-omnisharp))
-  (auto-complete-mode 0)
-  (company-mode)
-  (omnisharp-mode)
-  (hs-minor-mode 1)
-  (auto-revert-mode)
-  (linum-mode)
-  (if my-csharp-default-compiler
-      (progn
-        (fset 'orig-csharp-get-value-from-comments
-              (symbol-function 'csharp-get-value-from-comments))
-        (fset 'csharp-get-value-from-comments
-              (symbol-function 'my-csharp-get-value-from-comments)))
-    (flymake-mode)))
-
-(when (require 'csharp-mode nil t)
-  (add-hook 'csharp-mode-hook #'my:csharp-init))
-
-;; (when (require 'hidden-mode-line-mode nil t)
-;;   (add-hook 'after-change-major-mode-hook 'hidden-mode-line-mode)
-;; )
-
-(when (require 'google-c-style nil t)
-  (add-hook 'c-mode-common-hook 'google-set-c-style)
-  (add-hook 'c-mode-common-hook 'google-make-newline-indent))
+  (setq company-minimum-prefix-length 1))
 
 (when (require 'smart-mode-line nil t)
   (setq sml/theme 'respectful)
@@ -194,7 +130,6 @@
 
 (when (require 'helm nil t)
   (global-set-key (kbd "C-c h") 'helm-mini)
-  (helm-mode 1)
   (when (require 'projectile nil t)
     (require 'helm-projectile nil t)
     (global-set-key (kbd "C-c h") 'helm-projectile)
@@ -225,59 +160,9 @@
   (key-chord-define-global "qe" 'eval-defun)
   (key-chord-define-global "qj" 'eval-print-last-sexp)
   (key-chord-define-global "qb" 'previous-buffer)
-  (key-chord-mode 1))
-
-(when (require 'xah-lee nil t)
-  (key-chord-define-global "qr" 'xah-next-user-buffer)
-  (key-chord-define-global "qn" 'xah-previous-user-buffer))
-
-(if (eq system-type 'gnu/linux)
-    (setq org-agenda-files '("/home/trevor/projects/management/management.org"))
-  nil)
-
-(add-to-list 'auto-mode-alist '("mutt" . mail-mode))
-
-(when (require 'emmet-mode nil t)
-  (add-to-list 'ac-sources 'ac-emmet)
-  (when (require 'sgml-mode nil t)
-      (add-hook 'html-mode-hook 'emmet-mode)
-      (define-key html-mode-map (kbd "C-/") 'emmet-expand-line)))
-
-(when (require 'web-mode nil t)
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (add-to-list 'ac-sources 'ac-emmet)
-  (add-hook 'web-mode-hook 'emmet-mode)
-  (when (require 'yasnippet nil t)
-    (add-hook 'web-mode-hook #'(lambda ()  (yas-activate-extra-mode 'html-mode))))
-  (define-key web-mode-map (kbd "C-/") 'emmet-expand-line))
-
-(when (require 'js-comint nil t)
-  ;; From here: http://stackoverflow.com/questions/13862471/using-node-js-with-js-comint-in-emacs
-  (setq inferior-js-mode-hook
-        (lambda ()
-          ;; We like nice colors
-          (ansi-color-for-comint-mode-on)
-          ;; Deal with some prompt nonsense
-          (add-to-list
-           'comint-preoutput-filter-functions
-           (lambda (output)
-             (replace-regexp-in-string "\033\\[[0-9]+[A-Z]" "" output))))))
-
-
-(when (require 'js2-mode nil t)
-  ;; From js2-comint file
-  (add-hook 'js2-mode-hook '(lambda () 
-                              (local-set-key "\C-x\C-e" 'js-send-last-sexp)
-                              (local-set-key "\C-\M-x" 'js-send-last-sexp-and-go)
-                              (local-set-key "\C-cb" 'js-send-buffer)
-                              (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
-                              (local-set-key "\C-cl" 'js-load-file-and-go)
-                              (semantic-mode t)
-                              (setq ac-sources (append '(ac-source-semantic) ac-sources))))
-  (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
-
-;; Custom Themes
-(add-to-list 'custom-theme-load-path (expand-file-name "~/emacs/site-lisp/themes/"))
+  (when (require 'xah-lee nil t)
+    (key-chord-define-global "qr" 'xah-next-user-buffer)
+    (key-chord-define-global "qn" 'xah-previous-user-buffer)))
 
 ;;; Ansi colors in compile buffer
 ;;; From: http://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-messing-up-emacs-compilation-buffer
@@ -285,8 +170,126 @@
   (defun colorize-compilation-buffer ()
     (toggle-read-only)
     (ansi-color-apply-on-region (point-min) (point-max))
-    (toggle-read-only))
-  (add-hook 'compilation-filter-hook 'colorize-compilation-buffer))
+    (toggle-read-only)))
+
+(defun my:compilation-filter-init ()
+  (colorize-compilation-buffer))
+
+(defun my:emacs-lisp-mode-init ()
+  (paredit-mode))
+
+(defun my:js2-mode-init ()
+  (local-set-key "\C-x\C-e" 'js-send-last-sexp)
+  (local-set-key "\C-\M-x" 'js-send-last-sexp-and-go)
+  (local-set-key "\C-cb" 'js-send-buffer)
+  (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
+  (local-set-key "\C-cl" 'js-load-file-and-go)
+  (semantic-mode t)
+  (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
+
+(defun my:ac-c-header-init ()
+  (require 'auto-complete-c-headers)
+  (add-to-list 'ac-sources 'ac-source-c-headers)
+  (add-to-list 'achead:include-directories '("/usr/include" "/usr/lib/include")))
+
+(defun my:cpp-mode-init ()
+  (unless (or (file-exists-p "makefile")
+              (file-exists-p "Makefile"))
+    (set (make-local-variable 'compile-command)
+         (concat "make -k CXXFLAGS='-std=c++11' "
+                 (file-name-sans-extension (or buffer-file-name "C-BUFFER")))))
+  (semantic-mode))
+
+(defun my:python-mode-init ()
+  (hs-minor-mode 1)
+  (setq python-indent-offset 4)
+  (fset 'hide-next
+        "\C-e\C-x\C-o\C-n")
+  (elpy-mode))
+
+(defun my:c-mode-init ()
+  (google-make-newline-indent)
+  (google-set-c-style))
+
+(defun my:add-semantic-to-autocomplate ()
+  (add-to-list 'ac-sources 'ac-source-semantic))
+
+(defun my:web-mode-init ()
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (yas-activate-extra-mode 'html-mode))
+
+(defvar my-csharp-default-compiler nil)
+(setq my-csharp-default-compiler "mono @@FILE@@")
+(defun my-csharp-get-value-from-comments (marker-string line-limit)
+  my-csharp-default-compiler)
+
+(defun my:csharp-init ()
+  (eval-after-load 'company
+    '(add-to-list 'company-backends 'company-omnisharp))
+  (omnisharp-mode)
+  (hs-minor-mode 1)
+  (auto-revert-mode)
+  (linum-mode)
+  (if my-csharp-default-compiler
+      (progn
+        (fset 'orig-csharp-get-value-from-comments
+              (symbol-function 'csharp-get-value-from-comments))
+        (fset 'csharp-get-value-from-comments
+              (symbol-function 'my-csharp-get-value-from-comments)))
+    (flymake-mode)))
+
+(add-hook 'compilation-filter-hook
+          #'my:compilation-filter-init)
+
+(add-hook 'csharp-mode-hook
+          #'my:csharp-init)
+
+(add-hook 'web-mode-hook
+          #'my:web-mode-init)
+
+(add-hook 'python-mode-hook
+          #'my:python-mode-init)
+
+(add-hook 'c-mode-common-hook
+          #'my:c-mode-init)
+
+(add-hook 'c++-mode-hook
+          #'my:cpp-mode-init
+          #'my:flymake-google-init)
+
+(add-hook 'c-mode-hook
+          #'my:flymake-google-init)
+
+(add-hook 'haskell-mode-hook
+          'turn-on-haskell-simple-indent)
+
+(add-hook 'scheme-mode-hook
+          'paredit-mode)
+
+(add-hook 'hs-minor-mode-hook
+          (lambda ()   (global-set-key (kbd "C-x C-o") 'hs-toggle-hiding)))
+
+(add-hook 'js2-mode-hook
+          'my:js2-mode-init)
+
+(add-hook 'emacs-lisp-mode-hook
+          'my:emacs-lisp-mode-init)
 
 
-(load-theme 'gotham t)
+(add-to-list 'auto-mode-alist '("mutt" . mail-mode))
+
+(auto-complete-mode 0)
+(key-chord-mode 1)
+(global-ede-mode 1)
+(projectile-global-mode)
+(global-company-mode)
+(yas/global-mode 1)
+(helm-mode 1)
+
+;;; Semantic
+(semantic-mode t)
+(global-semantic-idle-completions-mode t)
+(global-semantic-decoration-mode t)
+(global-semantic-highlight-func-mode t)
+(global-semantic-show-unmatched-syntax-mode t)
+;;; End Semantic
