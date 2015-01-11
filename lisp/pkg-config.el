@@ -16,6 +16,7 @@
 (require 'key-chord)
 (require 'smart-mode-line)
 (require 'ace-jump-mode)
+(require 'company-c-headers)
 
 ;;; Org Mode
 (org-babel-do-load-languages
@@ -222,6 +223,7 @@
 
 (defvar my-csharp-default-compiler nil)
 (setq my-csharp-default-compiler "mono @@FILE@@")
+
 (defun my-csharp-get-value-from-comments (marker-string line-limit)
   my-csharp-default-compiler)
 
@@ -256,11 +258,7 @@
           #'my:c-mode-init)
 
 (add-hook 'c++-mode-hook
-          #'my:cpp-mode-init
-          #'my:flymake-google-init)
-
-(add-hook 'c-mode-hook
-          #'my:flymake-google-init)
+          #'my:cpp-mode-init)
 
 (add-hook 'haskell-mode-hook
           'turn-on-haskell-simple-indent)
