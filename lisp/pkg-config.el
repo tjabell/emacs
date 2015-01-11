@@ -172,6 +172,8 @@
     (ansi-color-apply-on-region (point-min) (point-max))
     (toggle-read-only)))
 
+(add-to-list 'auto-mode-alist '("mutt" . mail-mode))
+
 (defun my:compilation-filter-init ()
   (colorize-compilation-buffer))
 
@@ -274,9 +276,6 @@
 
 (add-hook 'emacs-lisp-mode-hook
           'my:emacs-lisp-mode-init)
-
-
-(add-to-list 'auto-mode-alist '("mutt" . mail-mode))
 
 (auto-complete-mode 0)
 (key-chord-mode 1)
