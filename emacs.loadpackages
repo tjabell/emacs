@@ -46,6 +46,7 @@
         (install 'company)
         (install 'omnisharp)
         (install 'evil)
+        (install 'geiser)
         (if (or (eq system-type 'windows-nt)
                 (eq system-type 'cygwin))
             (progn

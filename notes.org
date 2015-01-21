@@ -6,3 +6,9 @@
 #+begin_src elisp
   (map 'string '(lambda (x) (insert (format "%s\n" x) )) (font-family-list))
 #+end_src
+
+* Debugging
+** decorating function with edebug
+*** C-u C-M-X
+*** Disabling - C-M-X
+
