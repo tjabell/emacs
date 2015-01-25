@@ -44,6 +44,7 @@
         (install 'csv-mode)
         (install 'org-journal)
         (install 'company)
+        (install 'company-c-headers)
         (install 'omnisharp)
         (install 'evil)
         (install 'geiser)
