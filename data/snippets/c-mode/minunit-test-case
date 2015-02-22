@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: minunit-test-case
+# key: tc
+# binding: direct-keybinding
+# --
+char *$1()
+{
+  $0
+  return NULL;
+}
