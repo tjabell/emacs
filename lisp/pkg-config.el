@@ -45,6 +45,7 @@
     (setq org-agenda-files '("/home/trevor/projects/management/management.org"))
   nil)
 
+(setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
 ;; End Org mode
 
 (when (require 'uniquify nil t)

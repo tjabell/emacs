@@ -46,3 +46,4 @@
 (global-set-key (kbd "C-<tab>") 'next-buffer)
 (global-set-key (kbd "C-<iso-lefttab>") 'previous-buffer)
 
+(global-set-key (kbd "C-c o") '(lambda () (interactive) (find-file "~/org/notes.org")))
