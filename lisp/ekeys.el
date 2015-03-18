@@ -47,3 +47,5 @@
 (global-set-key (kbd "C-<iso-lefttab>") 'previous-buffer)
 
 (global-set-key (kbd "C-c o") '(lambda () (interactive) (find-file "~/org/notes.org")))
+
+(global-set-key (kbd "M-p") 'ace-window)

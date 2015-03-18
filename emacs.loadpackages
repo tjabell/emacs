@@ -24,6 +24,7 @@
         (install 'smart-mode-line)
         (install 'maxframe)
         (install 'ace-jump-mode)
+        (install 'ace-window)
         (install 'pcre2el)
         (install 'key-chord)
         (install 'visual-regexp)

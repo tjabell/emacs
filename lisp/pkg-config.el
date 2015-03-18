@@ -16,6 +16,7 @@
 (require 'key-chord)
 (require 'smart-mode-line)
 (require 'ace-jump-mode)
+(require 'ace-window)
 (require 'company-c-headers)
 
 ;;; Org Mode
