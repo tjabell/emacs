@@ -68,5 +68,6 @@
 (load-library "pymacs")
 (load-library "ediff-extension")
 (load-library "xah-lee")
+(load-library "zap-up-to-char")
 
 (autoload 'refill-mode "refill" "Refill minor mode." t)
