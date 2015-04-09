@@ -27,7 +27,8 @@
    (emacs-lisp . t)
    (python . t)
    (perl . t)
-   (haskell . t)))
+   (haskell . t)
+   (C . t)))
 
 (setq org-default-notes-file (concat org-directory "/notes.org"))
 (define-key global-map (kbd "C-c c")  'org-capture)
