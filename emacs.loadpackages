@@ -69,5 +69,6 @@
 (load-library "ediff-extension")
 (load-library "xah-lee")
 (load-library "zap-up-to-char")
+(load-library "endless")
 
 (autoload 'refill-mode "refill" "Refill minor mode." t)
