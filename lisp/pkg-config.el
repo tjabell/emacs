@@ -49,6 +49,10 @@
   nil)
 
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
+
+(setq org-babel-default-header-args:C
+      (cons '(:tangle . "yes")
+            (assq-delete-all :tangle org-babel-default-header-args)))
 ;; End Org mode
 
 (when (require 'uniquify nil t)

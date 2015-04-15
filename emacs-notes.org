@@ -11,4 +11,13 @@
 ** decorating function with edebug
 *** C-u C-M-X
 *** Disabling - C-M-X
+* Misc
+;; this will make the symbol my-nasty-variable's value void
+(makunbound 'my-nasty-variable)
+;; this will make the symbol my-nasty-function's
+;; function definition void
+(fmakunbound 'my-nasty-function)
 
+* Projectile
+
+** Invalidate cache before finding file: C-u C-c p f
