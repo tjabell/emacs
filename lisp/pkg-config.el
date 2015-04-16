@@ -181,6 +181,9 @@
     (ansi-color-apply-on-region (point-min) (point-max))
     (toggle-read-only)))
 
+(when (require 'ebuild-mode nil t)
+  (add-to-list 'auto-mode-alist '(".ebuild" . ebuild-mode)))
+
 (add-to-list 'auto-mode-alist '("mutt" . mail-mode))
 
 (defun my:compilation-filter-init ()

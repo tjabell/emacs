@@ -38,7 +38,6 @@
 ;                 '(font . "Inconsolata 9")))
 
 (add-to-list 'auto-mode-alist '("emacs.loadpackages" . emacs-lisp-mode))
-(add-to-list 'auto-mode-alist '(".ebuild" . sh-mode))
 
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
