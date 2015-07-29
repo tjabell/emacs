@@ -120,7 +120,7 @@
 
 (when (require 'company)
   (setq company-idle-delay 0)
-  (setq company-minimum-prefix-length 1))
+  (setq company-minimum-prefix-length 3))
 
 (when (require 'smart-mode-line nil t)
   (setq sml/theme 'respectful)

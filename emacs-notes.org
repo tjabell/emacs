@@ -1,8 +1,8 @@
-* Unsafe directory in server start
+* Windows: Unsafe directory in server start
 ** Happened on windows. Solution was to change the ~/.emacs.d/server directory ownership to your user, instead of the administrators group.  Security -> Advanced -> Ownership or something like that.
 
 * Font notes
-** list all the font families available on the machien currently
+** list all the font families available on the machine currently
 #+begin_src elisp
   (map 'string '(lambda (x) (insert (format "%s\n" x) )) (font-family-list))
 #+end_src
@@ -21,3 +21,5 @@
 * Projectile
 
 ** Invalidate cache before finding file: C-u C-c p f
+* Set Buffer coding
+** (set-buffer-file-coding-system)
