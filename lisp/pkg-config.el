@@ -69,7 +69,6 @@
 
 (when (require 'paredit nil t)
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (add-to-list 'ac-sources 'ac-emmet)
   (add-hook 'web-mode-hook 'emmet-mode))
 
 (when (require 'emmet-mode)
@@ -203,7 +202,6 @@
 
 (defun my:ac-c-header-init ()
   (require 'auto-complete-c-headers)
-  (add-to-list 'ac-sources 'ac-source-c-headers)
   (add-to-list 'achead:include-directories '("/usr/include" "/usr/lib/include")))
 
 (defun my:cpp-mode-init ()
@@ -224,9 +222,6 @@
 (defun my:c-mode-init ()
   (google-make-newline-indent)
   (google-set-c-style))
-
-(defun my:add-semantic-to-autocomplate ()
-  (add-to-list 'ac-sources 'ac-source-semantic))
 
 (defun my:web-mode-init ()
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
