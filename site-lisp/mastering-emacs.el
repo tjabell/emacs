@@ -13,7 +13,7 @@ This is the same as using \\[set-mark-command] with the prefix argument."
   (interactive)
   (set-mark-command 1))
 
-(global-set-key (kbd "M-`") 'jump-to-mark)
+(global-set-key (kbd "M-,") 'jump-to-mark)
  
 
 (defun kill-this-buffer () 
@@ -33,4 +33,3 @@ This is the same as using \\[set-mark-command] with the prefix argument."
   (auto-complete-mode 1))
 
 (add-hook 'ielm-mode-hook 'ielm-auto-complete)
-
