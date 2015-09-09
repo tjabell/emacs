@@ -14,7 +14,6 @@
     magit
     edit-server
     edit-server-htmlize
-    auto-complete-c-headers
     iedit
     flymake-google-cpplint
     flymake-cursor
@@ -37,7 +36,6 @@
     haskell-mode
     skewer-mode
     emmet-mode
-    ac-emmet
     web-mode
     js-comint
     csv-mode

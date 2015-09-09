@@ -1,3 +1,4 @@
+Emacs Notes
 * Windows: Unsafe directory in server start
 ** Happened on windows. Solution was to change the ~/.emacs.d/server directory ownership to your user, instead of the administrators group.  Security -> Advanced -> Ownership or something like that.
 
@@ -19,7 +20,15 @@
 (fmakunbound 'my-nasty-function)
 
 * Projectile
-
 ** Invalidate cache before finding file: C-u C-c p f
 * Set Buffer coding
 ** (set-buffer-file-coding-system)
+* Shell
+** Sending region to shell
+*** http://stackoverflow.com/questions/6286579/emacs-shell-mode-how-to-send-region-to-shell
+*** M-x append-to-buffer
+* Calc Mode
+** Angular Modes
+*** Radians: m r (calc-radians-mode)
+*** Degrees: m d
+*** HMS(?): m h
