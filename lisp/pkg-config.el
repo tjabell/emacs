@@ -67,8 +67,9 @@
   (custom-set-variables
    '(flymake-google-cpplint-command "/usr/bin/cpplint")))
 
+
+
 (when (require 'paredit nil t)
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
   (add-hook 'web-mode-hook 'emmet-mode))
 
 (when (require 'emmet-mode)
@@ -94,6 +95,7 @@
   (define-key html-mode-map (kbd "C-/") 'emmet-expand-line))
 
 (when (require 'web-mode nil t)
+  (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
 
 (when (and (require 'e2wm nil t)
@@ -294,5 +296,5 @@
 (global-semantic-idle-completions-mode t)
 (global-semantic-decoration-mode t)
 (global-semantic-highlight-func-mode t)
-(global-semantic-show-unmatched-syntax-mode t)
+(global-semantic-show-unmatched-syntax-mode 0)
 ;;; End Semantic
