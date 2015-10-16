@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: writehost
+# key: log
+# binding: direct-keybinding
+# --
+Write-Host $1
+$0

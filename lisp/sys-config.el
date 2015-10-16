@@ -54,4 +54,5 @@
 
 (require 'server)
 (unless (server-running-p)
+  (message "Starting server...")
   (server-start))
