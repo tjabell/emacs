@@ -51,3 +51,5 @@
 (global-set-key (kbd "M-p") 'ace-window)
 (global-set-key (kbd "C-s-z") 'zap-up-to-char)
 
+(global-set-key (kbd "C-S-o")
+                'my/insert-line-before)
