@@ -30,8 +30,10 @@
 		(global-set-key (kbd "s-d") 'e2wm:dp-edbi)
 		(global-set-key (kbd "s-c") 'e2wm:dp-code)))
 
+;;; Function keys
 (global-set-key (kbd "C-!") 'eshell-here)
 (global-set-key (kbd "<f1>") 'shell)
+(global-set-key (kbd "<f2>") '(lambda () (interactive) (switch-to-buffer "*scratch*")))
 (global-set-key (kbd "<f5>") 'compile)
 (global-set-key (kbd "<f6>") 'gud-gdb)
 
