@@ -1,0 +1,15 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: form-control
+# key: formControl
+# binding: direct-keybinding
+# --
+<div form-group>
+    <input id="$1"
+           name="$1"
+           data-ng-model="$2"
+           label="$3"
+           required=""
+           data-form-control=""
+           $4 />
+</div>
+$0
