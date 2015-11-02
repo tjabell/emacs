@@ -17,7 +17,7 @@
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
 
-;; Super + uppercase letter signifies a buffer/file
+;;; Super + uppercase letter signifies a buffer/file
 (global-set-key (kbd "s-S")                       ;; scratch
                 (lambda()(interactive)(switch-to-buffer "*scratch*")))
 (global-set-key (kbd "s-E")                       ;; .emacs
