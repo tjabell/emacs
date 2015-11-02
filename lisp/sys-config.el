@@ -33,12 +33,9 @@
     (set-register ?s '(file . "c:\\source")))
     nil)
 
-;(if (or (eq system-type 'gnu/linux))
-;    (add-to-list 'default-frame-alist
-;                 '(font . "Inconsolata 9")))
-
 (add-to-list 'auto-mode-alist '("emacs.loadpackages" . emacs-lisp-mode))
-(add-to-list 'auto-mode-alist '("Gruntfile" . js-mode))
+(add-to-list 'auto-mode-alist '("bashrc" . sh-mode))
+(add-to-list 'auto-mode-alist '("bashbootstrap" . sh-mode))
 
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
