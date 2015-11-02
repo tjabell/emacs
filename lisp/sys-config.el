@@ -38,7 +38,7 @@
 (add-to-list 'auto-mode-alist '("bashbootstrap" . sh-mode))
 
 (setq-default indent-tabs-mode nil)
-(setq-default tab-width 2)
+(setq-default tab-width 4)
 (put 'upcase-region 'disabled nil)
 (put 'narrow-to-page 'disabled nil)
 
