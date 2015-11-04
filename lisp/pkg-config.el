@@ -199,6 +199,7 @@
   (local-set-key "\C-cb" 'js-send-buffer)
   (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
   (local-set-key "\C-cl" 'js-load-file-and-go)
+  (local-set-key (kbd "C-c C-e") 'js2-next-error)
   (semantic-mode t)
   (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
 
@@ -250,6 +251,9 @@
               (symbol-function 'my-csharp-get-value-from-comments)))
     (flymake-mode)))
 
+(defun my:term-mode-hook ()
+  (setq yas-dont-activate t))
+
 (add-hook 'compilation-filter-hook
           #'my:compilation-filter-init)
 
@@ -282,6 +286,9 @@
 
 (add-hook 'emacs-lisp-mode-hook
           'my:emacs-lisp-mode-init)
+
+(add-hook 'term-mode-hook 'my:term-mode-hook)
+
 
 (auto-complete-mode 0)
 (key-chord-mode 1)

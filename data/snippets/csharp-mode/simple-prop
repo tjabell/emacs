@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: simple-prop
+# key: sp
+# binding: direct-keybinding
+# --
+public $1 $2 { get; set; }
+$0
