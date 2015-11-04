@@ -45,7 +45,12 @@
     omnisharp
     evil
     geiser
-    sublime-themes)
+    sublime-themes
+    tern
+    company-tern
+    js2-refactor
+    json-mode
+    paradox)
   "List of packages that I like.")
 
 ;; install required
