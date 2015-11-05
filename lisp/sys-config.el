@@ -50,6 +50,16 @@
 (defalias 'wm 'whitespace-mode)
 (defalias 'nxml 'nxml-mode)
 
+;;; also see: http://stackoverflow.com/questions/18904529/after-emacs-deamon-i-can-not-see-new-theme-in-emacsclient-frame-it-works-fr
+(if (daemonp)
+    (add-hook 'after-make-frame-functions 'my:on-new-frame))
+
+(defun my:on-new-frame (frame)
+  (select-frame frame)
+  (set-frame-font "DejaVu Sans Mono 7")
+  (load-theme 'brin t)
+  (toggle-frame-maximized))
+
 (require 'server)
 (unless (server-running-p)
   (message "Starting server...")
