@@ -44,10 +44,6 @@
 
 (setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
 
-(if (eq system-type 'gnu/linux)
-    (setq org-agenda-files '("/home/trevor/projects/management/management.org"))
-  nil)
-
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
 
 (setq org-babel-default-header-args:C
