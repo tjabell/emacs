@@ -198,7 +198,10 @@
   (local-set-key "\C-cl" 'js-load-file-and-go)
   (local-set-key (kbd "C-c C-e") 'js2-next-error)
   (semantic-mode t)
-  (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
+  (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+  (custom-set-variables
+   '(js2-basic-offset 4)
+   '(js2-bounce-indent-p t)))
 
 (defun my:ac-c-header-init ()
   (require 'auto-complete-c-headers)
