@@ -249,7 +249,9 @@
               (symbol-function 'csharp-get-value-from-comments))
         (fset 'csharp-get-value-from-comments
               (symbol-function 'my-csharp-get-value-from-comments)))
-    (flymake-mode)))
+    (flymake-mode)
+    (flycheck-mode)
+    (setq c-basic-offset 4)))
 
 (defun my:term-mode-hook ()
   (setq yas-dont-activate t))
