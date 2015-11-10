@@ -243,6 +243,7 @@
   (hs-minor-mode 1)
   (auto-revert-mode)
   (linum-mode)
+  (c-set-style "c#")
   (if my-csharp-default-compiler
       (progn
         (fset 'orig-csharp-get-value-from-comments
@@ -250,8 +251,7 @@
         (fset 'csharp-get-value-from-comments
               (symbol-function 'my-csharp-get-value-from-comments)))
     (flymake-mode)
-    (flycheck-mode)
-    (setq c-basic-offset 4)))
+    (flycheck-mode)))
 
 (defun my:term-mode-hook ()
   (setq yas-dont-activate t))
