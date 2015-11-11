@@ -256,6 +256,9 @@
 (defun my:term-mode-hook ()
   (setq yas-dont-activate t))
 
+(defun my:sql-interactive-mode-init ()
+  (toggle-truncate-lines t))
+
 (add-hook 'compilation-filter-hook
           #'my:compilation-filter-init)
 
@@ -291,7 +294,7 @@
 
 (add-hook 'term-mode-hook 'my:term-mode-hook)
 
-
+(add-hook 'sql-interactive-mode-hook #'my:sql-interactive-mode-init)
 (auto-complete-mode 0)
 (key-chord-mode 1)
 (global-ede-mode 1)
