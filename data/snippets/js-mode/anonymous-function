@@ -1,7 +1,8 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# name: simple-property
-# key: sprop
+# name: anonymous-function
+# key: af
 # binding: direct-keybinding
 # --
-public $1 $2 { get; set; }
-$0
+function () {
+         $0
+}
