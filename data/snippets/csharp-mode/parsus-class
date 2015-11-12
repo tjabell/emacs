@@ -1,0 +1,13 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: parsus-class
+# key: pclass
+# binding: direct-keybinding
+# --
+using System;
+using System.Linq;
+
+namespace $1 {
+        public class ${2:`(file-name-nondirectory (file-name-sans-extension (or (buffer-file-name) "")))`} {
+                $0
+        }
+}
