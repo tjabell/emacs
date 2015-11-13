@@ -6,10 +6,10 @@
 <div form-group>
     <input id="$1"
            name="$1"
-           data-ng-model="$2"
-           label="$3"
+           data-ng-model="vm.item.$1"
+           label="$2"
            required=""
            data-form-control=""
-           $4 />
+           $3 />
 </div>
 $0

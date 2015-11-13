@@ -1,0 +1,15 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: acdhh-select
+# key: acdhhsel
+# binding: direct-keybinding
+# --
+<div class="form-group form-md-line-input form-md-floating-label no-hint">
+    <select class="form-control" id="$1" name="$1"
+            data-ng-model="vm.item.$1"
+            data-ng-options="listItem.id as listItem.value for listItem in vm.$2"
+            ng-class="{'edited':vm.item.$1}">
+        <option value=""></option>
+    </select>
+    <label for="$1">@L("$3")</label>
+</div>
+$0
