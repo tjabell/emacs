@@ -49,7 +49,8 @@
     company-tern
     js2-refactor
     json-mode
-    paradox)
+    paradox
+    auto-yasnippet)
   "List of packages that I like.")
 
 ;; install required
