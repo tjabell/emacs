@@ -164,7 +164,8 @@
   (key-chord-define-global "xs" 'save-buffer)
   (key-chord-define-global "qh" 'shell)
   (key-chord-define-global "xh" 'shell)
-  (key-chord-define-global "qe" 'eval-defun)
+  ;; Too easy to misstype
+  ;; (key-chord-define-global "qe" 'eval-defun)
   (key-chord-define-global "qj" 'eval-print-last-sexp)
   (key-chord-define-global "qb" 'previous-buffer)
   (when (require 'xah-lee nil t)
