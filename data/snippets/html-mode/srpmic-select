@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: srpmic-select
+# key: srpsel
+# binding: direct-keybinding
+# --
+        <label for="$1">$2</label>
+        <select class="form-control" ng-options="item.id as item.description for item in $3" data-ng-model="formData.detailsl.$1">
+        </select>

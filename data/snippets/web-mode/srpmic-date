@@ -1,0 +1,12 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: srpmic-date
+# key: srpdate
+# binding: direct-keybinding
+# --
+        <label for="$1">$2</label>
+        <div class="input-group">
+            <input id="$1" class="form-control" type="date" uib-datepicker-popup ng-model="formData.details.$1" is-open="dt.status.opened" min-date="dt.minDate" max-date="dt.maxDate" datepicker-options="dt.dateOptions" date-disabled="dt.disabled(date, mode)" ng-required="true" close-text="Close"  />
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="dt.open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
+        </div>

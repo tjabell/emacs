@@ -149,7 +149,6 @@
   (when (require 'visual-regexp-steroids nil t)))
 
 (when (require 'key-chord nil t)
-  (key-chord-define-global "xo" 'other-window)
   (key-chord-define-global "qo" 'other-window)
   (key-chord-define-global "qp" 'other-window)
   (key-chord-define-global "qf" 'find-file)
