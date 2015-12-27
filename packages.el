@@ -50,7 +50,8 @@
     js2-refactor
     json-mode
     paradox
-    auto-yasnippet)
+    auto-yasnippet
+    exec-path-from-shell)
   "List of packages that I like.")
 
 ;; install required
