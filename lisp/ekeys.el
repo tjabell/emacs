@@ -57,3 +57,6 @@
 
 (global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key (kbd "C-x o") 'ace-window)
+
+(global-set-key (kbd "s-w") 'aya-create)
+(global-set-key (kbd "s-y") 'aya-expand)
