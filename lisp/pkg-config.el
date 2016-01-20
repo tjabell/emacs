@@ -140,6 +140,7 @@
   (when (require 'projectile nil t)
     (require 'helm-projectile nil t)
     (global-set-key (kbd "C-c h") 'helm-projectile)
+
     (setq projectile-enable-caching t)))
 
 (when (require 'magit nil t)
