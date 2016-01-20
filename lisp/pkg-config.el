@@ -158,7 +158,7 @@
   (key-chord-define-global "xk" 'kill-this-buffer)
   (key-chord-define-global "qr" 'previous-buffer)
   (key-chord-define-global "qn" 'next-buffer)
-  (key-chord-define-global "xm" 'execute-extended-command)
+  (key-chord-define-global "xm" 'helm-M-x)
   (key-chord-define-global "qs" 'save-buffer)
   (key-chord-define-global "xs" 'save-buffer)
   (key-chord-define-global "qh" 'shell)
