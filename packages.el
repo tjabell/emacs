@@ -41,7 +41,6 @@
     org-journal
     company
     company-c-headers
-    omnisharp
     evil
     geiser
     sublime-themes
