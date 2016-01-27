@@ -190,6 +190,7 @@
 (defun my:emacs-lisp-mode-init ()
   (paredit-mode))
 
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (defun my:js2-mode-init ()
   (local-set-key "\C-x\C-e" 'js-send-last-sexp)
   (local-set-key "\C-\M-x" 'js-send-last-sexp-and-go)
@@ -198,7 +199,6 @@
   (local-set-key "\C-cl" 'js-load-file-and-go)
   (local-set-key (kbd "C-c C-e") 'js2-next-error)
   (semantic-mode t)
-  (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
   (custom-set-variables
    '(js2-basic-offset 4)
    '(js2-bounce-indent-p t)))
