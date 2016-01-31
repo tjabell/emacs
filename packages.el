@@ -19,7 +19,7 @@
     google-c-style
     smart-mode-line
     maxframe
-    ace-jump-mode
+    avy
     ace-window
     pcre2el
     key-chord
