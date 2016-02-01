@@ -3,6 +3,6 @@
 # key: af
 # binding: direct-keybinding
 # --
-function () {
+function ($1) {
          $0
 }
