@@ -93,6 +93,9 @@
   (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
 
+(when (require 'typescript-mode nil t)
+  (add-to-list 'auto-mode-alist '("\\.ts?\\'" . typescript-mode)))
+
 (when (and (require 'e2wm nil t)
            (require 'edbi nil t))
   (load-library "e2wm-edbi"))
