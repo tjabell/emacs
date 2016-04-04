@@ -50,7 +50,8 @@
     json-mode
     paradox
     auto-yasnippet
-    exec-path-from-shell)
+    exec-path-from-shell
+    xterm-color)
   "List of packages that I like.")
 
 ;; install required

@@ -134,6 +134,15 @@
   ;; (define-key evil-normal-state-map (kbd "SPC") 'ace-jump-mode)
 )
 
+
+(when (and (require 'xterm-color nil t) (require 'eshell))
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (setq xterm-color-preserve-properties t)))
+
+  (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+  (setq eshell-output-filter-functions (remove 'eshell-handle-ansi-color eshell-output-filter-functions)))
+
 (when (require 'helm nil t)
   (global-set-key (kbd "C-c h") 'helm-mini)
   (when (require 'projectile nil t)
