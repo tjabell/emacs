@@ -15,5 +15,5 @@
 (load-library "zap-up-to-char")
 (load-library "endless")
 (load-library "howard-abrams")
-
+(load-library "open-buffer-with")
 (autoload 'refill-mode "refill" "Refill minor mode." t)
