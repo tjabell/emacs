@@ -246,7 +246,7 @@
 (defun my:csharp-init ()
   (eval-after-load 'company
     '(add-to-list 'company-backends 'company-omnisharp))
-  (omnisharp-mode)
+  ;; (omnisharp-mode) ; omnisharp is broken for now
   (hs-minor-mode 1)
   (auto-revert-mode)
   (linum-mode)

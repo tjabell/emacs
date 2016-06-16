@@ -43,3 +43,6 @@
  )
 
 (setq visible-bell t)
+
+;; Experimental
+(setenv "NODE_NO_READLINE" "1")
