@@ -26,7 +26,6 @@
     visual-regexp
     visual-regexp-steroids
     projectile
-    helm-projectile
     flx-ido
     jedi
     elpy
@@ -51,7 +50,11 @@
     paradox
     auto-yasnippet
     exec-path-from-shell
-    xterm-color)
+    xterm-color
+    ivy
+    swiper
+    counsel
+    counsel-projectile)
   "List of packages that I like.")
 
 ;; install required

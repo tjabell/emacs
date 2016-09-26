@@ -17,6 +17,7 @@
 (require 'smart-mode-line)
 (require 'ace-window)
 (require 'company-c-headers)
+(require 'ivy)
 
 ;;; Org Mode
 (org-babel-do-load-languages
@@ -97,6 +98,21 @@
            (require 'edbi nil t))
   (load-library "e2wm-edbi"))
 
+(when (require 'ivy nil t)
+  (setq ivy-count-format "(%d/%d) "))
+
+(when (and (require 'ivy nil t)
+           (require 'projectile nil t))
+  (setq projectile-completion-system 'ivy)
+
+  (when (require 'counsel nil t)
+    (global-set-key (kbd "C-c h") 'counsel-projectile)))
+
+(when (and (require 'ivy nil t)
+           (require 'projectile nil t))
+  (setq projectile-completion-system 'ivy)
+  (global-set-key (kbd "C-c h") 'counsel-projectile))
+
 (when (require 'yasnippet nil t)
   (when (require 'dropdown-list nil t)
     (setq yas/prompt-functions '(yas/dropdown-prompt
@@ -143,13 +159,14 @@
   (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
   (setq eshell-output-filter-functions (remove 'eshell-handle-ansi-color eshell-output-filter-functions)))
 
-(when (require 'helm nil t)
-  (global-set-key (kbd "C-c h") 'helm-mini)
-  (when (require 'projectile nil t)
-    (require 'helm-projectile nil t)
-    (global-set-key (kbd "C-c h") 'helm-projectile)
+;; (when (require 'helm nil t)
+;;   (global-set-key (kbd "C-c h") 'helm-mini)
+;;   (when (require 'projectile nil t)
+;;     (require 'helm-projectile nil t)
+;;     (global-set-key (kbd "C-c h") 'helm-projectile)
 
-    (setq projectile-enable-caching t)))
+;;     (setq projectile-enable-caching t)))
+
 
 (when (require 'magit nil t)
   (global-set-key (kbd "<f10>") 'magit-status))
@@ -160,13 +177,12 @@
 (when (require 'key-chord nil t)
   (key-chord-define-global "qo" 'other-window)
   (key-chord-define-global "qp" 'other-window)
-  (key-chord-define-global "qf" 'helm-find-files)
+  (key-chord-define-global "qf" 'find-file)
   (key-chord-define-global "xf" 'find-file)
   (key-chord-define-global "qk" 'kill-this-buffer)
   (key-chord-define-global "xk" 'kill-this-buffer)
   (key-chord-define-global "qr" 'previous-buffer)
   (key-chord-define-global "qn" 'next-buffer)
-  (key-chord-define-global "xm" 'helm-M-x)
   (key-chord-define-global "qs" 'save-buffer)
   (key-chord-define-global "xs" 'save-buffer)
   (key-chord-define-global "qh" 'shell)
@@ -308,7 +324,7 @@
 (projectile-global-mode)
 (global-company-mode)
 (yas/global-mode 1)
-(helm-mode 1)
+;(helm-mode 1)
 
 ;;; Semantic
 (semantic-mode t)
