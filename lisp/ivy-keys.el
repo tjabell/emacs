@@ -1,5 +1,3 @@
-(ivy-mode 1)
-(setq ivy-use-virtual-buffers t)
 (global-set-key "\C-s" 'swiper)
 (global-set-key (kbd "C-c C-r") 'ivy-resume)
 (global-set-key (kbd "<f6>") 'ivy-resume)
@@ -19,3 +17,4 @@
 
 (define-key ivy-minibuffer-map (kbd "<left>") 'counsel-up-directory)
 (define-key ivy-minibuffer-map (kbd "C-l") 'counsel-up-directory)
+
