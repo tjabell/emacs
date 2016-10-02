@@ -57,8 +57,7 @@
 (defun my:on-new-frame (frame)
   (select-frame frame)
   (set-frame-font "DejaVu Sans Mono 7")
-  (load-theme 'brin t)
-  (toggle-frame-maximized))
+  (load-theme 'brin t))
 
 (require 'server)
 (unless (server-running-p)
