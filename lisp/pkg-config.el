@@ -1,3 +1,56 @@
+;; (defconst ora-packages  
+;;   '(dropdown-list
+;;     yasnippet
+;;     csharp-mode
+;;     paredit
+;;     magit
+;;     edit-server
+;;     edit-server-htmlize
+;;     iedit
+;;     flymake-google-cpplint
+;;     flymake-cursor
+;;     google-c-style
+;;     smart-mode-line
+;;     maxframe
+;;     avy
+;;     ace-window
+;;     pcre2el
+;;     key-chord
+;;     visual-regexp
+;;     visual-regexp-steroids
+;;     projectile
+;;     flx-ido
+;;     jedi
+;;     elpy
+;;     multiple-cursors
+;;     iy-go-to-char
+;;     haskell-mode
+;;     skewer-mode
+;;     emmet-mode
+;;     web-mode
+;;     js-comint
+;;     csv-mode
+;;     org-journal
+;;     company
+;;     company-c-headers
+;;     evil
+;;     geiser
+;;     sublime-themes
+;;     tern
+;;     company-tern
+;;     js2-refactor
+;;     json-mode
+;;     paradox
+;;     auto-yasnippet
+;;     exec-path-from-shell
+;;     xterm-color
+;;     ivy
+;;     swiper
+;;     counsel
+;;     counsel-projectile)
+;;   "List of packages that I like.")
+
+(require 'use-package)
 (require 'google-c-style)
 (require 'org-install)
 (require 'ob-tangle)
@@ -39,8 +92,8 @@
         ("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
          "* TODO %?\n %i\n %a")))
 
-(when (require 'org-journal nil t)
-  (setq org-journal-dir (concat org-directory "/journal/")))
+(use-package org-journal
+  :init (setq org-journal-dir (concat org-directory "/journal/")))
 
 (setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
 
@@ -51,12 +104,14 @@
             (assq-delete-all :tangle org-babel-default-header-args)))
 ;; End Org mode
 
-(when (require 'uniquify nil t)
+(use-package uniquify
+  :ensure t
+  :config
   (setq
    uniquify-buffer-name-style 'post-forward
    uniquify-separator ":"))
 
-(when (require 'dired-x nil t))
+(use-package dired-x)
 
 (when (require 'flymake-google-cpplint nil t)
 ;;; remember to install google-lint.py (pip install cpplint)
@@ -64,12 +119,12 @@
    '(flymake-google-cpplint-command "/usr/bin/cpplint")))
 
 
-
-(when (require 'paredit nil t)
-  (add-hook 'web-mode-hook 'emmet-mode))
-
-(when (require 'emmet-mode)
-  (define-key web-mode-map (kbd "C-/") 'emmet-expand-line))
+(use-package emmet-mode
+  :ensure t
+  :config
+  (progn
+    (add-hook 'web-mode-hook 'emmet-mode)
+    (define-key web-mode-map (kbd "C-/") 'emmet-expand-line)))
 
 (when (require 'js-comint nil t)
   ;; From here: http://stackoverflow.com/questions/13862471/using-node-js-with-js-comint-in-emacs
