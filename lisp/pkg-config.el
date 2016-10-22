@@ -12,7 +12,6 @@
 (require 'web-mode)
 (require 'yasnippet)
 (require 'company)
-(require 'helm)
 (require 'key-chord)
 (require 'smart-mode-line)
 (require 'ace-window)
