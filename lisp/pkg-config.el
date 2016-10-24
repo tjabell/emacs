@@ -1,76 +1,44 @@
-;; (defconst ora-packages  
-;;   '(dropdown-list
-;;     yasnippet
-;;     csharp-mode
-;;     paredit
-;;     magit
-;;     edit-server
-;;     edit-server-htmlize
-;;     iedit
-;;     flymake-google-cpplint
-;;     flymake-cursor
-;;     google-c-style
-;;     smart-mode-line
-;;     maxframe
-;;     avy
-;;     ace-window
-;;     pcre2el
-;;     key-chord
-;;     visual-regexp
-;;     visual-regexp-steroids
-;;     projectile
-;;     flx-ido
-;;     jedi
-;;     elpy
-;;     multiple-cursors
-;;     iy-go-to-char
-;;     haskell-mode
-;;     skewer-mode
-;;     emmet-mode
-;;     web-mode
-;;     js-comint
-;;     csv-mode
-;;     org-journal
-;;     company
-;;     company-c-headers
-;;     evil
-;;     geiser
-;;     sublime-themes
-;;     tern
-;;     company-tern
-;;     js2-refactor
-;;     json-mode
-;;     paradox
-;;     auto-yasnippet
-;;     exec-path-from-shell
-;;     xterm-color
-;;     ivy
-;;     swiper
-;;     counsel
-;;     counsel-projectile)
-;;   "List of packages that I like.")
-
 (require 'use-package)
-(require 'google-c-style)
-(require 'org-install)
-(require 'ob-tangle)
-(require 'org-journal)
-(require 'uniquify)
-(require 'dired-x)
-(require 'flymake-google-cpplint)
-(require 'paredit)
-(require 'emmet-mode)
-(require 'js-comint)
-(require 'sgml-mode)
-(require 'web-mode)
-(require 'yasnippet)
-(require 'company)
-(require 'helm)
-(require 'key-chord)
-(require 'smart-mode-line)
-(require 'ace-window)
-(require 'company-c-headers)
-(require 'ivy)
+
+;;   "List of packages that I like.")
+(use-package csharp-mode :ensure t)
+(use-package paredit :ensure t)
+(use-package edit-server :ensure t)
+(use-package edit-server-htmlize :ensure t)
+(use-package iedit :ensure t)
+(use-package flymake-cursor :ensure t)
+(use-package google-c-style :ensure t)
+(use-package maxframe :ensure t)
+(use-package avy :ensure t)
+(use-package ace-window :ensure t)
+(use-package pcre2el :ensure t)
+(use-package flx-ido :ensure t)
+(use-package jedi :ensure t)
+(use-package elpy :ensure t)
+(use-package multiple-cursors :ensure t)
+(use-package iy-go-to-char :ensure t)
+(use-package haskell-mode :ensure t)
+(use-package skewer-mode :ensure t)
+(use-package emmet-mode :ensure t)
+(use-package web-mode :ensure t)
+(use-package js-comint :ensure t)
+(use-package csv-mode :ensure t)
+(use-package org-journal :ensure t)
+(use-package company :ensure t)
+(use-package company-c-headers :ensure t)
+(use-package evil :ensure t)
+(use-package geiser :ensure t)
+(use-package sublime-themes :ensure t)
+(use-package tern :ensure t)
+(use-package company-tern :ensure t)
+(use-package js2-refactor :ensure t)
+(use-package json-mode :ensure t)
+;(use-package paradox :ensure t)
+(use-package auto-yasnippet :ensure t)
+(use-package exec-path-from-shell :ensure t)
+(use-package counsel-projectile :ensure t)
+(use-package ob-tangle)
+(use-package org-install)
 
 ;;; Org Mode
 (org-babel-do-load-languages
@@ -105,7 +73,6 @@
 ;; End Org mode
 
 (use-package uniquify
-  :ensure t
   :config
   (setq
    uniquify-buffer-name-style 'post-forward
@@ -113,11 +80,11 @@
 
 (use-package dired-x)
 
-(when (require 'flymake-google-cpplint nil t)
-;;; remember to install google-lint.py (pip install cpplint)
+(use-package flymake-google-cpplint
+  :ensure t
+  :config
   (custom-set-variables
    '(flymake-google-cpplint-command "/usr/bin/cpplint")))
-
 
 (use-package emmet-mode
   :ensure t
@@ -126,9 +93,11 @@
     (add-hook 'web-mode-hook 'emmet-mode)
     (define-key web-mode-map (kbd "C-/") 'emmet-expand-line)))
 
-(when (require 'js-comint nil t)
-  ;; From here: http://stackoverflow.com/questions/13862471/using-node-js-with-js-comint-in-emacs
-  (setq inferior-js-mode-hook
+(use-package js-comint
+  :ensure t
+  :config
+   ;; From here: http://stackoverflow.com/questions/13862471/using-node-js-with-js-comint-in-emacs
+   (setq inferior-js-mode-hook
         (lambda ()
           ;; We like nice colors
           (ansi-color-for-comint-mode-on)
@@ -138,84 +107,90 @@
            (lambda (output)
              (replace-regexp-in-string "\033\\[[0-9]+[A-Z]" "" output))))))
 
-(when (require 'powershell-mode nil t)
-  (add-to-list 'auto-mode-alist '("\\.ps1" . powershell-mode)))
+(use-package powershell
+  :ensure t
+  :config (add-to-list 'auto-mode-alist '("\\.ps1" . powershell-mode)))
 
-(when (require 'sgml-mode nil t)
-  (add-hook 'html-mode-hook 'emmet-mode)
-  (define-key html-mode-map (kbd "C-/") 'emmet-expand-line))
+(use-package sgml-mode
+  :ensure t
+  :config (progn
+            (add-hook 'html-mode-hook 'emmet-mode)
+            (define-key html-mode-map (kbd "C-/") 'emmet-expand-line)))
 
-(when (require 'web-mode nil t)
-  (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
 
-(when (and (require 'e2wm nil t)
-           (require 'edbi nil t))
-  (load-library "e2wm-edbi"))
+(use-package web-mode
+  :ensure t
+  :config (progn
+              (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
+              (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))))
 
-(when (require 'ivy nil t)
-  (ivy-mode 1)
-  (setq ivy-height 50)
-  (setq ivy-use-virtual-buffers t)
-  (setq ivy-count-format "(%d/%d) "))
+(use-package ivy
+  :ensure t
+  :config
+  (progn (setq ivy-height 50)
+         (setq ivy-use-virtual-buffers t)
+         (setq ivy-count-format "(%d/%d) ")))
 
-(when (and (require 'ivy nil t)
-           (require 'projectile nil t))
-  (setq projectile-completion-system 'ivy)
+(use-package projectile
+  :ensure t
+  :config (setq projectile-completion-system 'ivy))
 
-  (when (require 'counsel nil t)
-    (global-set-key (kbd "C-c h") 'counsel-projectile)))
+(use-package counsel
+  :ensure t
+  :bind ("C-h" . counsel-projectile))
 
-(when (and (require 'ivy nil t)
-           (require 'projectile nil t))
-  (setq projectile-completion-system 'ivy)
-  (global-set-key (kbd "C-c h") 'counsel-projectile))
+(use-package yasnippet
+  :ensure t
+  :config (add-to-list 'yas-snippet-dirs "~/emacs/data/snippets/"))
 
-(when (require 'yasnippet nil t)
-  (when (require 'dropdown-list nil t)
-    (setq yas/prompt-functions '(yas/dropdown-prompt
+(use-package dropdown-list
+  :ensure t
+  :config (setq yas/prompt-functions '(yas/dropdown-prompt
                                  yas/ido-prompt)))
-  (add-to-list 'yas-snippet-dirs
-               "~/emacs/data/snippets/"))
 
+(use-package company
+  :config (progn
+            (setq company-idle-delay 0)
+            (setq company-minimum-prefix-length 3)))
+
+(use-package nose
+  :ensure t
+  :config
+  (progn
+    (defalias 'no 'nosetests-one)
+    (defalias 'na 'nosetests-all)
+    (defalias 'np 'nosetests-pdb-one)
+    (defalias 'nm 'nosetests-module)))
 ;; (when (require 'pymacs nil t)
 ;;   (setenv "PYMACS_PYTHON" "python2")
 ;;   (pymacs-load "ropemacs" "rope-" t))
 
-(when (require 'nose nil t)
-  (defalias 'no 'nosetests-one)
-  (defalias 'na 'nosetests-all)
-  (defalias 'np 'nosetests-pdb-one)
-  (defalias 'nm 'nosetests-module))
-
-(when (require 'company)
-  (setq company-idle-delay 0)
-  (setq company-minimum-prefix-length 3))
-
-(when (require 'smart-mode-line nil t)
-  (setq sml/theme 'respectful)
-  (setq sml/no-confirm-load-theme t)
-  (sml/setup))
-
-(when (require 'ace-jump-mode nil t)
-  (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
-  (eval-after-load "ace-jump-mode"
-    '(ace-jump-mode-enable-mark-sync))
-  (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
-  ;; ;;If you use viper mode : -- for viper mode maybe some day!
-  ;; (define-key viper-vi-global-user-map (kbd "SPC") 'ace-jump-mode)
-  ;; ;;If you use evil
-  ;; (define-key evil-normal-state-map (kbd "SPC") 'ace-jump-mode)
-)
+(use-package smart-mode-line
+  :ensure t
+  :config (progn
+            (setq sml/theme 'respectful)
+            (setq sml/no-confirm-load-theme t)
+            (sml/setup)))
 
 
-(when (and (require 'xterm-color nil t) (require 'eshell))
-  (add-hook 'eshell-mode-hook
+(use-package ace-jump-mode
+  :ensure t
+  :bind ("C-." . ace-jump-mode)
+  :config (progn
+            (ace-jump-mode-enable-mark-sync)
+            (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)))
+
+
+(use-package xterm-color
+  :ensure t)
+
+
+(add-hook 'eshell-mode-hook
             (lambda ()
               (setq xterm-color-preserve-properties t)))
-
-  (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
-  (setq eshell-output-filter-functions (remove 'eshell-handle-ansi-color eshell-output-filter-functions)))
+(require 'eshell)
+(add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+(setq eshell-output-filter-functions (remove 'eshell-handle-ansi-color eshell-output-filter-functions))
 
 ;; (when (require 'helm nil t)
 ;;   (global-set-key (kbd "C-c h") 'helm-mini)
@@ -226,32 +201,36 @@
 ;;     (setq projectile-enable-caching t)))
 
 
-(when (require 'magit nil t)
-  (global-set-key (kbd "<f10>") 'magit-status))
+(use-package magit
+  :ensure t
+  :bind ("<f10>" . magit-status))
 
-(when (require 'visual-regexp nil t)
-  (when (require 'visual-regexp-steroids nil t)))
+(use-package visual-regexp :ensure t)
 
-(when (require 'key-chord nil t)
-  (key-chord-define-global "qo" 'other-window)
-  (key-chord-define-global "qp" 'other-window)
-  (key-chord-define-global "qf" 'find-file)
-  (key-chord-define-global "xf" 'find-file)
-  (key-chord-define-global "qk" 'kill-this-buffer)
-  (key-chord-define-global "xk" 'kill-this-buffer)
-  (key-chord-define-global "qr" 'previous-buffer)
-  (key-chord-define-global "qn" 'next-buffer)
-  (key-chord-define-global "qs" 'save-buffer)
-  (key-chord-define-global "xs" 'save-buffer)
-  (key-chord-define-global "qh" 'shell)
-  (key-chord-define-global "xh" 'shell)
-  ;; Too easy to misstype
-  ;; (key-chord-define-global "qe" 'eval-defun)
-  (key-chord-define-global "qj" 'eval-print-last-sexp)
-  (key-chord-define-global "qb" 'previous-buffer)
-  (when (require 'xah-lee nil t)
-    (key-chord-define-global "qr" 'xah-next-user-buffer)
-    (key-chord-define-global "qn" 'xah-previous-user-buffer)))
+(use-package visual-regexp-steroids :ensure t)
+
+(use-package key-chord
+  :ensure t
+  :config (progn
+            (key-chord-define-global "qo" 'other-window)
+            (key-chord-define-global "qp" 'other-window)
+            (key-chord-define-global "qf" 'find-file)
+            (key-chord-define-global "xf" 'find-file)
+            (key-chord-define-global "qk" 'kill-this-buffer)
+            (key-chord-define-global "xk" 'kill-this-buffer)
+            (key-chord-define-global "qr" 'previous-buffer)
+            (key-chord-define-global "qn" 'next-buffer)
+            (key-chord-define-global "qs" 'save-buffer)
+            (key-chord-define-global "xs" 'save-buffer)
+            (key-chord-define-global "qh" 'shell)
+            (key-chord-define-global "xh" 'shell)
+            ;; Too easy to misstype
+            ;; (key-chord-define-global "qe" 'eval-defun)
+            (key-chord-define-global "qj" 'eval-print-last-sexp)
+            (key-chord-define-global "qb" 'previous-buffer)
+            (when (require 'xah-lee nil t)
+              (key-chord-define-global "qr" 'xah-next-user-buffer)
+              (key-chord-define-global "qn" 'xah-previous-user-buffer))))
 
 ;;; Ansi colors in compile buffer
 ;;; From: http://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-messing-up-emacs-compilation-buffer
@@ -265,6 +244,10 @@
   (add-to-list 'auto-mode-alist '(".ebuild" . ebuild-mode)))
 
 (add-to-list 'auto-mode-alist '("mutt" . mail-mode))
+
+(when (and (require 'e2wm nil t)
+           (require 'edbi nil t))
+  (load-library "e2wm-edbi"))
 
 (defun my:compilation-filter-init ()
   (colorize-compilation-buffer))
@@ -376,6 +359,9 @@
 (add-hook 'term-mode-hook 'my:term-mode-hook)
 
 (add-hook 'sql-interactive-mode-hook #'my:sql-interactive-mode-init)
+
+(ivy-mode 1)
+(show-paren-mode 1)
 (auto-complete-mode 0)
 (key-chord-mode 1)
 (global-ede-mode 1)
