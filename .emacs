@@ -7,10 +7,13 @@
 
 (cl-labels ((add-path (p)
 	 (add-to-list 'load-path
-			(concat emacs-root p))))
+                  (concat emacs-root p))))
+ (add-path "emacs/use-package")
  (add-path "emacs/lisp") ;; all my personal elisp code
- (add-path "emacs/site-lisp")
+ (add-path "emacs/site-lisp") 
  (add-path "emacs/site-lisp/dosbat"))
+
+(load-library "use-package")
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.org/packages/"))
