@@ -33,6 +33,7 @@
 (use-package company-tern :ensure t)
 (use-package js2-refactor :ensure t)
 (use-package json-mode :ensure t)
+
 ;(use-package paradox :ensure t)
 (use-package auto-yasnippet :ensure t)
 (use-package exec-path-from-shell :ensure t)
@@ -200,6 +201,10 @@
 
 ;;     (setq projectile-enable-caching t)))
 
+
+(use-package neotree
+  :ensure t
+  :bind ("<f8>" . neotree-toggle))
 
 (use-package magit
   :ensure t
