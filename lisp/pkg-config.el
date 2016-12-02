@@ -34,12 +34,11 @@
 (use-package js2-refactor :ensure t)
 (use-package json-mode :ensure t)
 
-;(use-package paradox :ensure t)
 (use-package auto-yasnippet :ensure t)
 (use-package exec-path-from-shell :ensure t)
 (use-package counsel-projectile :ensure t)
-(use-package ob-tangle)
-(use-package org-install)
+(use-package paradox :ensure t)
+
 
 ;;; Org Mode
 (org-babel-do-load-languages
