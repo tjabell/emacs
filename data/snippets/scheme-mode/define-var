@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: define-var
+# key: dv
+# --
+(define $1 $0)
