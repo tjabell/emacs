@@ -39,6 +39,11 @@
 (use-package counsel-projectile :ensure t)
 (use-package paradox :ensure t)
 
+;;; Go Mode
+(use-package go-mode
+  :ensure t
+  :bind (("C-c C-r" . go-remove-unused-imports)
+         ("C-c i" . go-goto-imports)))
 
 ;;; Org Mode
 (org-babel-do-load-languages
