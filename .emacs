@@ -1,12 +1,12 @@
 (require 'cl)
 
 (defvar emacs-root (if (or (eq system-type 'gnu/linux)
-													 (eq system-type 'linux))
-											 "/home/trevor/" "c:/users/trevor.abell/")
-	"Home directory — the root emacs load-path.")
+                           (eq system-type 'linux))
+                       "/home/trevor/" "c:/users/trevor.abell/")
+    "Home directory — the root emacs load-path.")
 
 (cl-labels ((add-path (p)
-	 (add-to-list 'load-path
+     (add-to-list 'load-path
                   (concat emacs-root p))))
  (add-path "emacs/use-package")
  (add-path "emacs/lisp") ;; all my personal elisp code
@@ -21,7 +21,7 @@
 
 ; put any package initialization in this file
 (add-hook 'after-init-hook 
-					'(lambda ()    (load "~/emacs/emacs.loadpackages")))
+                    '(lambda ()    (load "~/emacs/emacs.loadpackages")))
 
 (put 'narrow-to-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
