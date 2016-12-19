@@ -16,4 +16,5 @@
 (load-library "endless")
 (load-library "howard-abrams")
 (load-library "open-buffer-with")
+(load-library "stackoverflow")
 (autoload 'refill-mode "refill" "Refill minor mode." t)

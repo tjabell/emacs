@@ -74,3 +74,5 @@
            (require 'counsel nil t)
            (require 'swiper nil t))
   (load-library "ivy-keys"))
+
+(global-set-key (kbd "C-M-y") 'reverse-transpose-sexps)
