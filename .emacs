@@ -1,3 +1,5 @@
+(package-initialize)
+
 (require 'cl)
 
 (defvar emacs-root (if (or (eq system-type 'gnu/linux)
