@@ -4,7 +4,8 @@
 
 (defvar emacs-root (if (or (eq system-type 'gnu/linux)
                            (eq system-type 'linux))
-                       "/home/trevor/" "c:/users/trevor.abell/")
+                       (format "/home/%s/" (user-login-name))
+                     "c:/users/trevor.abell/")
     "Home directory — the root emacs load-path.")
 
 (cl-labels ((add-path (p)
