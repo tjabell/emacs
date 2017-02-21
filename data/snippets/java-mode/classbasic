@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: classbasic
+# key: classbasic_
+# --
+import static java.lang.System.out;
+/**
+ * Created by `(user-login-name` on 2/21/17.
+ */
+public class Solution {
+
+  public static void main(String[] args) {
+
+  }
+}
