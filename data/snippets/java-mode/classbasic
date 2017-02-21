@@ -4,7 +4,7 @@
 # --
 import static java.lang.System.out;
 /**
- * Created by `(user-login-name` on 2/21/17.
+ * Created by `(user-login-name)` on `(format-time-string "%D")`.
  */
 public class Solution {
 
