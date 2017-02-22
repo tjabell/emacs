@@ -1,14 +1,14 @@
 # -*- mode: snippet -*-
-# name: classbasic
 # key: classbasic_
+# name: classbasic
 # --
 import static java.lang.System.out;
 /**
  * Created by `(user-login-name)` on `(format-time-string "%D")`.
  */
-public class Solution {
+public class `(file-name-base (file-name-sans-extension (buffer-file-name)))` {
 
   public static void main(String[] args) {
-
+    $0
   }
 }
