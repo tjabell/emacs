@@ -1,0 +1,17 @@
+# -*- mode: snippet -*-
+# name: directive
+# key: directive_
+# --
+var app = angular.module('app')
+    .directive('$1', $1);
+
+function $1() {
+    return {
+        restrict: 'E',
+        scope: {
+            theobj: '=',
+            prop: '='
+        },
+        template: '<div>$0</div>'
+    };
+}
