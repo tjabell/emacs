@@ -40,6 +40,7 @@
 (use-package counsel-projectile :ensure t)
 (use-package paradox :ensure t)
 
+(use-package editorconfig :ensure t)
 ;;; Go Mode
 (use-package go-mode
   :ensure t
