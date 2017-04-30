@@ -371,6 +371,9 @@
 
 (add-hook 'sql-interactive-mode-hook #'my:sql-interactive-mode-init)
 
+;; Misc file types and their default modes
+(add-to-list 'auto-mode-alist '("\\.editorconfig" . conf-mode))
+
 (ivy-mode 1)
 (show-paren-mode 1)
 (auto-complete-mode 0)
