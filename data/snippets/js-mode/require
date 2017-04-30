@@ -1,6 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # name: require
-# key: r
+# key: r_
 # --
 var $1 = require('$1');
 $0

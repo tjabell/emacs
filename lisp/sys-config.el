@@ -19,7 +19,7 @@
         (interactive)
         (shell-command "explorer ."))
       (global-set-key (kbd "<f12>") 'open-explorer)
-      (set-face-attribute 'default nil :font "Consolas 8"))
+      (set-face-attribute 'default nil :font "Consolas 10"))
   nil)
 
 (set-register ?e '(file . "~/emacs"))
@@ -56,8 +56,7 @@
 
 (defun my:on-new-frame (frame)
   (select-frame frame)
-  (set-frame-font "DejaVu Sans Mono 7")
-  (load-theme 'brin t))
+  (set-frame-font "DejaVu Sans Mono 10"))
 
 (require 'server)
 (unless (server-running-p)
