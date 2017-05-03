@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
 # name: define
-# key: d
+# key: d_
 # --
 (define ($1 $2) $0)
