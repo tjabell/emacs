@@ -273,7 +273,8 @@
   (local-set-key (kbd "C-M-x") 'js-send-last-sexp-and-go)
   (local-set-key (kbd "C-c b") 'js-send-buffer)
   (local-set-key (kbd "C-c C-b") 'js-send-buffer-and-go)
-  (local-set-key (kbd "C-c l") 'js-load-file-and-go))
+  (local-set-key (kbd "C-c l") 'js-load-file-and-go)
+  (local-set-key (kbd "C-c M-j") 'run-js)
   (semantic-mode t)
   (custom-set-variables
    '(js2-bounce-indent-p t)))
