@@ -17,5 +17,4 @@
 (load-library "howard-abrams")
 (load-library "open-buffer-with")
 (load-library "stackoverflow")
-(load-library "omnisharp-3.4/omnisharp")
 (autoload 'refill-mode "refill" "Refill minor mode." t)
