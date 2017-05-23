@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: const_require
+# key: cr_
+# --
+const $1 = require('$1');
+$0
