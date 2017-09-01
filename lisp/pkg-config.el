@@ -52,8 +52,7 @@
 ;;; Org Mode
 (org-babel-do-load-languages
  'org-babel-load-languages
- '((sh . t)
-   (ruby . t)
+ '((ruby . t)
    (emacs-lisp . t)
    (python . t)
    (perl . t)
