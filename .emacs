@@ -53,3 +53,7 @@
 
 ;; Experimental
 (setenv "NODE_NO_READLINE" "1")
+
+(let ((custom-file (concat emacs-root ".emacs.custom")))
+  (if (file-exists-p custom-file)
+      (load-library custom-file)))
