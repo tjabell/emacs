@@ -3,8 +3,6 @@
 ;;   "List of packages that I like.")
 (use-package csharp-mode :ensure t)
 (use-package paredit :ensure t)
-(use-package edit-server :ensure t)
-(use-package edit-server-htmlize :ensure t)
 (use-package iedit :ensure t)
 (use-package flymake-cursor :ensure t)
 (use-package google-c-style :ensure t)
