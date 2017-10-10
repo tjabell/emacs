@@ -54,6 +54,7 @@
 ;; Experimental
 (setenv "NODE_NO_READLINE" "1")
 
+(add-to-list 'auto-mode-alist '(".emacs.custom" . emacs-lisp-mode))
 (let ((custom-file (concat emacs-root ".emacs.custom")))
   (if (file-exists-p custom-file)
       (load-library custom-file)))
