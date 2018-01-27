@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: babelrc
+# key: babelrc_
+# --
+{
+    "presets": ["env", "react"],
+    "plugins": ["transform-class-properties"]
+}
