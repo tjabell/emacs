@@ -1,0 +1,38 @@
+# key: webpackconf_
+# name: webpackconfig
+# --
+/*
+Need to run:
+npm install -D html-webpack-plugin babel-loader babel-core babel-preset-env
+create: index.template.ejs, index.js
+
+*/
+const path = require('path')
+
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const webpack = require('webpack');
+
+module.exports = {
+  entry: './index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'my-first-bundle.js'
+  },
+  module: {
+    rules: [
+      { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" }
+    ]
+  },
+  devtool: 'inline-source-map',
+  devServer : {
+    contentBase: './dist',
+    hot: true
+  },
+  plugins: [new HtmlWebpackPlugin({
+    title: 'React From Scratch',
+    template: 'index.template.ejs',
+    inject: 'body'
+  }),
+  new webpack.NamedModulesPlugin(),
+  new webpack.HotModuleReplacementPlugin()]
+}
