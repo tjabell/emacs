@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: console-dir
+# key: dir_
+# --
+console.dir($0);
