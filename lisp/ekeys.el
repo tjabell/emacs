@@ -1,5 +1,6 @@
 (global-set-key (kbd "C-x o") 'other-window)
 (global-set-key (kbd "M-o") 'other-window)
+(global-set-key (kbd "M-O") #'other-frame)
 (global-set-key (kbd "C-1") 'delete-other-windows)
 (global-set-key (kbd "C-X C-m") 'execute-extended-command)
 (global-set-key (kbd "<f11>") 'revert-buffer)
