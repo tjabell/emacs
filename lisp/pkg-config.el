@@ -149,10 +149,10 @@
   :ensure t
   :config (add-to-list 'yas-snippet-dirs "~/emacs/data/snippets/"))
 
-(use-package dropdown-list
-  :ensure t
-  :config (setq yas/prompt-functions '(yas/dropdown-prompt
-                                 yas/ido-prompt)))
+;; (use-package dropdown-list
+;;   :ensure t
+;;   :config (setq yas/prompt-functions '(yas/dropdown-prompt
+;;                                  yas/ido-prompt)))
 
 (use-package company
   :config (progn
