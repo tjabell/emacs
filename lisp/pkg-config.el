@@ -237,7 +237,7 @@
             ;; Too easy to misstype
             ;; (key-chord-define-global "qe" 'eval-defun)
             (key-chord-define-global "qj" 'eval-print-last-sexp)
-            (key-chord-define-global "qb" 'previous-buffer)
+            (key-chord-define-global "qb" 'ivy-switch-buffer)
             (when (require 'xah-lee nil t)
               (key-chord-define-global "qr" 'xah-next-user-buffer)
               (key-chord-define-global "qn" 'xah-previous-user-buffer))))
