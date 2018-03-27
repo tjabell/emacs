@@ -1,6 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # name: systemd-service
-# key: service
+# key: service_
 # --
 [Unit]
 Description=Foo

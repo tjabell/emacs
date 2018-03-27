@@ -1,6 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # name: systemd-timer
-# key: timer
+# key: timer_
 # --
 [Unit]
 Description=Run foo weekly and on boot
