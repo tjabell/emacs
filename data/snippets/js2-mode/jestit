@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: jest-it
+# key: jestit_
+# --
+it('$1', async function () {
+    $0
+}, timeout);

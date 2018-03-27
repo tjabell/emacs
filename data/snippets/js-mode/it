@@ -1,6 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # name: karma-test
-# key: it
+# key: it_
 # binding: direct-keybinding
 # --
 it('$1', function () {
