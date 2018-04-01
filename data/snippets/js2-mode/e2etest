@@ -2,33 +2,18 @@
 # name: e2etest
 # key: e2etest_
 # --
-import { pageUrl } from ""
-import { } from './pages/'
-import { paceWait,fillPageData } from 'app/utils'
+import * as utils from '../utils'
 
 let browser;
 
 const timeout = 16000
 
-describe('$1', () => {
-  let page;
-  let url = global.__URL__
-  beforeAll(async () => {
-    page = await global.__BROWSER__.newPage();
-    await page.goto(url + pageUrl)
-  }, timeout);
+describe('$1', async () => {
+  it('$2', async () => {
+    let page = await goto$3
 
-  afterAll(async () => {
-    if(!global.__DEBUG__)
-      await page.close()
-  })
-
-  it('$2', async done => {
-    await paceWait(page)
-
-    await expect(await page.title()).toEqual('Case Management | $3')
+    await expect(await page.title()).toEqual('Case Management | $4')
 
     $0
-    done()
   }, timeout)
 })
