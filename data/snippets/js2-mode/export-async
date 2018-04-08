@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: async-function
+# name: export-async-function
 # key: easync_
 # --
 export async function $1($2) {
