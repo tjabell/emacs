@@ -1,6 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # name: anonymous-function
-# key: af_
+# key: f_
 # binding: direct-keybinding
 # --
 function($1) {

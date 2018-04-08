@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: async-function
-# key: async_
+# key: af_
 # --
 async function $1($2) {
        $0

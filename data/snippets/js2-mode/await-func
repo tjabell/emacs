@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: await-func
+# key: aw
+# --
+await $1
+$0
