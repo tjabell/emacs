@@ -4,11 +4,9 @@
 # --
 import * as utils from '../utils'
 
-let browser;
+const timeout = 32000
 
-const timeout = 16000
-
-describe('$1', async () => {
+describe('$1', () => {
   it('$2', async () => {
     let page = await goto$3
 
