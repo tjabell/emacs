@@ -60,6 +60,8 @@
 (setq org-default-notes-file (concat org-directory "/notes.org"))
 (define-key global-map (kbd "C-c c")  'org-capture)
 
+(setq org-todo-keywords
+      '((sequence "TODO" "TEST" "DONE")))
 (setq org-capture-templates
       '(("j" "Journal" entry (file+datetree "~/org/journal.org")
          "* %?\nEntered on %U\n %i\n %a")
