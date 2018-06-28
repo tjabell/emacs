@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: Oneshot Service
+# key: service-oneshot_
+# --
+[Unit]
+Description=Renew certificates
+
+[Service]
+Type=oneshot
+ExecStartPre=
+ExecStart=
+ExecStartPost=
+
+[Install]
+WantedBy=multi-user.target
