@@ -59,5 +59,8 @@
 ;;; Keychain Setup
 ;;; pacman -S keychain
 ;;; add to bash profile "eval `keychain --eval id_rsa`"
-; Add and uncomment below line in .emacs
-;(use-package keychain-environment :ensure t)
+;;; relies on keychain-environment package: (use-package keychain-environment :ensure t) - should be in pkg-config
+
+; Add and uncomment below lines in .emacs
+;(keychain-refresh-environment)
+

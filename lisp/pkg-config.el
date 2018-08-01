@@ -37,6 +37,7 @@
 (use-package exec-path-from-shell :ensure t)
 (use-package counsel-projectile :ensure t)
 (use-package paradox :ensure t)
+(use-package keychain-environment :ensure t)
 
 (use-package editorconfig
   :ensure t
