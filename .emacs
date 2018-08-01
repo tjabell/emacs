@@ -55,3 +55,8 @@
 (let ((custom-file (concat emacs-root ".emacs.custom")))
   (if (file-exists-p custom-file)
       (load-library custom-file)))
+
+;;; Keychain Setup
+;;; pacman -S keychain
+;;; add to bash profile "eval `keychain --eval id_rsa`"
+;(use-package keychain-environment :ensure t)
