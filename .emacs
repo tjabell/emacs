@@ -64,3 +64,4 @@
 ; Add and uncomment below lines in .emacs
 ;(keychain-refresh-environment)
 
+(setq js2-strict-missing-semi-warning nil)
