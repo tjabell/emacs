@@ -21,7 +21,6 @@
 (use-package web-mode :ensure t)
 (use-package js-comint :ensure t)
 (use-package csv-mode :ensure t)
-(use-package org-journal :ensure t)
 (use-package company :ensure t)
 (use-package company-c-headers :ensure t)
 (use-package evil :ensure t)
