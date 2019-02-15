@@ -1,6 +1,11 @@
-(tool-bar-mode 0)
-(scroll-bar-mode 0)
+(if (fboundp 'tool-bar-mode)
+    (progn      
+      (tool-bar-mode 0)
+      (scroll-bar-mode 0))
+  nil)
+
 (menu-bar-mode 0)
+
 (setq initial-scratch-message "")
 
 ;; Backup settings				
