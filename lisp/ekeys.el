@@ -44,8 +44,11 @@
 (global-set-key (kbd "<f2>") 'f2-map)
 (global-set-key (kbd "<f2> s") '(lambda () (interactive) (switch-to-buffer "*scratch*")))
 (global-set-key (kbd "<f2> o") '(lambda () (interactive) (find-file "~/org/emacs-notes.org")))
+(global-set-key (kbd "<f2> m") '(lambda () (interactive) (switch-to-buffer "*Messages*")))
+(global-set-key (kbd "<f2> e") '(lambda () (interactive) (find-file "~/.emacs")))
 (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
 (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+
 
 (global-set-key (kbd "<f5>") 'compile)
 (global-set-key (kbd "<f6>") 'gud-gdb)
