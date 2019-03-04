@@ -34,8 +34,6 @@
 ;;; Function keys
 (global-set-key (kbd "C-!") 'eshell-here)
 
-(define-prefix-command 'f1-map)
-(global-set-key (kbd "<f1>") 'f1-map)
 (global-set-key (kbd "<f1> s") 'shell)
 (global-set-key (kbd "<f1> f") 'counsel-describe-function)
 (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
