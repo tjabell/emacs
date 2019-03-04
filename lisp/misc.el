@@ -11,3 +11,14 @@
   (interactive)
   (let ((c (string-to-char (buffer-substring (line-beginning-position) (1+ (line-beginning-position))))))
     (prin1 (get-char-code-property  c 'name) (current-buffer))))
+
+(defun ebpa/edebug-remove-all-instrumentation ()
+  "Remove all edebug instrumentation by visiting each function
+definition and running `eval-defun`."
+  (interactive)
+  (mapatoms
+   (lambda (symbol)
+     (when-let (pos (car-safe (get symbol 'edebug)))
+       (with-current-buffer (marker-buffer pos)
+         (goto-char (marker-position pos))
+         (eval-defun nil))))))
