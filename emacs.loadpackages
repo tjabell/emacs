@@ -1,4 +1,3 @@
-;;; Copyright 2014 Trevor Abell <trevor@keikocode.com>
 (load-library "ekeys")
 (load-library "sys-config")
 (load-library "pkg-config")
