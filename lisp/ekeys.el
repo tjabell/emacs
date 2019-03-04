@@ -33,8 +33,20 @@
 
 ;;; Function keys
 (global-set-key (kbd "C-!") 'eshell-here)
-(global-set-key (kbd "<f1>") 'shell)
-(global-set-key (kbd "<f2>") '(lambda () (interactive) (switch-to-buffer "*scratch*")))
+
+(define-prefix-command 'f1-map)
+(global-set-key (kbd "<f1>") 'f1-map)
+(global-set-key (kbd "<f1> s") 'shell)
+(global-set-key (kbd "<f1> f") 'counsel-describe-function)
+(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+(global-set-key (kbd "<f1> l") 'counsel-find-library)
+
+(define-prefix-command 'f2-map)
+(global-set-key (kbd "<f2>") 'f2-map)
+(global-set-key (kbd "<f2> s") '(lambda () (interactive) (switch-to-buffer "*scratch*")))
+(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+
 (global-set-key (kbd "<f5>") 'compile)
 (global-set-key (kbd "<f6>") 'gud-gdb)
 
