@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: define_test
+# key: dt_
+# --
+(deftest constraint-gen
+  (is (= 1 1)))
