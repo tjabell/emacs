@@ -14,13 +14,15 @@
     (and (nth 8 syn)
          (not (nth 3 syn)))))
 
-(defun my-capitalize-all-sqlserver-keywords ()
-  (interactive)
+(defun my-capitalize-all-sqlserver-keywords (min max)
+  (interactive "r")
   (require 'sql)
   (save-excursion
     (dolist (keywords sql-mode-ms-font-lock-keywords) 
-      (goto-char (point-min))
+      (goto-char min)
       (while (re-search-forward (car keywords) nil t)
-        (unless (point-in-comment)
+        (unless (or (point-in-comment) (> (point) max))
           (goto-char (match-beginning 0))
           (upcase-word 1))))))
+
+
