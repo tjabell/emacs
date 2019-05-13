@@ -96,3 +96,4 @@
   (load-library "ivy-keys"))
 
 (global-set-key (kbd "C-M-y") 'reverse-transpose-sexps)
+(global-set-key (kbd "C-x w") 'my-window-split-toggle)
