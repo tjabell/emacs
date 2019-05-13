@@ -34,6 +34,7 @@
 ;;; Function keys
 (global-set-key (kbd "C-!") 'eshell-here)
 
+(global-set-key (kbd "<f1> h") 'help)
 (global-set-key (kbd "<f1> f") 'counsel-describe-function)
 (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
 (global-set-key (kbd "<f1> l") 'counsel-find-library)
@@ -44,6 +45,7 @@
 (global-set-key (kbd "<f2> h") 'shell)
 (global-set-key (kbd "<f2> t") 'term)
 (global-set-key (kbd "<f2> s") '(lambda () (interactive) (switch-to-buffer "*scratch*")))
+(global-set-key (kbd "<f2> h") 'shell)
 (global-set-key (kbd "<f2> n") '(lambda () (interactive) (find-file "~/org/notes.org")))
 (global-set-key (kbd "<f2> o") '(lambda () (interactive) (find-file "~/org/emacs-notes.org")))
 (global-set-key (kbd "<f2> m") '(lambda () (interactive) (switch-to-buffer "*Messages*")))
