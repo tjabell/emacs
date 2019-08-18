@@ -48,6 +48,8 @@
   :bind (("C-c C-r" . go-remove-unused-imports)
          ("C-c i" . go-goto-imports)))
 
+(use-package racket-mode)
+
 ;;; Org Mode
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -277,7 +279,7 @@
   (local-set-key (kbd "C-c C-b") 'js-send-buffer-and-go)
   (local-set-key (kbd "C-c l") 'js-load-file-and-go)
   (local-set-key (kbd "C-c M-j") 'run-js)
-  (semantic-mode t)
+  (semantic-mode 0)
   (custom-set-variables
    '(js2-bounce-indent-p t)))
 
