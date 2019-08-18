@@ -48,7 +48,8 @@
   :bind (("C-c C-r" . go-remove-unused-imports)
          ("C-c i" . go-goto-imports)))
 
-(use-package racket-mode)
+(use-package racket-mode
+  :ensure t)
 
 ;;; Org Mode
 (org-babel-do-load-languages
