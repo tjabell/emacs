@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: drawer
+# key: dr_
+# --
+:$1:
+$0
+:END:
