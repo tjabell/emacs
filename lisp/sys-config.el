@@ -59,9 +59,12 @@
 (if (daemonp)
     (add-hook 'after-make-frame-functions 'my:on-new-frame))
 
+
 (defun my:on-new-frame (frame)
   (select-frame frame)
-  (set-frame-font "DejaVu Sans Mono 10"))
+  (if (eq system-type 'windows-nt)
+      (set-face-attribute 'default nil :family "Consolas" :height 100)
+    (set-frame-font "DejaVu Sans Mono 10")))
 
 (require 'server)
 (unless (server-running-p)
