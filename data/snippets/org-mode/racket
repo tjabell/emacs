@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: racket
+# key: rkt_
+# --
+#+begin_src racket :tangle yes
+$0
+#+end_src
