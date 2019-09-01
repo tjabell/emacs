@@ -16,7 +16,13 @@
  (add-path "emacs/site-lisp")
  (add-path "emacs/site-lisp/dosbat"))
 
-(load-library "use-package")
+(defun install-use-package-if-not-installed ()
+    (unless (package-installed-p 'use-package)
+      (package-install 'use-package)))
+
+(install-use-package-if-not-installed)
+(require 'use-package)
+
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.org/packages/"))

@@ -52,7 +52,11 @@
   :ensure t)
 
 (use-package ob-html-chrome
-  :ensure t)
+  :ensure t
+  :config
+  (setq org-babel-html-chrome-chrome-executable
+        "/opt/google/chrome/google-chrome")
+  :hook (org-babel-after-execute . #'org-redisplay-inline-images))
 
 
 ;;; Org Mode
@@ -77,7 +81,8 @@
          "* TODO %?\n %i\n %a")))
 
 (use-package org-journal
-  :init (setq org-journal-dir (concat org-directory "/journal/")))
+  :init (setq org-journal-dir (concat org-directory "/journal/"))
+  :ensure t)
 
 (setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
 
