@@ -51,6 +51,10 @@
 (use-package racket-mode
   :ensure t)
 
+(use-package ob-html-chrome
+  :ensure t)
+
+
 ;;; Org Mode
 (org-babel-do-load-languages
  'org-babel-load-languages
