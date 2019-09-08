@@ -59,8 +59,10 @@
 
 
 (use-package prettier-js
-  :ensure t
-  :hook web-mode)
+  :ensure t)
+
+(use-package impatient-mode
+  :ensure t)
 
 ;;; Org Mode
 (org-babel-do-load-languages
