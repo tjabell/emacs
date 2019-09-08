@@ -55,8 +55,7 @@
   :ensure t
   :config
   (setq org-babel-html-chrome-chrome-executable
-        "/opt/google/chrome/google-chrome")
-  :hook (org-babel-after-execute . #'org-redisplay-inline-images))
+        "/opt/google/chrome/google-chrome"))
 
 
 (use-package prettier-js
