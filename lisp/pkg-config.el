@@ -59,6 +59,10 @@
   :hook (org-babel-after-execute . #'org-redisplay-inline-images))
 
 
+(use-package prettier-js
+  :ensure t
+  :hook web-mode)
+
 ;;; Org Mode
 (org-babel-do-load-languages
  'org-babel-load-languages
