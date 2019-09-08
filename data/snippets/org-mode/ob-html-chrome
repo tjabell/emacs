@@ -1,0 +1,6 @@
+# key: srchc_
+# name: ob-html-chrome
+# --
+#+begin_src html-chrome :tangle yes
+$0
+#+end_src
