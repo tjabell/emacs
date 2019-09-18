@@ -85,9 +85,9 @@
         ("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
          "* TODO %?\n %i\n %a")))
 
-(use-package org-journal
-  :init (setq org-journal-dir (concat org-directory "/journal/"))
-  :ensure t)
+;; (use-package org-journal
+;;   :init (setq org-journal-dir (concat org-directory "/journal/"))
+;;   :ensure t)
 
 (setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
 
