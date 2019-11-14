@@ -21,6 +21,9 @@ There are two things you can do about this warning:
     (add-to-list 'package-archives
                  (cons "melpa" (concat proto "://melpa.org/packages/")))))
 
+(if (not (file-exists-p "~/.emacs.d/elpa/archives/gnu/archive-contents"))
+    (package-refresh-contents))
+
 (package-initialize)
 
 (defvar emacs-root (if (or (eq system-type 'gnu/linux)
