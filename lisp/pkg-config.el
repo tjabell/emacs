@@ -38,6 +38,8 @@
 (use-package paradox :ensure t)
 (use-package keychain-environment :ensure t)
 
+(use-package persistent-scratch :ensure t)
+
 (use-package cider :ensure t)
 (use-package editorconfig
   :ensure t
