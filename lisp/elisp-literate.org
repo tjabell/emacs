@@ -1,0 +1,46 @@
+** Karisma functions for find/replace in html
+#+BEGIN_SRC elisp
+  (defun template-reformat-head ()
+    (interactive)
+    (let ((search-re "href=\"/")
+          (replace-text "href=\"http://exotictravelers.l.xfr.me:9000/"))
+
+    (if (region-active-p)
+        (perform-replace  search-re replace-text nil t nil nil nil (region-beginning) (region-end))
+      (while (re-search-forward search-re nil t)
+        (replace-match replace-text)))))
+
+
+(defun template-unformat-head ()
+    (interactive)
+    (let ((search-re "href=\"http://exotictravelers.l.xfr.me:9000/")
+          (replace-text "href=\"/"))
+
+    (if (region-active-p)
+        (perform-replace  search-re replace-text nil t nil nil nil (region-beginning) (region-end))
+      (while (re-search-forward search-re nil t)
+        (replace-match replace-text)))))
+
+  (defun template-reformat-scripts ()
+    (interactive)
+    (let ((search-re "src=\"/")
+          (replace-text "src=\"http://exotictravelers.l.xfr.me:9000/"))
+
+    (if (region-active-p)
+        (perform-replace  search-re replace-text nil t nil nil nil (region-beginning) (region-end))
+      (while (re-search-forward search-re nil t)
+        (replace-match replace-text)))))
+
+(defun template-unformat-scripts ()
+    (interactive)
+    (let ((search-re "src=\"http://exotictravelers.l.xfr.me:9000/")
+          (replace-text "src=\"/" ))
+
+    (if (region-active-p)
+        (perform-replace  search-re replace-text nil t nil nil nil (region-beginning) (region-end))
+      (while (re-search-forward search-re nil t)
+        (replace-match replace-text)))))
+#+END_SRC
+
+#+RESULTS:
+: template-unformat-scripts
