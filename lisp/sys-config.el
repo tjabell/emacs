@@ -70,5 +70,3 @@
 (unless (server-running-p)
   (message "Starting server...")
   (server-start))
-
-(setq ivy-use-virtual-buffers t)
