@@ -97,3 +97,9 @@
 
 (global-set-key (kbd "C-M-y") 'reverse-transpose-sexps)
 (global-set-key (kbd "C-x w") 'my-window-split-toggle)
+
+(global-set-key (kbd "C-c v") 'ivy-push-view)
+(global-set-key (kbd "C-c V") 'ivy-pop-view)
+
+
+
