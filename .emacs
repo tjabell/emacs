@@ -65,13 +65,14 @@ There are two things you can do about this warning:
   (if (file-exists-p custom-file)
       (load-library custom-file)))
 
-;;; Keychain Setup
+;;; **** Keychain Setup ***
+;;; On system (arch)
 ;;; pacman -S keychain
 ;;; add to bash profile "eval `keychain --eval id_rsa`"
 ;;; relies on keychain-environment package: (use-package keychain-environment :ensure t) - should be in pkg-config
 
-                                        ; Add and uncomment below lines in .emacs
-                                        ;(keychain-refresh-environment)
+ ;;; Add and uncomment below lines in .emacs
+ ;(keychain-refresh-environment)
 
 (setq js2-strict-missing-semi-warning nil)
 
