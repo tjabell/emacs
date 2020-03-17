@@ -15,7 +15,7 @@
 (use-package elpy :ensure t)
 (use-package multiple-cursors :ensure t)
 (use-package iy-go-to-char :ensure t)
-(use-package haskell-mode :ensure t)
+;(use-package haskell-mode :ensure t)
 (use-package skewer-mode :ensure t)
 (use-package emmet-mode :ensure t)
 (use-package web-mode :ensure t)
@@ -25,7 +25,7 @@
 (use-package company-c-headers :ensure t)
 (use-package evil :ensure t)
 (use-package geiser :ensure t)
-(use-package sublime-themes :ensure t)
+;(use-package sublime-themes :ensure t)
 ;(use-package cyberpunk-theme :ensure t)
 (use-package tern :ensure t)
 (use-package company-tern :ensure t)
@@ -189,16 +189,21 @@
     (defalias 'na 'nosetests-all)
     (defalias 'np 'nosetests-pdb-one)
     (defalias 'nm 'nosetests-module)))
+
 ;; (when (require 'pymacs nil t)
 ;;   (setenv "PYMACS_PYTHON" "python2")
 ;;   (pymacs-load "ropemacs" "rope-" t))
 
-(use-package smart-mode-line
+;; (use-package smart-mode-line
+;;   :ensure t
+;;   :config (progn
+;;             (setq sml/theme 'respectful)
+;;             (setq sml/no-confirm-load-theme t)
+;;             (sml/setup)))
+
+(use-package doom-modeline
   :ensure t
-  :config (progn
-            (setq sml/theme 'respectful)
-            (setq sml/no-confirm-load-theme t)
-            (sml/setup)))
+  :init (doom-modeline-mode 1))
 
 
 (use-package ace-jump-mode
