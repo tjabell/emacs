@@ -1,3 +1,4 @@
+;;; Common Configuration, should be manually synced here for now
 (require 'cl)
 (require 'package)
 
@@ -57,7 +58,6 @@ There are two things you can do about this warning:
 
 (setq visible-bell t)
 
-;; Experimental
 (setenv "NODE_NO_READLINE" "1")
 
 (add-to-list 'auto-mode-alist '(".emacs.custom" . emacs-lisp-mode))
@@ -76,21 +76,4 @@ There are two things you can do about this warning:
 
 (setq js2-strict-missing-semi-warning nil)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("c5a044ba03d43a725bd79700087dea813abcb6beb6be08c7eb3303ed90782482" "1d9492749ca290d1702b2f331b99a2692cda19fb1e4aae4b9e75515027afbf3b" "3b819bba57a676edf6e4881bd38c777f96d1aa3b3b5bc21d8266fa5b0d0f1ebf" "3a727bdc09a7a141e58925258b6e873c65ccf393b2240c51553098ca93957723" default)))
- '(split-height-threshold nil)
- '(flymake-google-cpplint-command "/usr/bin/cpplint")
- '(send-mail-function (quote mailclient-send-it)))
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+;; ********* Experimental/Local configuration can be placed here *********
