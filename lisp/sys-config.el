@@ -55,18 +55,30 @@
 (defalias 'wm 'whitespace-mode)
 (defalias 'nxml 'nxml-mode)
 
-;;; also see: http://stackoverflow.com/questions/18904529/after-emacs-deamon-i-can-not-see-new-theme-in-emacsclient-frame-it-works-fr
-(if (daemonp)
-    (add-hook 'after-make-frame-functions 'my:on-new-frame))
-
-
+;; [IMPORTANT] This function needs to take a (frame) arg 
 (defun my:on-new-frame (frame)
   (select-frame frame)
   (if (eq system-type 'windows-nt)
       (set-face-attribute 'default nil :family "Consolas" :height 100)
     (set-frame-font "DejaVu Sans Mono 10")))
 
+;;; also see: http://stackoverflow.com/questions/18904529/after-emacs-deamon-i-can-not-see-new-theme-in-emacsclient-frame-it-works-fr
+(if (daemonp)
+    (add-hook 'after-make-frame-functions 'my:on-new-frame))
+
 (require 'server)
 (unless (server-running-p)
   (message "Starting server...")
   (server-start))
+
+;;; Common Lisp
+(add-to-list 'auto-mode-alist '("source-registry.conf" . lisp-mode))
+
+(defun my:lisp-mode-init ()
+  (paredit-mode)
+  (rainbow-delimiters-mode))
+
+(add-hook 'lisp-mode-hook
+          #'my:lisp-mode-init)
+
+(use-package rainbow-delimiters :ensure t)
