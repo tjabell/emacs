@@ -1,7 +1,7 @@
 (require 'use-package)
 
 ;;   "List of packages that I like.")
-(use-package csharp-mode :ensure t)
+(use-package omnisharp :ensure t)
 (use-package paredit :ensure t)
 (use-package iedit :ensure t)
 (use-package flymake-cursor :ensure t)
@@ -341,19 +341,12 @@
 (defun my:csharp-init ()
   (eval-after-load 'company
     '(add-to-list 'company-backends 'company-omnisharp))
-  ;; (omnisharp-mode) ; omnisharp is broken for now
+  (omnisharp-mode) 
   (hs-minor-mode 1)
   (auto-revert-mode)
   (linum-mode)
   (c-set-style "c#")
-  (if my-csharp-default-compiler
-      (progn
-        (fset 'orig-csharp-get-value-from-comments
-              (symbol-function 'csharp-get-value-from-comments))
-        (fset 'csharp-get-value-from-comments
-              (symbol-function 'my-csharp-get-value-from-comments)))
-    (flymake-mode)
-    (flycheck-mode)))
+  (flycheck-mode))
 
 (defun my:term-mode-hook ()
   (setq yas-dont-activate t))
