@@ -108,12 +108,6 @@
 
 (use-package dired-x)
 
-(use-package flymake-google-cpplint
-  :ensure t
-  :config
-  (custom-set-variables
-   '(flymake-google-cpplint-command "/usr/bin/cpplint")))
-
 (use-package emmet-mode
   :ensure t
   :config
@@ -134,10 +128,6 @@
            'comint-preoutput-filter-functions
            (lambda (output)
              (replace-regexp-in-string "\033\\[[0-9]+[A-Z]" "" output))))))
-
-(use-package powershell
-  :ensure t
-  :config (add-to-list 'auto-mode-alist '("\\.ps1" . powershell-mode)))
 
 (use-package sgml-mode
   :ensure t
@@ -306,9 +296,9 @@
   (custom-set-variables
    '(js2-bounce-indent-p t)))
 
-(defun my:ac-c-header-init ()
-  (require 'auto-complete-c-headers)
-  (add-to-list 'achead:include-directories '("/usr/include" "/usr/lib/include")))
+;; (defun my:ac-c-header-init ()
+;;   (require 'auto-complete-c-headers)
+;;   (add-to-list 'achead:include-directories '("/usr/include" "/usr/lib/include")))
 
 (defun my:cpp-mode-init ()
   (unless (or (file-exists-p "makefile")
