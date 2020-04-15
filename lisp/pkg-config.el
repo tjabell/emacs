@@ -294,21 +294,68 @@
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
   (yas-activate-extra-mode 'html-mode))
 
-(defvar my-csharp-default-compiler nil)
-(setq my-csharp-default-compiler "mono @@FILE@@")
+;;;;;;;;;;;;;;;;;;
+;;; C# Editing
+;;;;;;;;;;;;;;;;;;
+;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+(setq lsp-keymap-prefix "s-l")
 
-(defun my-csharp-get-value-from-comments (marker-string line-limit)
-  my-csharp-default-compiler)
+; optional if you want which-key integration
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode))
+
+;; optionally
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode
+  :config (progn (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+                 (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)))
+
+(use-package
+  company-lsp
+  :ensure t
+  :commands company-lsp)
+
+(push 'company-lsp company-backends)
+
+;; if you are helm user
+;; (use-package helm-lsp :commands helm-lsp-workspace-symbol)
+;; if you are ivy user
+(use-package lsp-ivy
+  :ensure t
+  :commands lsp-ivy-workspace-symbol)
+
+(use-package lsp-treemacs
+  :ensure t
+  :commands lsp-treemacs-errors-list)
+
+(use-package lsp-mode
+  :ensure t
+  :hook ((csharp-mode . lsp))
+  :commands lsp)
+
+
+
+
+
+(setq lsp-prefer-capf nil)
+(setq lsp-idle-delay 0.500)
+
+;(defvar my-csharp-default-compiler nil)
+;(setq my-csharp-default-compiler "mono @@FILE@@")
+
+;(defun my-csharp-get-value-from-comments (marker-string line-limit)
+;  my-csharp-default-compiler)
 
 (defun my:csharp-init ()
-  (eval-after-load 'company
-    '(add-to-list 'company-backends 'company-omnisharp))
-  (omnisharp-mode) 
   (hs-minor-mode 1)
-  (auto-revert-mode)
-  (linum-mode)
-  (c-set-style "c#")
-  (flycheck-mode))
+  (c-set-style "c#"))
+
+(add-hook 'csharp-mode-hook
+          #'my:csharp-init)
+;;;;;;;;; END
 
 (defun my:term-mode-hook ()
   (setq yas-dont-activate t))
@@ -318,9 +365,6 @@
 
 (add-hook 'compilation-filter-hook
           #'my:compilation-filter-init)
-
-(add-hook 'csharp-mode-hook
-          #'my:csharp-init)
 
 (add-hook 'web-mode-hook
           #'my:web-mode-init)
