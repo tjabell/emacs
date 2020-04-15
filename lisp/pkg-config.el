@@ -362,14 +362,15 @@
 (key-chord-mode 1)
 (global-ede-mode 1)
 (projectile-global-mode)
-(global-company-mode)
-(yas/global-mode 1)
+;(global-company-mode)
+;(yas/global-mode 1)
 ;(helm-mode 1)
 
 ;;; Semantic
-(semantic-mode t)
-(global-semantic-idle-completions-mode t)
-(global-semantic-decoration-mode t)
-(global-semantic-highlight-func-mode t)
-(global-semantic-show-unmatched-syntax-mode 0)
+;(semantic-mode t)
+;(global-semantic-idle-completions-mode t)
+;(global-semantic-decoration-mode t)
+;(global-semantic-highlight-func-mode t)
+;(global-semantic-show-unmatched-syntax-mode 0)
+
 ;;; End Semantic
