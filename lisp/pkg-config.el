@@ -222,8 +222,9 @@
             (lambda ()
               (setq xterm-color-preserve-properties t)))
 (require 'eshell)
-(add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
-(setq eshell-output-filter-functions (remove 'eshell-handle-ansi-color eshell-output-filter-functions))
+; TODO: Figure out why this is breaking
+;(add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+;(setq eshell-output-filter-functions (remove 'eshell-handle-ansi-color eshell-output-filter-functions))
 
 ;; (when (require 'helm nil t)
 ;;   (global-set-key (kbd "C-c h") 'helm-mini)
