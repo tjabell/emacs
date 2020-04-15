@@ -1,32 +1,21 @@
 (require 'use-package)
 
 ;;   "List of packages that I like.")
-(use-package omnisharp :ensure t)
+
 (use-package paredit :ensure t)
 (use-package iedit :ensure t)
-(use-package flymake-cursor :ensure t)
-(use-package google-c-style :ensure t)
-(use-package maxframe :ensure t)
 (use-package avy :ensure t)
 (use-package ace-window :ensure t)
-(use-package pcre2el :ensure t)
-(use-package flx-ido :ensure t)
-(use-package jedi :ensure t)
-(use-package elpy :ensure t)
 (use-package multiple-cursors :ensure t)
-(use-package iy-go-to-char :ensure t)
-;(use-package haskell-mode :ensure t)
+
 (use-package skewer-mode :ensure t)
 (use-package emmet-mode :ensure t)
 (use-package web-mode :ensure t)
 (use-package js-comint :ensure t)
 (use-package csv-mode :ensure t)
-(use-package company :ensure t)
-(use-package company-c-headers :ensure t)
-(use-package evil :ensure t)
+
 (use-package geiser :ensure t)
-;(use-package sublime-themes :ensure t)
-;(use-package cyberpunk-theme :ensure t)
+
 (use-package tern :ensure t)
 (use-package company-tern :ensure t)
 (use-package js2-refactor :ensure t)
@@ -44,21 +33,6 @@
 (use-package editorconfig
   :ensure t
   :config (editorconfig-mode 1))
-;;; Go Mode
-(use-package go-mode
-  :ensure t
-  :bind (("C-c C-r" . go-remove-unused-imports)
-         ("C-c i" . go-goto-imports)))
-
-(use-package racket-mode
-  :ensure t)
-
-(use-package ob-html-chrome
-  :ensure t
-  :config
-  (setq org-babel-html-chrome-chrome-executable
-        "/opt/google/chrome/google-chrome"))
-
 
 (use-package prettier-js
   :ensure t)
@@ -86,10 +60,6 @@
          "* %?\nEntered on %U\n %i\n %a")
         ("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
          "* TODO %?\n %i\n %a")))
-
-;; (use-package org-journal
-;;   :init (setq org-journal-dir (concat org-directory "/journal/"))
-;;   :ensure t)
 
 (setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
 
@@ -167,9 +137,10 @@
 ;;                                  yas/ido-prompt)))
 
 (use-package company
+  :ensure t
   :config (progn
             (setq company-idle-delay 0)
-            (setq company-minimum-prefix-length 3)))
+            (setq company-minimum-prefix-length 1)))
 
 (use-package nose
   :ensure t
