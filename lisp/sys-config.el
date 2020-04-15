@@ -6,8 +6,6 @@
 
 (menu-bar-mode 0)
 
-(setq initial-scratch-message "")
-
 ;; Backup settings				
 (setq
  make-backup-files t
