@@ -114,10 +114,11 @@
 
 (use-package ivy
   :ensure t
-  :config
-  (progn (setq ivy-height 50)
-         (setq ivy-use-virtual-buffers t)
-         (setq ivy-count-format "(%d/%d) ")))
+  :config (progn (setq ivy-height 50)
+                 (setq ivy-use-virtual-buffers t)
+                 (setq ivy-count-format "(%d/%d) "))
+  :bind (("C-c C-r" . ivy-resume)
+         ("<f6>" . ivy-resume)))
 
 (use-package projectile
   :ensure t
@@ -129,7 +130,13 @@
   :bind (("C-h" . counsel-projectile)
          ("<f1> f" . counsel-describe-function)
          ("<f1> v" . counsel-describe-variable)
-         ("<f1> l" . counsel-find-library)))
+         ("<f1> l" . counsel-find-library)
+         ("M-x" . counsel-M-x)
+         ("C-x C-f" . counsel-find-file)
+         ("C-c g" . counsel-git)
+         ("C-c j" . counsel-git-grep)
+         ("C-c k" . counsel-ag)
+         ("C-x l" . counsel-locate)))
 
 (use-package yasnippet
   :ensure t
