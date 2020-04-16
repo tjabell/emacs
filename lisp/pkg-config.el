@@ -138,6 +138,10 @@
          ("C-c k" . counsel-ag)
          ("C-x l" . counsel-locate)))
 
+(use-package swiper
+  :ensure t
+  :bind ("C-s" . swiper))
+
 (use-package yasnippet
   :ensure t
   :config (add-to-list 'yas-snippet-dirs "~/emacs/data/snippets/"))
