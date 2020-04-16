@@ -35,9 +35,6 @@
 (global-set-key (kbd "C-!") 'eshell-here)
 
 (global-set-key (kbd "<f1> h") 'help)
-(global-set-key (kbd "<f1> f") 'counsel-describe-function)
-(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-(global-set-key (kbd "<f1> l") 'counsel-find-library)
 (global-set-key (kbd "<f1> m") 'describe-mode)
 
 (define-prefix-command 'f2-map)

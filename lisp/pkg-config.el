@@ -40,6 +40,7 @@
 (use-package impatient-mode
   :ensure t)
 
+;;;;;;;;;;;;;;;;;;
 ;;; Org Mode
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -50,25 +51,24 @@
    (haskell . t)
    (C . t)))
 
-(setq org-default-notes-file (concat org-directory "/notes.org"))
-(define-key global-map (kbd "C-c c")  'org-capture)
-
-(setq org-todo-keywords
-      '((sequence "TODO" "TEST" "DONE")))
-(setq org-capture-templates
-      '(("j" "Journal" entry (file+datetree "~/org/journal.org")
-         "* %?\nEntered on %U\n %i\n %a")
-        ("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
-         "* TODO %?\n %i\n %a")))
-
-(setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
-
-(setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
-
-(setq org-babel-default-header-args:C
-      (cons '(:tangle . "yes")
-            (assq-delete-all :tangle org-babel-default-header-args)))
-;; End Org mode
+(use-package org
+  :init (progn
+          (setq org-default-notes-file (concat org-directory "/notes.org"))
+          (setq org-todo-keywords
+                '((sequence "TODO" "TEST" "DONE")))
+          (setq org-capture-templates
+                '(("j" "Journal" entry (file+datetree "~/org/journal.org")
+                   "* %?\nEntered on %U\n %i\n %a")
+                  ("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
+                   "* TODO %?\n %i\n %a")))
+          (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
+          (setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
+          (setq org-babel-default-header-args:C
+                (cons '(:tangle . "yes")
+                      (assq-delete-all :tangle org-babel-default-header-args))))
+  :bind ("C-c c" . org-capture))
+;;; End Org
+;;;;;;;;;;; 
 
 (use-package uniquify
   :config
@@ -123,18 +123,17 @@
   :ensure t
   :config (setq projectile-completion-system 'ivy))
 
+
 (use-package counsel
   :ensure t
-  :bind ("C-h" . counsel-projectile))
+  :bind (("C-h" . counsel-projectile)
+         ("<f1> f" . counsel-describe-function)
+         ("<f1> v" . counsel-describe-variable)
+         ("<f1> l" . counsel-find-library)))
 
 (use-package yasnippet
   :ensure t
   :config (add-to-list 'yas-snippet-dirs "~/emacs/data/snippets/"))
-
-;; (use-package dropdown-list
-;;   :ensure t
-;;   :config (setq yas/prompt-functions '(yas/dropdown-prompt
-;;                                  yas/ido-prompt)))
 
 (use-package company
   :ensure t
@@ -301,14 +300,16 @@
   my-csharp-default-compiler)
 
 (defun my:csharp-init ()
+  (setq omnisharp-server-executable-path "/home/trevor/omnisharp/run")
   (eval-after-load 'company
     '(add-to-list 'company-backends 'company-omnisharp))
-  (omnisharp-mode) 
+  (company-mode)
   (hs-minor-mode 1)
   (auto-revert-mode)
   (linum-mode)
   (c-set-style "c#")
-  (flycheck-mode))
+  (flycheck-mode)
+  (omnisharp-mode))
 
 (defun my:term-mode-hook ()
   (setq yas-dont-activate t))
