@@ -68,7 +68,7 @@
                       (assq-delete-all :tangle org-babel-default-header-args))))
   :bind ("C-c c" . org-capture))
 ;;; End Org
-;;;;;;;;;;; 
+;;;;;;;;;;;
 
 (use-package uniquify
   :config
@@ -157,21 +157,9 @@
     (defalias 'np 'nosetests-pdb-one)
     (defalias 'nm 'nosetests-module)))
 
-;; (when (require 'pymacs nil t)
-;;   (setenv "PYMACS_PYTHON" "python2")
-;;   (pymacs-load "ropemacs" "rope-" t))
-
-;; (use-package smart-mode-line
-;;   :ensure t
-;;   :config (progn
-;;             (setq sml/theme 'respectful)
-;;             (setq sml/no-confirm-load-theme t)
-;;             (sml/setup)))
-
 (use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1))
-
 
 (use-package ace-jump-mode
   :ensure t
