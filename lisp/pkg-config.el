@@ -307,6 +307,15 @@
 (defun my-csharp-get-value-from-comments (marker-string line-limit)
   my-csharp-default-compiler)
 
+
+(use-package omnisharp
+  :ensure t
+  :bind (:map omnisharp-mode-map
+              ([remap xref-find-definitions] . omnisharp-go-to-definition)
+              ([remap xref-find-references] . omnisharp-find-usages)
+              ;; `xref-pop-marker-stack' works as expected.
+              ))
+
 (defun my:csharp-init ()
   (setq omnisharp-server-executable-path "/home/trevor/omnisharp/run")
   (eval-after-load 'company
