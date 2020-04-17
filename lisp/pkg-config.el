@@ -112,19 +112,8 @@
               (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
               (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))))
 
-(use-package ivy
-  :ensure t
-  :config (progn (setq ivy-height 50)
-                 (setq ivy-use-virtual-buffers t)
-                 (setq ivy-count-format "(%d/%d) "))
-  :bind (("C-c C-r" . ivy-resume)
-         ("<f6>" . ivy-resume)))
-
-(use-package projectile
-  :ensure t
-  :config (setq projectile-completion-system 'ivy))
-
-
+;;;;;;;;;;;;;;;;;;
+;;; Ivy/Counsel
 (use-package counsel
   :ensure t
   :bind (("C-h" . counsel-projectile)
@@ -137,6 +126,26 @@
          ("C-c j" . counsel-git-grep)
          ("C-c k" . counsel-ag)
          ("C-x l" . counsel-locate)))
+
+(use-package ivy
+  :ensure t
+  :config (progn (setq ivy-height 50)
+                 (setq ivy-use-virtual-buffers t)
+                 (setq ivy-count-format "(%d/%d) "))
+  :bind (("C-c C-r" . ivy-resume)
+         ("<f6>" . ivy-resume)))
+
+(define-key ivy-minibuffer-map (kbd "<left>") 'counsel-up-directory)
+(define-key ivy-minibuffer-map (kbd "C-l") 'counsel-up-directory)
+(define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+;;; End Ivy
+;;;;;;;;;;;;;;;;;;
+(use-package projectile
+  :ensure t
+  :config (setq projectile-completion-system 'ivy))
+
+
+
 
 (use-package swiper
   :ensure t
