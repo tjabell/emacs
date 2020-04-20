@@ -66,7 +66,13 @@
           (setq org-babel-default-header-args:C
                 (cons '(:tangle . "yes")
                       (assq-delete-all :tangle org-babel-default-header-args))))
-  :bind ("C-c c" . org-capture))
+  :bind (("C-c c" . org-capture)
+         ("C-c C-x m" . org-meta-return)
+         ("C-c C-x r" . org-metaright)
+         ("C-c C-x l" . org-metaleft)
+         ))
+
+(use-package org-tempo)
 ;;; End Org
 ;;;;;;;;;;;
 
