@@ -70,7 +70,7 @@
 ;;        vcproj of the current project.
 
 
-(require 'cl)
+(require 'cl-lib)
 (require 'project-buffer-mode)
 
 
