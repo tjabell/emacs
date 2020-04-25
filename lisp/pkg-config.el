@@ -28,7 +28,6 @@
 ;(use-package sublime-themes :ensure t)
 ;(use-package cyberpunk-theme :ensure t)
 (use-package tern :ensure t)
-(use-package company-tern :ensure t)
 (use-package js2-refactor :ensure t)
 (use-package json-mode :ensure t)
 
