@@ -85,7 +85,7 @@ Symbol can be the symbol directly, no lookup needed."
 ;;The following code can be used to add strings, and not just single
 ;; characters. But not really working yet, as it does not remove the thing that
 ;; is below
-;; (require 'cl)
+;; (require 'cl-lib)
 ;; (defun compose-string-to-region (start end string decomposingfunct)
 ;;   (loop for i from 0 to (- (length string) 1)
 ;; 	do (compose-region (+ i start) (+  start i 1) (substring string i (+ i 1) ) decomposingfunct)))
