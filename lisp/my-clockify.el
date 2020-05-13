@@ -16,6 +16,8 @@
 
   (setq my:bonappetit-hosting-project-id "5ea87fcd7468d5567e641f34")
 
+  (setq my:bonappetit-maintenance-project-id "5eacc1ec26b404092a8bf1aa")
+
   (setq my:parsus-training-id "5d702b48a3fe2c1b233ea83c")
 
   (setq my:acdhh-project-id "5d6fff262b576659a087efb4")
