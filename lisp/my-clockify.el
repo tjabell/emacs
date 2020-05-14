@@ -1,4 +1,5 @@
 (defun my:clockify-init ()
+  (interactive)
 ;;; Need this to initialize clockify api I guess
   (setq my:clockify:userid  (clockify--user-info))
 
