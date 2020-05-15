@@ -322,7 +322,6 @@
               ))
 
 (defun my:csharp-init ()
-  (setq omnisharp-server-executable-path "/home/trevor/omnisharp/run")
   (eval-after-load 'company
     '(add-to-list 'company-backends 'company-omnisharp))
   (company-mode)
