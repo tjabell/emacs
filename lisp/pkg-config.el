@@ -264,7 +264,8 @@
   (colorize-compilation-buffer))
 
 (defun my:emacs-lisp-mode-init ()
-  (paredit-mode))
+  (paredit-mode)
+  (company-mode))
 
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (defun my:js2-mode-init ()
