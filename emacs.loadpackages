@@ -1,6 +1,7 @@
 (load-library "sys-config")
 (load-library "pkg-config")
 (load-library "key-config")
+(load-library "my-clockify")
 (load-library "window-management")
 (load-library "uniqueify")
 (load-library "eshell_cust")
@@ -17,5 +18,4 @@
 (load-library "open-buffer-with")
 (load-library "stackoverflow")
 (load-library "my-misc")
-(load-library "my-clockify")
 (autoload 'refill-mode "refill" "Refill minor mode." t)
