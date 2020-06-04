@@ -18,4 +18,5 @@
 (load-library "open-buffer-with")
 (load-library "stackoverflow")
 (load-library "my-misc")
+(load-library "tempo-snippets")
 (autoload 'refill-mode "refill" "Refill minor mode." t)
