@@ -262,7 +262,7 @@ tempo-interactive set to nil."
 
 (defun tempo-snippets-update-forms ()
   "Re-evaluate all forms."
-  (flet ((tempo-lookup-named (name)
+  (cl-flet ((tempo-lookup-named (name)
             (tempo-snippets-overlay-text
              (tempo-snippets-find-source name))))
     (dolist (ov tempo-snippets-forms)
@@ -277,7 +277,7 @@ tempo-interactive set to nil."
   "Insert an automatically re-evaluating snippet form at point."
   (let (overlay eval-result lookup-used)
     ;; FIXME: check for handlers
-    (flet ((tempo-lookup-named (name)
+    (cl-flet ((tempo-lookup-named (name)
               (setq lookup-used t)
               ;; Get value from `tempo-save-named' or snippet source
               (or (cdr (assq name tempo-named-insertions))
@@ -508,7 +508,7 @@ will prompt for input right in the buffer instead of the minibuffer."
                                  (tempo-snippets-insert-form element))))
         (tempo-interactive tempo-snippets-interactive)
         (inhibit-modification-hooks t))
-    (flet ((tempo-insert-named (name) (tempo-snippets-insert-mirror name))
+    (cl-flet ((tempo-insert-named (name) (tempo-snippets-insert-mirror name))
            (tempo-insert-prompt (a &optional b c)
                                 (tempo-snippets-insert-prompt a b c)))
       (if (not tempo-interactive)
@@ -529,7 +529,7 @@ will prompt for input right in the buffer instead of the minibuffer."
 (defun tempo-snippets-complete-tag (&optional silent)
   "`tempo-snippets' version of `tempo-complete-tag.'"
   ;; unfortunately this is a code clone of the original
-  ;; we can't use flet, because that would cause an infinite recursion
+  ;; we can't use cl-flet, because that would cause an infinite recursion
   (interactive "*")
   (let* ((collection (tempo-build-collection))
 	 (match-info (tempo-find-match-string tempo-match-finder))
