@@ -65,7 +65,7 @@
 (global-set-key (kbd "C-<tab>") 'next-buffer)
 (global-set-key (kbd "C-<iso-lefttab>") 'previous-buffer)
 
-(global-set-key (kbd "C-c o") '(lambda () (interactive) (find-file "~/org/notes.org")))
+(global-set-key (kbd "C-c o") '(lambda () (interactive) (find-file "~/org/emacs-notes.org")))
 (global-set-key (kbd "C-c p") '(lambda () (interactive) (find-file "~/projects/projects.org")))
 
 (global-set-key (kbd "M-p") 'ace-window)
