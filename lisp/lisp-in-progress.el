@@ -8,3 +8,9 @@
   (interactive "sCommit Message: ")
   (magit-call-git "commit" "-a" "-m" message)
   (magit-refresh)  )
+
+(defun my-magit-commit-and-push-all (message)
+  (interactive "sCommit Message: ")
+  (magit-call-git "commit" "-a" "-m" message)
+  (magit-call-git "push")
+  (magit-refresh))
