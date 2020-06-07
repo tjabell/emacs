@@ -14,3 +14,6 @@
   (magit-call-git "commit" "-a" "-m" message)
   (magit-call-git "push")
   (magit-refresh))
+
+
+(global-set-key (kbd "C-c C-g A") 'my-magit-commit-all-and-push)
