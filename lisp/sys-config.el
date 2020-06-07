@@ -39,6 +39,7 @@
 (add-to-list 'auto-mode-alist '("emacs.loadpackages" . emacs-lisp-mode))
 (add-to-list 'auto-mode-alist '("bashrc" . sh-mode))
 (add-to-list 'auto-mode-alist '("bashbootstrap" . sh-mode))
+(add-to-list 'auto-mode-alist '("diary" . diary-mode))
 
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
