@@ -1,4 +1,6 @@
 (require 'magit)
+(require 'tempo)
+(load-library "tempo-snippets")
 
 (tempo-define-snippet "assembla-ticket-email"
                        '((p "Space: " project) "+" p "@tickets.assembla.com"))
