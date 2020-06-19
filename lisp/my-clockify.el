@@ -36,7 +36,9 @@
   (setq my:equinox-project-id "5d6fe70bd162f830901a8df2")
   (setq my:equinox-gac-task-id "5d8e74c4a0b06a32d93904da")
   (setq my:equinox-rks-task-id "5d8e74bfad3d0067ca648e6b")
-  (setq my:equinox-wpt-task-id "5d6fff98a3fe2c1b233e704d"))
+  (setq my:equinox-wpt-task-id "5d6fff98a3fe2c1b233e704d")
+  
+  (setq my:esa-project-id "5ec8372146cf2748cd6a77c6"))
 
 
 (defun my:clockify-print-projects ()

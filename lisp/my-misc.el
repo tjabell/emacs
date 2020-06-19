@@ -2,7 +2,7 @@
        (insert (shell-command-to-string "echo -n $(date +%Y-%m-%d)")))
 
 (defun insert-signature-for-code () (interactive)
-       (insert (shell-command-to-string "echo -n $(date +%Y%m%d) -tja")))
+       (insert (shell-command-to-string "echo -n $(date +%Y%m%d)TJA")))
 
 (defun price-amazon (n)
   (interactive "nEnter amount per hour: ")
