@@ -40,7 +40,7 @@
 (define-prefix-command 'f2-map)
 (global-set-key (kbd "<f2>") 'f2-map)
 (global-set-key (kbd "<f2> h") 'shell)
-(global-set-key (kbd "<f2> t") 'term)
+(global-set-key (kbd "<f2> t") 'vterm)
 (global-set-key (kbd "<f2> s") '(lambda () (interactive) (switch-to-buffer "*scratch*")))
 (global-set-key (kbd "<f2> h") 'shell)
 (global-set-key (kbd "<f2> n") '(lambda () (interactive) (find-file "~/org/notes.org")))
