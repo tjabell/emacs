@@ -1,3 +1,5 @@
+(require 'clockify)
+
 (defun my:clockify-init ()
   (interactive)
 ;;; Need this to initialize clockify api I guess
@@ -46,7 +48,7 @@
   (unless (boundp my:projects)
     (setq my:projects (clockify--projects)))
   (with-current-buffer (get-buffer-create "*my-projects*")
-    (seq-map (lambda (i) (cl-prettyprint i)) my:projects)))
+    (seq-map (lambda (i) (insert (cl-prettyprint i))) my:projects)))
 
 
 
