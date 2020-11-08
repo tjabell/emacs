@@ -1,43 +1,40 @@
 (require 'use-package)
-
 ;;   "List of packages that I like.")
 
-(use-package paredit :ensure t)
-(use-package iedit :ensure t)
-(use-package avy :ensure t)
-(use-package ace-window :ensure t)
-(use-package multiple-cursors :ensure t)
+(use-package paredit )
+(use-package iedit)
+(use-package avy )
+(use-package ace-window )
+(use-package multiple-cursors )
 
-(use-package skewer-mode :ensure t)
-(use-package emmet-mode :ensure t)
-(use-package web-mode :ensure t)
-(use-package js-comint :ensure t)
-(use-package csv-mode :ensure t)
+(use-package skewer-mode )
+(use-package emmet-mode )
+(use-package web-mode )
+(use-package js-comint )
+(use-package csv-mode )
 
-(use-package geiser :ensure t)
+(use-package geiser )
 
-(use-package tern :ensure t)
-(use-package js2-refactor :ensure t)
-(use-package json-mode :ensure t)
+(use-package tern )
+(use-package js2-refactor )
+(use-package json-mode )
 
-(use-package auto-yasnippet :ensure t)
-(use-package exec-path-from-shell :ensure t)
-(use-package counsel-projectile :ensure t)
-(use-package paradox :ensure t)
-(use-package keychain-environment :ensure t)
+(use-package auto-yasnippet )
+(use-package exec-path-from-shell )
+(use-package counsel-projectile )
+(use-package paradox )
+(use-package keychain-environment )
 
-(use-package persistent-scratch :ensure t)
+(use-package persistent-scratch )
 
-(use-package cider :ensure t)
+(use-package cider )
 (use-package editorconfig
-  :ensure t
+  
   :config (editorconfig-mode 1))
 
-(use-package prettier-js
-  :ensure t)
+(use-package prettier-js)
 
-(use-package impatient-mode
-  :ensure t)
+(use-package impatient-mode)
 
 ;;;;;;;;;;;;;;;;;;
 ;;; Org Mode
@@ -71,27 +68,30 @@
          ("C-c C-x l" . org-metaleft)
          ))
 
-(use-package org-tempo)
+;(use-package org-tempo)
 ;;; End Org
 ;;;;;;;;;;;
 
-(use-package uniquify
-  :config
-  (setq
-   uniquify-buffer-name-style 'post-forward
-   uniquify-separator ":"))
 
-(use-package dired-x)
+;; now distributed with emacs
+;; (use-package uniquify
+;;   :config
+;;   (setq
+;;    uniquify-buffer-name-style 'post-forward
+;;    uniquify-separator ":"))
+
+;; I think this is included in emacs 27.1 
+;;(use-package dired-x)
 
 (use-package emmet-mode
-  :ensure t
+  
   :config
   (progn
     (add-hook 'web-mode-hook 'emmet-mode)
     (define-key web-mode-map (kbd "C-/") 'emmet-expand-line)))
 
 (use-package js-comint
-  :ensure t
+  
   :config
    ;; From here: http://stackoverflow.com/questions/13862471/using-node-js-with-js-comint-in-emacs
    (setq inferior-js-mode-hook
@@ -105,14 +105,14 @@
              (replace-regexp-in-string "\033\\[[0-9]+[A-Z]" "" output))))))
 
 (use-package sgml-mode
-  :ensure t
+  
   :config (progn
             (add-hook 'html-mode-hook 'emmet-mode)
             (define-key html-mode-map (kbd "C-/") 'emmet-expand-line)))
 
 
 (use-package web-mode
-  :ensure t
+  
   :config (progn
               (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
               (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))))
@@ -120,7 +120,7 @@
 ;;;;;;;;;;;;;;;;;;
 ;;; Ivy/Counsel
 (use-package counsel
-  :ensure t
+  
   :bind (("C-h" . counsel-projectile)
          ("<f1> f" . counsel-describe-function)
          ("<f1> v" . counsel-describe-variable)
@@ -133,7 +133,7 @@
          ("C-x l" . counsel-locate)))
 
 (use-package ivy
-  :ensure t
+  
   :config (progn (setq ivy-height 50)
                  (setq ivy-use-virtual-buffers t)
                  (setq ivy-count-format "(%d/%d) "))
@@ -146,49 +146,40 @@
 ;;; End Ivy
 ;;;;;;;;;;;;;;;;;;
 (use-package projectile
-  :ensure t
+  
   :config (setq projectile-completion-system 'ivy))
 
 
 
 
 (use-package swiper
-  :ensure t
+  
   :bind ("C-s" . swiper))
 
 (use-package yasnippet
-  :ensure t
+  
   :config (add-to-list 'yas-snippet-dirs "~/emacs/data/snippets/"))
 
 (use-package company
-  :ensure t
+  :hook (org-mode typescript-mode lisp-mode)
   :config (progn
             (setq company-idle-delay 0)
             (setq company-minimum-prefix-length 1)))
 
-(use-package nose
-  :ensure t
-  :config
-  (progn
-    (defalias 'no 'nosetests-one)
-    (defalias 'na 'nosetests-all)
-    (defalias 'np 'nosetests-pdb-one)
-    (defalias 'nm 'nosetests-module)))
 
 (use-package doom-modeline
-  :ensure t
+  
   :init (doom-modeline-mode 1))
 
 (use-package ace-jump-mode
-  :ensure t
+  
   :bind ("C-." . ace-jump-mode)
   :config (progn
             (ace-jump-mode-enable-mark-sync)
             (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)))
 
 
-(use-package xterm-color
-  :ensure t)
+(use-package xterm-color)
 
 
 (add-hook 'eshell-mode-hook
@@ -209,19 +200,19 @@
 
 
 (use-package neotree
-  :ensure t
+  
   :bind ("<f8>" . neotree-toggle))
 
 (use-package magit
-  :ensure t
+  
   :bind ("<f10>" . magit-status))
 
-(use-package visual-regexp :ensure t)
+(use-package visual-regexp )
 
-(use-package visual-regexp-steroids :ensure t)
+(use-package visual-regexp-steroids )
 
 (use-package key-chord
-  :ensure t
+  
   :config (progn
             (key-chord-define-global "qo" 'other-window)
             (key-chord-define-global "qp" 'other-window)
@@ -314,8 +305,7 @@
   my-csharp-default-compiler)
 
 
-(use-package omnisharp
-  :ensure t
+(use-package omnisharp  
   :bind (:map omnisharp-mode-map
               ([remap xref-find-definitions] . omnisharp-go-to-definition)
               ([remap xref-find-references] . omnisharp-find-usages)
