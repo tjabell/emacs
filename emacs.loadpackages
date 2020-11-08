@@ -1,7 +1,6 @@
 (load-library "sys-config")
 (load-library "pkg-config")
 (load-library "key-config")
-(load-library "my-clockify")
 (load-library "window-management")
 (load-library "uniqueify")
 (load-library "eshell_cust")
