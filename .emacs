@@ -48,6 +48,7 @@ There are two things you can do about this warning:
 (install-use-package-if-not-installed)
 (require 'use-package)
 
+(setq use-package-always-ensure t)
                                         ; put any package initialization in this file
 (add-hook 'after-init-hook
           '(lambda ()
