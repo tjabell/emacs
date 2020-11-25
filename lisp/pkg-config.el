@@ -8,8 +8,7 @@
 (use-package multiple-cursors )
 
 (use-package skewer-mode )
-(use-package emmet-mode )
-(use-package web-mode )
+(use-package emmet-mode)
 (use-package js-comint )
 (use-package csv-mode )
 
@@ -63,6 +62,7 @@
                 (cons '(:tangle . "yes")
                       (assq-delete-all :tangle org-babel-default-header-args))))
   :bind (("C-c c" . org-capture)
+         ("C-c d" . org-roam-dailies-today)
          ("C-c C-x m" . org-meta-return)
          ("C-c C-x r" . org-metaright)
          ("C-c C-x l" . org-metaleft)
@@ -83,12 +83,7 @@
 ;; I think this is included in emacs 27.1 
 ;;(use-package dired-x)
 
-(use-package emmet-mode
-  
-  :config
-  (progn
-    (add-hook 'web-mode-hook 'emmet-mode)
-    (define-key web-mode-map (kbd "C-/") 'emmet-expand-line)))
+(use-package emmet-mode)
 
 (use-package js-comint
   
@@ -112,15 +107,22 @@
 
 
 (use-package web-mode
-  
+  :hook ((web-mode . abbrev-mode)
+         (web-mode . my:web-mode-init)
+         (web-mode . emmet-mode))
   :config (progn
-              (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
-              (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))))
+            (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
+            (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+            (add-to-list 'auto-mode-alist '("\\.vtl?\\'" . web-mode))
+            (define-key web-mode-map (kbd "C-/") 'emmet-expand-line)))
+
+(defun my:web-mode-init ()
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (yas-activate-extra-mode 'html-mode))
 
 ;;;;;;;;;;;;;;;;;;
 ;;; Ivy/Counsel
 (use-package counsel
-  
   :bind (("C-h" . counsel-projectile)
          ("<f1> f" . counsel-describe-function)
          ("<f1> v" . counsel-describe-variable)
@@ -161,10 +163,10 @@
   :config (add-to-list 'yas-snippet-dirs "~/emacs/data/snippets/"))
 
 (use-package company
-  :hook (org-mode typescript-mode lisp-mode)
+  :hook (after-init . global-company-mode)
   :config (progn
-            (setq company-idle-delay 0)
-            (setq company-minimum-prefix-length 1)))
+            (setq company-idle-delay 0.0
+                  company-minimum-prefix-length 1)))
 
 
 (use-package doom-modeline
@@ -255,8 +257,7 @@
   (colorize-compilation-buffer))
 
 (defun my:emacs-lisp-mode-init ()
-  (paredit-mode)
-  (company-mode))
+  (paredit-mode))
 
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (defun my:js2-mode-init ()
@@ -294,10 +295,6 @@
   (google-make-newline-indent)
   (google-set-c-style))
 
-(defun my:web-mode-init ()
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (yas-activate-extra-mode 'html-mode))
-
 (defvar my-csharp-default-compiler nil)
 (setq my-csharp-default-compiler "mono @@FILE@@")
 
@@ -315,7 +312,6 @@
 (defun my:csharp-init ()
   (eval-after-load 'company
     '(add-to-list 'company-backends 'company-omnisharp))
-  (company-mode)
   (hs-minor-mode 1)
   (auto-revert-mode)
   (linum-mode)
@@ -334,9 +330,6 @@
 
 (add-hook 'csharp-mode-hook
           #'my:csharp-init)
-
-(add-hook 'web-mode-hook
-          #'my:web-mode-init)
 
 (add-hook 'python-mode-hook
           #'my:python-mode-init)
@@ -375,7 +368,6 @@
 (key-chord-mode 1)
 (global-ede-mode 1)
 (projectile-global-mode)
-;(global-company-mode)
 ;(yas/global-mode 1)
 ;(helm-mode 1)
 

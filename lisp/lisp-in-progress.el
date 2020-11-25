@@ -13,6 +13,9 @@
     > "#set( " (s  lv) " = " (s  rv) ")" &
     "#end"))
 
+(define-abbrev web-mode-abbrev-table "vdefault"
+  "" 'tempo-template-velocity-null-check-with-default)
+
 (tempo-define-snippet
     "velocity-surround-with-text-default"
   '("#textDefault( \"" (p "Key name: " key) "\" , \"" (r "Default: " dv) "\" )" ))
