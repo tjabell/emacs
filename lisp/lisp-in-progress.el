@@ -27,6 +27,8 @@
     > "#end"))
 (define-abbrev web-mode-abbrev-table "vifutil"
   "" 'tempo-template-velocity-if-utilmethods-isset-directive)
+(define-abbrev web-mode-abbrev-table "vifset"
+  "" 'tempo-template-velocity-if-utilmethods-isset-directive)
 
 (tempo-define-snippet
     "velocity-if-not-utilmethods-isset-directive"
@@ -47,6 +49,8 @@
 ;(local-set-key (kbd "C-c C-t t") 'tempo-template-velocity-surround-with-text-default)
 
 (define-abbrev web-mode-abbrev-table "vifnotutil"
+  "" 'tempo-template-velocity-if-not-utilmethods-isset-directive)
+(define-abbrev web-mode-abbrev-table "vifnotset"
   "" 'tempo-template-velocity-if-not-utilmethods-isset-directive)
 
 

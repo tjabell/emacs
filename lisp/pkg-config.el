@@ -60,9 +60,11 @@
           (setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
           (setq org-babel-default-header-args:C
                 (cons '(:tangle . "yes")
-                      (assq-delete-all :tangle org-babel-default-header-args))))
+                      (assq-delete-all :tangle org-babel-default-header-args)))
+          (setq org-hide-emphasis-markers t)
+          )
   :bind (("C-c c" . org-capture)
-         ("C-c d" . org-roam-dailies-today)
+         ("C-c d" . org-roam-dailies-find-today)
          ("C-c C-x m" . org-meta-return)
          ("C-c C-x r" . org-metaright)
          ("C-c C-x l" . org-metaleft)
