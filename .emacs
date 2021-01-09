@@ -1,6 +1,12 @@
 ;;; Common Configuration, should be manually synced here for now
-(require 'cl)
+(require 'cl-lib)
 (require 'package)
+
+(setq gc-cons-threshold (* 100 1024 1024)
+      read-process-output-max (* 1024 1024 2)
+            )
+
+(setq package-user-dir (concat user-emacs-directory "elpa"))
 
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
                     (not (gnutls-available-p))))
@@ -22,7 +28,7 @@ There are two things you can do about this warning:
     (add-to-list 'package-archives
                  (cons "melpa" (concat proto "://melpa.org/packages/")))))
 
-(unless (file-exists-p "~/.emacs.d/elpa/archives/gnu/archive-contents")
+(when (not (file-exists-p (concat user-emacs-directory "elpa/archives/gnu/archive-contents")))
     (package-refresh-contents))
 
 (package-initialize)
@@ -33,12 +39,16 @@ There are two things you can do about this warning:
                      "c:/users/trevor.abell/")
   "Home directory — the root emacs load-path.")
 
-(cl-labels ((add-path (p)
-                      (add-to-list 'load-path
-                                   (concat emacs-root p))))
-  (add-path "emacs/lisp") ;; all my personal elisp code
-  (add-path "emacs/site-lisp") 
-  (add-path "emacs/site-lisp/dosbat"))
+(setq my:emacs-code-path (concat emacs-root "emacs/"))
+
+(cl-labels ((add-path
+	         (p)
+             (add-to-list
+	          'load-path
+              (concat my:emacs-code-path p))))
+  (add-path "lisp/") ;; all my personal elisp code
+  (add-path "site-lisp/")
+  (add-path "site-lisp/dosbat/"))
 
 
 (defun install-use-package-if-not-installed ()
@@ -46,35 +56,21 @@ There are two things you can do about this warning:
     (package-install 'use-package)))
 
 (install-use-package-if-not-installed)
-(require 'use-package)
+(eval-when-compile
+  (require 'use-package))
 
 (setq use-package-always-ensure t)
-                                        ; put any package initialization in this file
-(add-hook 'after-init-hook
-          '(lambda ()
-             (load "~/emacs/emacs.loadpackages")))
+
+(defun my:init ()
+  (load (concat my:emacs-code-path "emacs.loadpackages"))
+  (keychain-refresh-environment))
+
+(my:init)
 
 (put 'narrow-to-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
 (setq visible-bell t)
 
-(setenv "NODE_NO_READLINE" "1")
-
-(add-to-list 'auto-mode-alist '(".emacs.custom" . emacs-lisp-mode))
-(let ((custom-file (concat emacs-root ".emacs.custom")))
-  (if (file-exists-p custom-file)
-      (load-library custom-file)))
-
-;;; **** Keychain Setup ***
-;;; On system (arch)
-;;; pacman -S keychain
-;;; add to bash profile "eval `keychain --eval id_rsa`"
-;;; relies on keychain-environment package: (use-package keychain-environment :ensure t) - should be in pkg-config
-
- ;;; Add and uncomment below lines in .emacs
- ;(keychain-refresh-environment)
-
-(setq js2-strict-missing-semi-warning nil)
-
+(require 'org-tempo)
 ;; ********* Experimental/Local configuration can be placed here *********
