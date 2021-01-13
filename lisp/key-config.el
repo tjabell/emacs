@@ -15,10 +15,10 @@
 (global-set-key (kbd "C-c C-f") 'iy-go-to-char)
 
 ;;; org-mode activate
-(global-set-key "\C-cl" 'org-store-link)
-(global-set-key "\C-cc" 'org-capture)
-(global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cb" 'org-iswitchb)
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c b") 'org-iswitchb)
 
 ;;; Super + uppercase letter signifies a buffer/file
 (global-set-key (kbd "s-S")                       ;; scratch
