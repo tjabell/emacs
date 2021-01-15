@@ -1,6 +1,7 @@
 (global-set-key (kbd "C-x o") 'other-window)
 (global-set-key (kbd "M-o") 'other-window)
 ;;; Other-window-backwards
+;;; For some reason this didn't load or is getting overwritten at some point - 20210115TJA
 (global-set-key (kbd "M-O") (lambda () (interactive) (other-window -1)))
 (global-set-key (kbd "M-O") #'other-frame)
 (global-set-key (kbd "C-1") 'delete-other-windows)
