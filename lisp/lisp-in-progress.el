@@ -69,3 +69,4 @@
 
 (global-set-key (kbd "C-c C-g A") 'my-magit-commit-all-and-push)
 
+(global-set-key (kbd "<f7>") 'pop-global-mark)
