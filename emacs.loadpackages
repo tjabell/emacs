@@ -18,4 +18,5 @@
 (load-library "stackoverflow")
 (load-library "my-misc")
 (load-library "tempo-snippets")
+(load-library "fast-project-find-file")
 (autoload 'refill-mode "refill" "Refill minor mode." t)
