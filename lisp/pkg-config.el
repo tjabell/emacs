@@ -51,11 +51,15 @@
           (setq org-default-notes-file (concat org-directory "/notes.org"))
           (setq org-todo-keywords
                 '((sequence "TODO" "TEST" "DONE")))
+          ;; (setq org-capture-templates
+          ;;       '(("j" "Journal" entry (file+datetree "~/org/journal.org")
+          ;;          "* %?\nEntered on %U\n %i\n %a")
+          ;;         ("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
+          ;;          "* TODO %?\n %i\n %a")
+          ;;         ("p" "Project" entry (file+headline "~/org/projects.org" "Projects")
+          ;;          "* TODO %?\n %i\n %a")))
           (setq org-capture-templates
-                '(("j" "Journal" entry (file+datetree "~/org/journal.org")
-                   "* %?\nEntered on %U\n %i\n %a")
-                  ("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
-                   "* TODO %?\n %i\n %a")))
+                org-roam-capture-templates)
           (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
           (setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
           (setq org-babel-default-header-args:C

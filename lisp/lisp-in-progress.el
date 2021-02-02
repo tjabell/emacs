@@ -70,3 +70,31 @@
 (global-set-key (kbd "C-c C-g A") 'my-magit-commit-all-and-push)
 
 (global-set-key (kbd "<f7>") 'pop-global-mark)
+
+
+;;; https://gist.github.com/kristianhellquist/3082383#gistcomment-2373734
+(defun copy-current-line-position-to-clipboard ()
+  "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
+  (interactive)
+  (let ((path-with-line-number
+         (concat (buffer-file-name) ":" (number-to-string (line-number-at-pos)))))
+    (kill-new path-with-line-number)
+    (message (concat path-with-line-number " copied to clipboard"))))
+
+(defun esa:replace-url-with-local
+    ()
+  (interactive)
+  (let ((regex "http\[s\]*://.*?/")
+        (replacement "http://localhost:8080/"))
+    (while (re-search-forward regex nil t)
+      (replace-match replacement))
+    ))
+
+(defun esa:replace-url-with-dev
+    ()
+  (interactive)
+  (let ((regex "http\[s\]*://.*?/")
+        (replacement "http://***REMOVED***/"))
+    (while (re-search-forward regex nil t)
+      (replace-match replacement))
+    ))
