@@ -294,8 +294,7 @@
   (hs-minor-mode 1)
   (setq python-indent-offset 4)
   (fset 'hide-next
-        "\C-e\C-x\C-o\C-n")
-  (elpy-mode))
+        "\C-e\C-x\C-o\C-n"))
 
 (defun my:c-mode-init ()
   (google-make-newline-indent)
