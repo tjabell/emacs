@@ -83,14 +83,12 @@
   (magit-call-git "push")
   (magit-refresh))
 
-
 (global-set-key (kbd "C-c C-g A") 'my-magit-commit-all-and-push)
 
 (global-set-key (kbd "<f7>") 'pop-global-mark)
 
-
 ;;; https://gist.github.com/kristianhellquist/3082383#gistcomment-2373734
-(defun copy-current-line-position-to-clipboard ()
+(defun my:copy-current-line-position-to-clipboard ()
   "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
   (interactive)
   (let ((path-with-line-number
@@ -98,6 +96,16 @@
     (kill-new path-with-line-number)
     (message (concat path-with-line-number " copied to clipboard"))))
 
+(defun my:copy-relative-current-line-position-to-clipboard ()
+  "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
+  (interactive)
+  (let ((path-with-line-number
+         (concat (s-replace "/home/trevor/projects/extended_stay/src/frontend/" ""  (buffer-file-name)) ":" (number-to-string (line-number-at-pos)))))
+    (kill-new path-with-line-number)
+    (message (concat path-with-line-number " copied to clipboard")))
+  )
+
+;;; ESA Functions to swap environments in URLs
 (defun esa:replace-url-with-local
     ()
   (interactive)
