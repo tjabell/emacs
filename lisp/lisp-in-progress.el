@@ -1,5 +1,7 @@
-(require 'magit)
+;;; TEMPO SNIPPETS
 (require 'tempo)
+(require 'string-inflection)
+
 (load-library "tempo-snippets")
 
 (tempo-define-snippet
@@ -45,15 +47,30 @@
     "velocity-macro-responsive-background-image-set"
   '("data-bgset=\"#responsiveBackgroundImageSet(" (p "var:" v) ")"))
 
-;;; use in vtl
-;(local-set-key (kbd "C-c C-t t") 'tempo-template-velocity-surround-with-text-default)
+(tempo-define-snippet
+    "esa-cr-ticket"
+  '("** CR: BWSRAS-" (p "ticket number: " tn) &
+    >"https://extendedstay.atlassian.net/browse/BWSRAS-" (s tn)))
+
+(tempo-define-snippet
+    "esa-ticket"
+  '("** TODO BWSRAS-" (p "ticket number: " tn) " - " (p "description: " d) &
+    >"https://extendedstay.atlassian.net/browse/BWSRAS-" (s tn) &
+    >"feature/BWSRAS-" (s tn) "-" (string-inflection-kebab-case-function (replace-regexp-in-string "[[:space:].:/]+" "_" (tempo-lookup-named 'd)))))
+
+(define-abbrev org-mode-abbrev-table "esacr"
+  "" 'tempo-template-esa-cr-ticket)
+
+(define-abbrev org-mode-abbrev-table "esat"
+  "" 'tempo-template-esa-ticket)
 
 (define-abbrev web-mode-abbrev-table "vifnotutil"
   "" 'tempo-template-velocity-if-not-utilmethods-isset-directive)
 (define-abbrev web-mode-abbrev-table "vifnotset"
   "" 'tempo-template-velocity-if-not-utilmethods-isset-directive)
 
-
+;;; MAGIT EXTENSION FUNCTIONS
+(require 'magit)
 
 (defun my-magit-commit-all (message)
   (interactive "sCommit Message: ")
