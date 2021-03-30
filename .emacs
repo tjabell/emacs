@@ -48,7 +48,8 @@ There are two things you can do about this warning:
               (concat my:emacs-code-path p))))
   (add-path "lisp/") ;; all my personal elisp code
   (add-path "site-lisp/")
-  (add-path "site-lisp/dosbat/"))
+  (add-path "site-lisp/dosbat/")
+  (add-path "org-transclusion/"))
 
 
 (defun install-use-package-if-not-installed ()
