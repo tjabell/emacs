@@ -102,54 +102,24 @@
   (let ((path-with-line-number
          (concat (s-replace "/home/trevor/projects/extended_stay/src/frontend/" ""  (buffer-file-name)) ":" (number-to-string (line-number-at-pos)))))
     (kill-new path-with-line-number)
-    (message (concat path-with-line-number " copied to clipboard")))
-  )
+    (message (concat path-with-line-number " copied to clipboard"))))
 
 ;;; ESA Functions to swap environments in URLs
-(defun esa:replace-url-with-local
-    ()
+(defun esa:replace-url-with-local ()
   (interactive)
   (let ((regex "http\[s\]*://.*?/")
         (replacement "http://localhost:8080/"))
     (while (re-search-forward regex nil t)
-      (replace-match replacement))
-    ))
+      (replace-match replacement))))
 
-(defun esa:replace-url-with-dev
-    ()
+(defun esa:replace-url-with-dev ()
   (interactive)
   (let ((regex "http\[s\]*://.*?/")
         (replacement "http://***REMOVED***/"))
     (while (re-search-forward regex nil t)
-      (replace-match replacement))
-    ))
+      (replace-match replacement))))
 
 
-(defun my:setup-my-dotcms-token ()
-    (request
-      "http://localhost:8080/api/v1/authentication/api-token"
-      :type "POST"
-      :headers '(("Content-Type" . "application/json"))
-      :data (json-encode '(
-                           ("user" . "admin@dotcms.com")
-                           ("password" . "admin")
-                           ("expirationDays" .  1)
-                           ("label" . "for testing") ))
-      :parser 'json-read
-      :success (cl-function (lambda (&key response data &allow-other-keys)
-                              (setq my:dotcms-token (alist-get 'token (car data)))
-                              (message my:dotcms-token)))))
-
-;;; Need to get token setup first
-(defun my-dotcms:get-content-types ()
-  (request "http://localhost:8080/api/v1/contenttype/"
-    :headers '(("Authorization:Bearer" . my:dotcms-token))
-    :success (cl-function
-              (lambda (&key response data &allow-other-keys)
-                (with-current-buffer (get-buffer-create "*dotcms-api-result*")
-                    (erase-buffer)
-                    (insert data)
-                    (pop-to-buffer (current-buffer)))))))
-
+(load "my-dotcms.el")
 
 
