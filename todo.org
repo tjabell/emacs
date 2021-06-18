@@ -1,0 +1,5 @@
+* TODO smart rename of buffer for project root
+  Thinking I'll get project root like projectile does
+  https://github.com/bbatsov/projectile/blob/master/projectile.el
+  Then rename buffer accordingly
+  Or insert it as a template in minibuffer to edit from there?
