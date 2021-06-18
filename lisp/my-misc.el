@@ -2,7 +2,7 @@
        (insert (shell-command-to-string "echo -n $(date +%Y-%m-%d)")))
 
 (defun insert-signature-for-code () (interactive)
-       (insert (shell-command-to-string "echo -n $(date +%Y%m%d) -tja")))
+       (insert (shell-command-to-string "echo -n $(date +%Y%m%d)TJA")))
 
 (defun price-amazon (n)
   (interactive "nEnter amount per hour: ")
@@ -25,3 +25,15 @@ definition and running `eval-defun`."
        (with-current-buffer (marker-buffer pos)
          (goto-char (marker-position pos))
          (eval-defun nil))))))
+
+
+(defun my/newline-directly-below ()
+  "1. move to end of the line.
+   2. insert newline with index"
+
+  (interactive)
+  (let ((oldcol (current-column)))
+    (end-of-line)
+    (newline)
+    (dotimes (i oldcol)
+      (insert " "))))

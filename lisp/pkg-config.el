@@ -1,70 +1,41 @@
 (require 'use-package)
-
 ;;   "List of packages that I like.")
-(use-package omnisharp :ensure t)
-(use-package paredit :ensure t)
-(use-package iedit :ensure t)
-(use-package flymake-cursor :ensure t)
-(use-package google-c-style :ensure t)
-(use-package maxframe :ensure t)
-(use-package avy :ensure t)
-(use-package ace-window :ensure t)
-(use-package pcre2el :ensure t)
-(use-package flx-ido :ensure t)
-(use-package jedi :ensure t)
-(use-package elpy :ensure t)
-(use-package multiple-cursors :ensure t)
-(use-package iy-go-to-char :ensure t)
-;(use-package haskell-mode :ensure t)
-(use-package skewer-mode :ensure t)
-(use-package emmet-mode :ensure t)
-(use-package web-mode :ensure t)
-(use-package js-comint :ensure t)
-(use-package csv-mode :ensure t)
-(use-package company :ensure t)
-(use-package company-c-headers :ensure t)
-(use-package evil :ensure t)
-(use-package geiser :ensure t)
-;(use-package sublime-themes :ensure t)
-;(use-package cyberpunk-theme :ensure t)
-(use-package tern :ensure t)
-(use-package js2-refactor :ensure t)
-(use-package json-mode :ensure t)
 
-(use-package auto-yasnippet :ensure t)
-(use-package exec-path-from-shell :ensure t)
-(use-package counsel-projectile :ensure t)
-(use-package paradox :ensure t)
-(use-package keychain-environment :ensure t)
+(use-package paredit )
+(use-package iedit)
+(use-package avy )
+(use-package ace-window )
+(use-package multiple-cursors )
 
-(use-package persistent-scratch :ensure t)
+(use-package skewer-mode )
+(use-package emmet-mode)
+(use-package js-comint )
+(use-package csv-mode )
 
-(use-package cider :ensure t)
+(use-package geiser )
+
+(use-package tern )
+(use-package js2-refactor )
+(use-package json-mode )
+
+(use-package auto-yasnippet )
+(use-package exec-path-from-shell )
+(use-package counsel-projectile )
+(use-package paradox )
+(use-package keychain-environment )
+
+(use-package persistent-scratch )
+
+(use-package cider )
 (use-package editorconfig
-  :ensure t
+  
   :config (editorconfig-mode 1))
-;;; Go Mode
-(use-package go-mode
-  :ensure t
-  :bind (("C-c C-r" . go-remove-unused-imports)
-         ("C-c i" . go-goto-imports)))
 
-(use-package racket-mode
-  :ensure t)
+(use-package prettier-js)
 
-(use-package ob-html-chrome
-  :ensure t
-  :config
-  (setq org-babel-html-chrome-chrome-executable
-        "/opt/google/chrome/google-chrome"))
+(use-package impatient-mode)
 
-
-(use-package prettier-js
-  :ensure t)
-
-(use-package impatient-mode
-  :ensure t)
-
+;;;;;;;;;;;;;;;;;;
 ;;; Org Mode
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -75,53 +46,53 @@
    (haskell . t)
    (C . t)))
 
-(setq org-default-notes-file (concat org-directory "/notes.org"))
-(define-key global-map (kbd "C-c c")  'org-capture)
+(use-package org
+  :init (progn
+          (setq org-default-notes-file (concat org-directory "/notes.org"))
+          (setq org-todo-keywords
+                '((sequence "TODO" "TEST" "DONE")))
+          ;; (setq org-capture-templates
+          ;;       '(("j" "Journal" entry (file+datetree "~/org/journal.org")
+          ;;          "* %?\nEntered on %U\n %i\n %a")
+          ;;         ("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
+          ;;          "* TODO %?\n %i\n %a")
+          ;;         ("p" "Project" entry (file+headline "~/org/projects.org" "Projects")
+          ;;          "* TODO %?\n %i\n %a")))
+          (setq org-capture-templates
+                org-roam-capture-templates)
+          (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
+          (setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
+          (setq org-babel-default-header-args:C
+                (cons '(:tangle . "yes")
+                      (assq-delete-all :tangle org-babel-default-header-args)))
+          (setq org-hide-emphasis-markers t)
+          )
+  :bind (("C-c c" . org-capture)
+         ("C-c d" . org-roam-dailies-find-today)
+         ("C-c C-x m" . org-meta-return)
+         ("C-c C-x r" . org-metaright)
+         ("C-c C-x l" . org-metaleft)
+         ))
 
-(setq org-todo-keywords
-      '((sequence "TODO" "TEST" "DONE")))
-(setq org-capture-templates
-      '(("j" "Journal" entry (file+datetree "~/org/journal.org")
-         "* %?\nEntered on %U\n %i\n %a")
-        ("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
-         "* TODO %?\n %i\n %a")))
+;(use-package org-tempo)
+;;; End Org
+;;;;;;;;;;;
 
-;; (use-package org-journal
-;;   :init (setq org-journal-dir (concat org-directory "/journal/"))
-;;   :ensure t)
 
-(setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
+;; now distributed with emacs
+;; (use-package uniquify
+;;   :config
+;;   (setq
+;;    uniquify-buffer-name-style 'post-forward
+;;    uniquify-separator ":"))
 
-(setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
+;; I think this is included in emacs 27.1 
+;;(use-package dired-x)
 
-(setq org-babel-default-header-args:C
-      (cons '(:tangle . "yes")
-            (assq-delete-all :tangle org-babel-default-header-args)))
-;; End Org mode
-
-(use-package uniquify
-  :config
-  (setq
-   uniquify-buffer-name-style 'post-forward
-   uniquify-separator ":"))
-
-(use-package dired-x)
-
-(use-package flymake-google-cpplint
-  :ensure t
-  :config
-  (custom-set-variables
-   '(flymake-google-cpplint-command "/usr/bin/cpplint")))
-
-(use-package emmet-mode
-  :ensure t
-  :config
-  (progn
-    (add-hook 'web-mode-hook 'emmet-mode)
-    (define-key web-mode-map (kbd "C-/") 'emmet-expand-line)))
+(use-package emmet-mode)
 
 (use-package js-comint
-  :ensure t
+  
   :config
    ;; From here: http://stackoverflow.com/questions/13862471/using-node-js-with-js-comint-in-emacs
    (setq inferior-js-mode-hook
@@ -134,95 +105,98 @@
            (lambda (output)
              (replace-regexp-in-string "\033\\[[0-9]+[A-Z]" "" output))))))
 
-(use-package powershell
-  :ensure t
-  :config (add-to-list 'auto-mode-alist '("\\.ps1" . powershell-mode)))
-
 (use-package sgml-mode
-  :ensure t
+  
   :config (progn
             (add-hook 'html-mode-hook 'emmet-mode)
             (define-key html-mode-map (kbd "C-/") 'emmet-expand-line)))
 
 
 (use-package web-mode
-  :ensure t
+  :hook ((web-mode . abbrev-mode)
+         (web-mode . my:web-mode-init)
+         (web-mode . emmet-mode))
   :config (progn
-              (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
-              (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))))
+            (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
+            (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+            (add-to-list 'auto-mode-alist '("\\.vtl?\\'" . web-mode))
+            (define-key web-mode-map (kbd "C-/") 'emmet-expand-line)))
+
+(defun my:web-mode-init ()
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (yas-activate-extra-mode 'html-mode))
+
+;;;;;;;;;;;;;;;;;;
+;;; Ivy/Counsel
+(use-package counsel
+  :bind (("C-h" . counsel-projectile)
+         ("<f1> f" . counsel-describe-function)
+         ("<f1> v" . counsel-describe-variable)
+         ("<f1> l" . counsel-find-library)
+         ("M-x" . counsel-M-x)
+         ("C-x C-f" . counsel-find-file)
+         ("C-c g" . counsel-git)
+         ("C-c j" . counsel-git-grep)
+         ("C-c k" . counsel-ag)
+         ("C-x l" . counsel-locate)))
 
 (use-package ivy
-  :ensure t
-  :config
-  (progn (setq ivy-height 50)
-         (setq ivy-use-virtual-buffers t)
-         (setq ivy-count-format "(%d/%d) ")))
+  
+  :config (progn (setq ivy-height 50)
+                 (setq ivy-use-virtual-buffers t)
+                 (setq ivy-count-format "(%d/%d) "))
+  :bind (("C-c C-r" . ivy-resume)
+         ("<f6>" . ivy-resume)))
 
+(define-key ivy-minibuffer-map (kbd "<left>") 'counsel-up-directory)
+(define-key ivy-minibuffer-map (kbd "C-l") 'counsel-up-directory)
+(define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+;;; End Ivy
+;;;;;;;;;;;;;;;;;;
 (use-package projectile
-  :ensure t
+  
   :config (setq projectile-completion-system 'ivy))
 
-(use-package counsel
-  :ensure t
-  :bind ("C-h" . counsel-projectile))
+
+
+
+(use-package swiper
+  
+  :bind ("C-s" . swiper))
 
 (use-package yasnippet
-  :ensure t
+  
   :config (add-to-list 'yas-snippet-dirs "~/emacs/data/snippets/"))
 
-;; (use-package dropdown-list
-;;   :ensure t
-;;   :config (setq yas/prompt-functions '(yas/dropdown-prompt
-;;                                  yas/ido-prompt)))
-
 (use-package company
+  :hook (after-init . global-company-mode)
   :config (progn
-            (setq company-idle-delay 0)
-            (setq company-minimum-prefix-length 3)))
+            (setq company-idle-delay 0.0
+                  company-minimum-prefix-length 1)))
 
-(use-package nose
-  :ensure t
-  :config
-  (progn
-    (defalias 'no 'nosetests-one)
-    (defalias 'na 'nosetests-all)
-    (defalias 'np 'nosetests-pdb-one)
-    (defalias 'nm 'nosetests-module)))
-
-;; (when (require 'pymacs nil t)
-;;   (setenv "PYMACS_PYTHON" "python2")
-;;   (pymacs-load "ropemacs" "rope-" t))
-
-;; (use-package smart-mode-line
-;;   :ensure t
-;;   :config (progn
-;;             (setq sml/theme 'respectful)
-;;             (setq sml/no-confirm-load-theme t)
-;;             (sml/setup)))
 
 (use-package doom-modeline
-  :ensure t
+  
   :init (doom-modeline-mode 1))
 
-
 (use-package ace-jump-mode
-  :ensure t
+  
   :bind ("C-." . ace-jump-mode)
   :config (progn
             (ace-jump-mode-enable-mark-sync)
             (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)))
 
 
-(use-package xterm-color
-  :ensure t)
+(use-package xterm-color)
 
 
 (add-hook 'eshell-mode-hook
             (lambda ()
               (setq xterm-color-preserve-properties t)))
 (require 'eshell)
-(add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
-(setq eshell-output-filter-functions (remove 'eshell-handle-ansi-color eshell-output-filter-functions))
+; TODO: Figure out why this is breaking
+;(add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+;(setq eshell-output-filter-functions (remove 'eshell-handle-ansi-color eshell-output-filter-functions))
 
 ;; (when (require 'helm nil t)
 ;;   (global-set-key (kbd "C-c h") 'helm-mini)
@@ -234,19 +208,19 @@
 
 
 (use-package neotree
-  :ensure t
+  
   :bind ("<f8>" . neotree-toggle))
 
 (use-package magit
-  :ensure t
+  
   :bind ("<f10>" . magit-status))
 
-(use-package visual-regexp :ensure t)
+(use-package visual-regexp )
 
-(use-package visual-regexp-steroids :ensure t)
+(use-package visual-regexp-steroids )
 
 (use-package key-chord
-  :ensure t
+  
   :config (progn
             (key-chord-define-global "qo" 'other-window)
             (key-chord-define-global "qp" 'other-window)
@@ -304,9 +278,9 @@
   (custom-set-variables
    '(js2-bounce-indent-p t)))
 
-(defun my:ac-c-header-init ()
-  (require 'auto-complete-c-headers)
-  (add-to-list 'achead:include-directories '("/usr/include" "/usr/lib/include")))
+;; (defun my:ac-c-header-init ()
+;;   (require 'auto-complete-c-headers)
+;;   (add-to-list 'achead:include-directories '("/usr/include" "/usr/lib/include")))
 
 (defun my:cpp-mode-init ()
   (unless (or (file-exists-p "makefile")
@@ -320,16 +294,11 @@
   (hs-minor-mode 1)
   (setq python-indent-offset 4)
   (fset 'hide-next
-        "\C-e\C-x\C-o\C-n")
-  (elpy-mode))
+        "\C-e\C-x\C-o\C-n"))
 
 (defun my:c-mode-init ()
   (google-make-newline-indent)
   (google-set-c-style))
-
-(defun my:web-mode-init ()
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (yas-activate-extra-mode 'html-mode))
 
 (defvar my-csharp-default-compiler nil)
 (setq my-csharp-default-compiler "mono @@FILE@@")
@@ -337,15 +306,23 @@
 (defun my-csharp-get-value-from-comments (marker-string line-limit)
   my-csharp-default-compiler)
 
+
+(use-package omnisharp  
+  :bind (:map omnisharp-mode-map
+              ([remap xref-find-definitions] . omnisharp-go-to-definition)
+              ([remap xref-find-references] . omnisharp-find-usages)
+              ;; `xref-pop-marker-stack' works as expected.
+              ))
+
 (defun my:csharp-init ()
   (eval-after-load 'company
     '(add-to-list 'company-backends 'company-omnisharp))
-  (omnisharp-mode) 
   (hs-minor-mode 1)
   (auto-revert-mode)
   (linum-mode)
   (c-set-style "c#")
-  (flycheck-mode))
+  (flycheck-mode)
+  (omnisharp-mode))
 
 (defun my:term-mode-hook ()
   (setq yas-dont-activate t))
@@ -358,9 +335,6 @@
 
 (add-hook 'csharp-mode-hook
           #'my:csharp-init)
-
-(add-hook 'web-mode-hook
-          #'my:web-mode-init)
 
 (add-hook 'python-mode-hook
           #'my:python-mode-init)
@@ -399,14 +373,14 @@
 (key-chord-mode 1)
 (global-ede-mode 1)
 (projectile-global-mode)
-(global-company-mode)
-(yas/global-mode 1)
+;(yas/global-mode 1)
 ;(helm-mode 1)
 
 ;;; Semantic
-(semantic-mode t)
-(global-semantic-idle-completions-mode t)
-(global-semantic-decoration-mode t)
-(global-semantic-highlight-func-mode t)
-(global-semantic-show-unmatched-syntax-mode 0)
+;(semantic-mode t)
+;(global-semantic-idle-completions-mode t)
+;(global-semantic-decoration-mode t)
+;(global-semantic-highlight-func-mode t)
+;(global-semantic-show-unmatched-syntax-mode 0)
+
 ;;; End Semantic
