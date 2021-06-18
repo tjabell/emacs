@@ -105,21 +105,30 @@
     (message (concat path-with-line-number " copied to clipboard"))))
 
 ;;; ESA Functions to swap environments in URLs
-(defun esa:replace-url-with-local ()
+(defun my-esa:replace-url-with-local ()
   (interactive)
   (let ((regex "http\[s\]*://.*?/")
         (replacement "http://localhost:8080/"))
     (while (re-search-forward regex nil t)
       (replace-match replacement))))
 
-(defun esa:replace-url-with-dev ()
+(defun my-esa:replace-url-with-dev ()
   (interactive)
   (let ((regex "http\[s\]*://.*?/")
         (replacement "http://***REMOVED***/"))
     (while (re-search-forward regex nil t)
       (replace-match replacement))))
 
+(defun my:esa-vtl-copy-to-local ()
+  (let* ((dest-suffix (substring
+                       (buffer-file-name)
+                       (length "/home/trevor/projects/extended_stay/src/frontend/src/"))))
+    (message "copying %s %s"  buffer-file-name (concat "/mnt/local-dav/***REMOVED***/application/" dest-suffix))))
 
-(load "my-dotcms.el")
-
+(defun my:esa-vtl-copy-to-dev ()
+  (let* ((dest-suffix (substring
+                       (buffer-file-name)
+                       (length "/home/trevor/projects/extended_stay/src/frontend/src/"))))
+    (message "copying: %s %s" buffer-file-name (concat "/mnt/dev-dav/***REMOVED***/application/" dest-suffix))
+    (copy-file buffer-file-name (concat "/mnt/dev-dav/***REMOVED***/application/" dest-suffix) t)))
 
