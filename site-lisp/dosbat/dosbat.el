@@ -35,7 +35,7 @@
 ;;;; Code:
 (provide 'dosbat)
 
-;(require 'cl)
+;(require 'cl-lib)
 ;(require 'compile)
 ;(require 'font-lock)
 

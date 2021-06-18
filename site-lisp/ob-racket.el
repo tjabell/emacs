@@ -28,7 +28,7 @@
 ;;; Code:
 
 (require 'ob)
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (defvar org-babel-tangle-lang-exts)
 (add-to-list 'org-babel-tangle-lang-exts '("racket" . "rkt"))
