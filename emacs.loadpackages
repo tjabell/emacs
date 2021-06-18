@@ -17,6 +17,8 @@
 (load-library "open-buffer-with")
 (load-library "stackoverflow")
 (load-library "my-misc")
+(load-library "my-projects")
 (load-library "tempo-snippets")
 (load-library "fast-project-find-file")
+(load-library "my-dotcms")
 (autoload 'refill-mode "refill" "Refill minor mode." t)
