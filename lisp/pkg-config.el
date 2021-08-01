@@ -12,9 +12,9 @@
 (use-package js-comint )
 (use-package csv-mode )
 
-(use-package geiser )
+;(use-package geiser )
 
-(use-package tern )
+;(use-package tern )
 (use-package js2-refactor )
 (use-package json-mode )
 
@@ -26,7 +26,7 @@
 
 (use-package persistent-scratch )
 
-(use-package cider )
+;(use-package cider )
 (use-package editorconfig
   
   :config (editorconfig-mode 1))
@@ -73,8 +73,6 @@
          ("C-c C-x r" . org-metaright)
          ("C-c C-x l" . org-metaleft)
          ))
-
-                                        ;(use-package org-tempo)
 
 
 ;;; End Org
@@ -138,6 +136,7 @@
 
 ;; I think this is included in emacs 27.1 
 ;;(use-package dired-x)
+
 
 (use-package emmet-mode)
 
@@ -211,11 +210,9 @@
 
 
 (use-package swiper
-  
   :bind ("C-s" . swiper))
 
 (use-package yasnippet
-  
   :config (add-to-list 'yas-snippet-dirs "~/emacs/data/snippets/"))
 
 (use-package company
@@ -226,16 +223,13 @@
 
 
 (use-package doom-modeline
-  
   :init (doom-modeline-mode 1))
 
 (use-package ace-jump-mode
-  
   :bind ("C-." . ace-jump-mode)
   :config (progn
             (ace-jump-mode-enable-mark-sync)
             (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)))
-
 
 (use-package xterm-color)
 
@@ -258,11 +252,9 @@
 
 
 (use-package neotree
-  
   :bind ("<f8>" . neotree-toggle))
 
 (use-package magit
-  
   :bind ("<f10>" . magit-status))
 
 (use-package visual-regexp )
@@ -270,7 +262,6 @@
 (use-package visual-regexp-steroids )
 
 (use-package key-chord
-  
   :config (progn
             (key-chord-define-global "qo" 'other-window)
             (key-chord-define-global "qp" 'other-window)
@@ -395,8 +386,8 @@
 (add-hook 'c++-mode-hook
           #'my:cpp-mode-init)
 
-(add-hook 'haskell-mode-hook
-          'turn-on-haskell-simple-indent)
+;(add-hook 'haskell-mode-hook
+;         'turn-on-haskell-simple-indent)
 
 (add-hook 'scheme-mode-hook
           'paredit-mode)
@@ -423,8 +414,6 @@
 (key-chord-mode 1)
 (global-ede-mode 1)
 (projectile-global-mode)
-;(yas/global-mode 1)
-;(helm-mode 1)
 
 ;;; Semantic
 ;(semantic-mode t)
