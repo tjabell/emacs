@@ -74,13 +74,14 @@
          ("C-c C-x l" . org-metaleft)
          ))
 
-
 ;;; End Org
 ;;;;;;;;;;;
 
 ;;;;;;;;;;;;
 ;;; Org Roam
 ;;;;;;;;;;;;
+(setq org-roam-v2-ack t)
+
 (global-set-key (kbd "C-c o") 'org-roam-node-find)
 (define-key org-mode-map (kbd "C-c t") 'org-roam-tag-add)
 
@@ -127,15 +128,11 @@
 
 ;;; End org roam
 
-;; now distributed with emacs
-;; (use-package uniquify
-;;   :config
-;;   (setq
-;;    uniquify-buffer-name-style 'post-forward
-;;    uniquify-separator ":"))
-
-;; I think this is included in emacs 27.1 
-;;(use-package dired-x)
+(use-package org-bullets
+  :config
+  (add-hook 'org-mode-hook (lambda ()
+                             (org-bullets-mode 1)
+                             (variable-pitch-mode 1))))
 
 
 (use-package emmet-mode)
