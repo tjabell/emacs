@@ -74,10 +74,60 @@
          ("C-c C-x l" . org-metaleft)
          ))
 
-;(use-package org-tempo)
+                                        ;(use-package org-tempo)
+
+
 ;;; End Org
 ;;;;;;;;;;;
 
+;;;;;;;;;;;;
+;;; Org Roam
+;;;;;;;;;;;;
+(global-set-key (kbd "C-c o") 'org-roam-node-find)
+(define-key org-mode-map (kbd "C-c t") 'org-roam-tag-add)
+
+(setq org-roam-directory "~/org-roam")
+(unless (file-exists-p org-roam-directory)
+  (make-directory org-roam-directory))
+(add-hook 'after-init-hook 'org-roam-setup)
+
+(use-package key-chord)
+(key-chord-define org-mode-map "[[" #'my/insert-roam-link)
+
+(defun my/insert-roam-link ()
+  "Inserts an Org-roam link."
+  (interactive)
+  (insert "[[roam:]]")
+  (backward-char 2))
+
+(require 'org-roam-dailies)
+
+(setq org-roam-dailies-directory "daily/")
+
+;; (setq org-roam-dailies-capture-templates
+;;       '(("d" "default" entry
+;;          #'org-roam-capture--get-point
+;;          "* %?"
+;;          :file-name "daily/%<%Y-%m-%d>"
+;;          :head "#+title: %<%Y-%m-%d>\n\n")))
+
+;; (setq org-roam-dailies-capture-templates
+;;       '(("l" "lab" entry
+;;          #'org-roam-capture--get-point
+;;          "* %?"
+;;          :file-name "daily/%<%Y-%m-%d>"
+;;          :head "#+title: %<%Y-%m-%d>\n"
+;;          :olp ("Lab notes"))
+
+;;         ("j" "journal" entry
+;;          #'org-roam-capture--get-point
+;;          "* %?"
+;;          :file-name "daily/%<%Y-%m-%d>"
+;;          :head "#+title: %<%Y-%m-%d>\n"
+;;          :olp ("Journal"))))
+
+
+;;; End org roam
 
 ;; now distributed with emacs
 ;; (use-package uniquify
