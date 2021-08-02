@@ -58,8 +58,8 @@
           ;;          "* TODO %?\n %i\n %a")
           ;;         ("p" "Project" entry (file+headline "~/org/projects.org" "Projects")
           ;;          "* TODO %?\n %i\n %a")))
-          (setq org-capture-templates
-                org-roam-capture-templates)
+          ;; (setq org-capture-templates
+          ;;       org-roam-capture-templates)
           (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
           (setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
           (setq org-babel-default-header-args:C
