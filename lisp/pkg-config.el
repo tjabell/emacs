@@ -68,7 +68,7 @@
           (setq org-hide-emphasis-markers t)
           )
   :bind (("C-c c" . org-capture)
-         ("C-c d" . org-roam-dailies-find-today)
+         ("C-c d" . org-roam-dailies-goto-today)
          ("C-c C-x m" . org-meta-return)
          ("C-c C-x r" . org-metaright)
          ("C-c C-x l" . org-metaleft)
@@ -335,8 +335,9 @@
         "\C-e\C-x\C-o\C-n"))
 
 (defun my:c-mode-init ()
-  (google-make-newline-indent)
-  (google-set-c-style))
+  ;(google-make-newline-indent)
+  ;(google-set-c-style)
+  )
 
 (defvar my-csharp-default-compiler nil)
 (setq my-csharp-default-compiler "mono @@FILE@@")
@@ -353,14 +354,12 @@
               ))
 
 (defun my:csharp-init ()
-  (eval-after-load 'company
-    '(add-to-list 'company-backends 'company-omnisharp))
   (hs-minor-mode 1)
   (auto-revert-mode)
   (linum-mode)
-  (c-set-style "c#")
-  (flycheck-mode)
-  (omnisharp-mode))
+  (lsp)
+  ;(c-set-style "c#")
+  )
 
 (defun my:term-mode-hook ()
   (setq yas-dont-activate t))
