@@ -37,3 +37,11 @@ definition and running `eval-defun`."
     (newline)
     (dotimes (i oldcol)
       (insert " "))))
+
+;;; format a json string in a buffer
+(defun my:json-mode-and-format-buffer ()
+  (interactive)
+  (json-mode)
+  (json-pretty-print-buffer))
+
+(defalias 'jm 'my:json-mode-and-format-buffer)
