@@ -45,3 +45,5 @@ definition and running `eval-defun`."
   (json-pretty-print-buffer))
 
 (defalias 'jm 'my:json-mode-and-format-buffer)
+
+(defalias 'icd 'insert-current-date)
