@@ -357,9 +357,7 @@
   (hs-minor-mode 1)
   (auto-revert-mode)
   (linum-mode)
-  (lsp)
-  ;(c-set-style "c#")
-  )
+  (lsp))
 
 (defun my:term-mode-hook ()
   (setq yas-dont-activate t))
@@ -389,7 +387,7 @@
           'paredit-mode)
 
 (add-hook 'hs-minor-mode-hook
-          (lambda ()   (global-set-key (kbd "C-x C-o") 'hs-toggle-hiding)))
+          (lambda () (global-set-key (kbd "C-x C-o") 'hs-toggle-hiding)))
 
 (add-hook 'js2-mode-hook
           'my:js2-mode-init)
