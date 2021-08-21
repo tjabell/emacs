@@ -201,7 +201,8 @@
 ;;;;;;;;;;;;;;;;;;
 (use-package projectile
   
-  :config (setq projectile-completion-system 'ivy))
+  :config (setq projectile-completion-system 'ivy)
+  :bind ("C-H" . projectile-find-file))
 
 
 
