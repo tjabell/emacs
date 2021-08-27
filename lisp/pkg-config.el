@@ -35,6 +35,8 @@
 
 (use-package impatient-mode)
 
+(use-package string-inflection)
+
 ;;;;;;;;;;;;;;;;;;
 ;;; Org Mode
 (org-babel-do-load-languages
