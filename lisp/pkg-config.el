@@ -28,7 +28,7 @@
 
 ;(use-package cider )
 (use-package editorconfig
-  
+
   :config (editorconfig-mode 1))
 
 (use-package prettier-js)
@@ -36,6 +36,15 @@
 (use-package impatient-mode)
 
 (use-package string-inflection)
+
+(use-package vterm
+  :init (setq vterm-max-scrollback 2000))
+
+;;; Vterm Toggle
+(use-package vterm-toggle)
+(global-set-key (kbd "<f12>") 'vterm-toggle)
+(global-set-key (kbd "C-<f12>") 'vterm-toggle-cd)
+;;;
 
 ;;;;;;;;;;;;;;;;;;
 ;;; Org Mode
@@ -140,7 +149,7 @@
 (use-package emmet-mode)
 
 (use-package js-comint
-  
+
   :config
    ;; From here: http://stackoverflow.com/questions/13862471/using-node-js-with-js-comint-in-emacs
    (setq inferior-js-mode-hook
@@ -154,7 +163,7 @@
              (replace-regexp-in-string "\033\\[[0-9]+[A-Z]" "" output))))))
 
 (use-package sgml-mode
-  
+
   :config (progn
             (add-hook 'html-mode-hook 'emmet-mode)
             (define-key html-mode-map (kbd "C-/") 'emmet-expand-line)))
@@ -189,7 +198,7 @@
          ("C-x l" . counsel-locate)))
 
 (use-package ivy
-  
+
   :config (progn (setq ivy-height 50)
                  (setq ivy-use-virtual-buffers t)
                  (setq ivy-count-format "(%d/%d) "))
@@ -202,7 +211,7 @@
 ;;; End Ivy
 ;;;;;;;;;;;;;;;;;;
 (use-package projectile
-  
+
   :config (setq projectile-completion-system 'ivy)
   :bind ("C-H" . projectile-find-file))
 
@@ -349,7 +358,7 @@
   my-csharp-default-compiler)
 
 
-(use-package omnisharp  
+(use-package omnisharp
   :bind (:map omnisharp-mode-map
               ([remap xref-find-definitions] . omnisharp-go-to-definition)
               ([remap xref-find-references] . omnisharp-find-usages)
