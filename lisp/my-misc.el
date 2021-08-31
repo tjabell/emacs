@@ -47,3 +47,11 @@ definition and running `eval-defun`."
 (defalias 'jm 'my:json-mode-and-format-buffer)
 
 (defalias 'icd 'insert-current-date)
+
+
+(defun my:remind-me-in (minutes body)
+       (interactive "sMinutes:\nsBody:")
+       (let ((minutes (concat minutes " min")))
+         (message minutes)
+         (run-at-time minutes nil (lambda ()
+                                  (notifications-notify :title "Emacs alert" :body body)))))
