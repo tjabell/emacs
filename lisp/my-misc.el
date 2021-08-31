@@ -52,6 +52,4 @@ definition and running `eval-defun`."
 (defun my:remind-me-in (minutes body)
        (interactive "sMinutes:\nsBody:")
        (let ((minutes (concat minutes " min")))
-         (message minutes)
-         (run-at-time minutes nil (lambda ()
-                                  (notifications-notify :title "Emacs alert" :body body)))))
+         (run-at-time minutes nil 'notifications-notify :title "Emacs alert" :body body)))
