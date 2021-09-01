@@ -365,12 +365,6 @@
               ;; `xref-pop-marker-stack' works as expected.
               ))
 
-(defun my:csharp-init ()
-  (hs-minor-mode 1)
-  (auto-revert-mode)
-  (linum-mode)
-  (lsp))
-
 (defun my:term-mode-hook ()
   (setq yas-dont-activate t))
 
@@ -380,8 +374,6 @@
 (add-hook 'compilation-filter-hook
           #'my:compilation-filter-init)
 
-(add-hook 'csharp-mode-hook
-          #'my:csharp-init)
 
 (add-hook 'python-mode-hook
           #'my:python-mode-init)
