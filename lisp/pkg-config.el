@@ -40,6 +40,8 @@
 (use-package vterm
   :init (setq vterm-max-scrollback 2000))
 
+(use-package org-roam)
+
 ;;; Vterm Toggle
 (use-package vterm-toggle)
 (global-set-key (kbd "<f12>") 'vterm-toggle)
@@ -56,6 +58,7 @@
    (perl . t)
    (haskell . t)
    (C . t)))
+
 
 (use-package org
   :init (progn
