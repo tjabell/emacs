@@ -351,11 +351,11 @@
   ;(google-set-c-style)
   )
 
-(defvar my-csharp-default-compiler nil)
-(setq my-csharp-default-compiler "mono @@FILE@@")
+;; (defvar my-csharp-default-compiler nil)
+;; (setq my-csharp-default-compiler "mono @@FILE@@")
 
-(defun my-csharp-get-value-from-comments (marker-string line-limit)
-  my-csharp-default-compiler)
+;; (defun my-csharp-get-value-from-comments (marker-string line-limit)
+;;   my-csharp-default-compiler)
 
 
 (use-package omnisharp
