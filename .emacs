@@ -1,5 +1,4 @@
 ;;; Common Configuration, should be manually synced here for now
-;;; Common Configuration, should be manually synced here for now
 (require 'cl-lib)
 ;(require 'package)
 (defvar bootstrap-version)
