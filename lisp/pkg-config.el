@@ -40,8 +40,6 @@
 (use-package vterm
   :init (setq vterm-max-scrollback 2000))
 
-(use-package org-roam)
-
 ;;; Vterm Toggle
 (use-package vterm-toggle)
 (global-set-key (kbd "<f12>") 'vterm-toggle)
@@ -94,15 +92,20 @@
 ;;;;;;;;;;;;
 ;;; Org Roam
 ;;;;;;;;;;;;
-(setq org-roam-v2-ack t)
+(use-package org-roam
+  :init
+  (setq org-roam-v2-ack t)
+  (unless (file-exists-p org-roam-directory)
+    (make-directory org-roam-directory))
+  :custom
+  (setq org-roam-directory "~/org-roam")
+  :bind (("C-c t" . org-roam-tag-add)
+         ("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n i" . org-roam-node-insert))
+  :config (org-roam-setup))
 
 (global-set-key (kbd "C-c o") 'org-roam-node-find)
-(define-key org-mode-map (kbd "C-c t") 'org-roam-tag-add)
 
-(setq org-roam-directory "~/org-roam")
-(unless (file-exists-p org-roam-directory)
-  (make-directory org-roam-directory))
-(add-hook 'after-init-hook 'org-roam-setup)
 
 (use-package key-chord)
 (key-chord-define org-mode-map "[[" #'my/insert-roam-link)
