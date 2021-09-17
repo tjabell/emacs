@@ -79,12 +79,10 @@
                       (assq-delete-all :tangle org-babel-default-header-args)))
           (setq org-hide-emphasis-markers t)
           )
-  :bind (("C-c c" . org-capture)
-         ("C-c d" . org-roam-dailies-goto-today)
+  :bind (("C-c c" . org-capture)         
          ("C-c C-x m" . org-meta-return)
          ("C-c C-x r" . org-metaright)
-         ("C-c C-x l" . org-metaleft)
-         ))
+         ("C-c C-x l" . org-metaleft)))
 
 ;;; End Org
 ;;;;;;;;;;;
@@ -99,13 +97,33 @@
     (make-directory org-roam-directory))
   :custom
   (setq org-roam-directory "~/org-roam")
+  (org-roam-completion-everywhere t)
+  (org-roam-capture-templates
+   '(("d" "default" plain
+      "%?"
+      :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+      :unnarrowed t)
+     ("v" "video" plain
+      "\n* Source\n\nLink: %^{Link}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
+      :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+      :unnarrowed t)
+     ))
   :bind (("C-c t" . org-roam-tag-add)
          ("C-c n l" . org-roam-buffer-toggle)
-         ("C-c n i" . org-roam-node-insert))
-  :config (org-roam-setup))
-
-(global-set-key (kbd "C-c o") 'org-roam-node-find)
-
+         ("C-c n i" . org-roam-node-insert)
+         ("C-c d" . org-roam-dailies-goto-today)
+         ("C-c o" . org-roam-node-find)
+         :map org-mode-map
+         ("C-M-i" . completion-at-point)
+         :map org-roam-dailies-map
+         ("Y" . org-roam-dailies-capture-yesterday)
+         ("T" . org-roam-dailies-capture-tomorrow))
+  :bind-keymap
+  ("C-c n d" . org-roam-dailies-map)
+  :config
+  (org-roam-setup)
+  (require 'org-roam-dailies)
+  (org-roam-db-autosync-mode))
 
 (use-package key-chord)
 (key-chord-define org-mode-map "[[" #'my/insert-roam-link)
