@@ -72,16 +72,28 @@
 ;;; MAGIT EXTENSION FUNCTIONS
 (require 'magit)
 
-(defun my-magit-commit-all (message)
+(defun my:magit-commit-all (message)
   (interactive "sCommit Message: ")
   (magit-call-git "commit" "-a" "-m" message)
-  (magit-refresh)  )
+  (magit-refresh))
 
-(defun my-magit-commit-all-and-push (message)
+(defun my:magit-commit-all-and-push (message)
   (interactive "sCommit Message: ")
   (magit-call-git "commit" "-a" "-m" message)
   (magit-call-git "push")
   (magit-refresh))
+
+(defun my:magit-commit-rebase-push (repo)
+  (magit-call-git "-C" repo "add" "-A")
+  (magit-call-git "-C" repo "commit" "-a" "-m" "dailies")
+  (magit-call-git "-C" repo "fetch" "--all")
+  (magit-call-git "-C" repo "rebase" "origin/master")
+  (magit-call-git "-C" repo "push"))
+
+(defun my:magit-commit-all-dailies ()
+  (interactive)
+  (let ((repo "/home/trevor/org-roam/"))
+    (my:magit-commit-rebase-push repo)))
 
 (global-set-key (kbd "C-c C-g A") 'my-magit-commit-all-and-push)
 
@@ -143,4 +155,3 @@
                        (length "/home/trevor/projects/extended_stay/src/frontend/src/"))))
     (message "copying: %s %s" buffer-file-name (concat "/mnt/dev-dav/***REMOVED***/application/" dest-suffix))
     (copy-file buffer-file-name (concat "/mnt/dev-dav/***REMOVED***/application/" dest-suffix) t)))
-
