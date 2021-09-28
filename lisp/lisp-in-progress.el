@@ -93,7 +93,10 @@
 (defun my:magit-commit-all-dailies ()
   (interactive)
   (let ((repo "/home/trevor/org-roam/"))
+    (my:magit-commit-rebase-push repo))
+  (let ((repo "/home/trevor/projects/parsus/"))
     (my:magit-commit-rebase-push repo)))
+
 
 (global-set-key (kbd "C-c C-g A") 'my-magit-commit-all-and-push)
 
