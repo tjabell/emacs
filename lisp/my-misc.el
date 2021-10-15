@@ -48,7 +48,7 @@ definition and running `eval-defun`."
 
 (defalias 'icd 'insert-current-date)
 
-
+(require 'notifications)
 (defun my:remind-me-in (minutes body)
        (interactive "sMinutes:\nsBody:")
        (let ((minutes (concat minutes " min")))
