@@ -94,7 +94,8 @@
   :init
   (setq org-roam-v2-ack t)
   (unless (file-exists-p org-roam-directory)
-    (make-directory org-roam-directory))
+    (if (bound 'org-roam-directory)
+        (make-directory org-roam-directory)))
   :custom
   (setq org-roam-directory "~/org-roam")
   (org-roam-completion-everywhere t)
