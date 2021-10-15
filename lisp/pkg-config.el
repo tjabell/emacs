@@ -446,3 +446,6 @@
 ;(global-semantic-show-unmatched-syntax-mode 0)
 
 ;;; End Semantic
+
+;;; pass
+(use-package pass)
