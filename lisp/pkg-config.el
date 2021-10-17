@@ -40,6 +40,9 @@
 (use-package vterm
   :init (setq vterm-max-scrollback 2000))
 
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
 ;;; Vterm Toggle
 (use-package vterm-toggle)
 (global-set-key (kbd "<f12>") 'vterm-toggle)
@@ -79,7 +82,7 @@
                       (assq-delete-all :tangle org-babel-default-header-args)))
           (setq org-hide-emphasis-markers t)
           )
-  :bind (("C-c c" . org-capture)         
+  :bind (("C-c c" . org-capture)
          ("C-c C-x m" . org-meta-return)
          ("C-c C-x r" . org-metaright)
          ("C-c C-x l" . org-metaleft)))
@@ -449,3 +452,9 @@
 
 ;;; pass
 (use-package pass)
+
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.3))

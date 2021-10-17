@@ -74,10 +74,9 @@
 (add-to-list 'auto-mode-alist '("source-registry.conf" . lisp-mode))
 
 (defun my:lisp-mode-init ()
-  (paredit-mode)
-  (rainbow-delimiters-mode))
+  (paredit-mode))
 
 (add-hook 'lisp-mode-hook
           #'my:lisp-mode-init)
 
-(use-package rainbow-delimiters :ensure t)
+
