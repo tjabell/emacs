@@ -1,6 +1,6 @@
 ;;; Common Configuration, should be manually synced here for now
 (require 'cl-lib)
-;(require 'package)
+
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
