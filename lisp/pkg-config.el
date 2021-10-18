@@ -20,7 +20,8 @@
 
 (use-package auto-yasnippet )
 (use-package exec-path-from-shell )
-(use-package counsel-projectile )
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
 (use-package paradox )
 (use-package keychain-environment )
 
@@ -239,12 +240,9 @@
 ;;; End Ivy
 ;;;;;;;;;;;;;;;;;;
 (use-package projectile
-
   :config (setq projectile-completion-system 'ivy)
-  :bind ("C-H" . projectile-find-file))
-
-
-
+  :bind ("C-H" . projectile-find-file)
+  :bind-keymap ("C-c p" . projectile-command-map))
 
 (use-package swiper
   :bind ("C-s" . swiper))
@@ -472,3 +470,23 @@
   ([remap describe-command] . helpful-command)
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key] . helpful-key))
+
+;;; Dont really get general yet
+;; (use-package general
+;;   :config
+;;   (general-create-definer me/leader-keys
+;;     ;:keymaps '(normal insert visual emacs)
+;;     :prefix "C-M-]"
+;;     :global-prefix "C-M-]"))
+
+;; (me/leader-keys
+;;  "t" '(:ignore t :which-key "toggles"))
+
+
+(use-package hydra)
+
+(defhydra hydra-text-scale (:timeout 4)
+  "scale text"
+  ("+" text-scale-increase)
+  ("-" text-scale-decrease)
+  ("f" nil "finished" :exit t))
