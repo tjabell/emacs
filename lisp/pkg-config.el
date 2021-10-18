@@ -96,12 +96,12 @@
 ;;;;;;;;;;;;
 (use-package org-roam
   :init
+  (setq org-roam-directory "~/org-roam")
   (setq org-roam-v2-ack t)
   (if (boundp 'org-roam-directory)
     (unless (file-exists-p org-roam-directory)
         (make-directory org-roam-directory)))
   :custom
-  (setq org-roam-directory "~/org-roam")
   (org-roam-completion-everywhere t)
   (org-roam-capture-templates
    '(("d" "default" plain
