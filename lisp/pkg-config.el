@@ -97,8 +97,8 @@
 (use-package org-roam
   :init
   (setq org-roam-v2-ack t)
-  (unless (file-exists-p org-roam-directory)
-    (if (bound 'org-roam-directory)
+  (if (boundp 'org-roam-directory)
+    (unless (file-exists-p org-roam-directory)
         (make-directory org-roam-directory)))
   :custom
   (setq org-roam-directory "~/org-roam")
@@ -490,3 +490,9 @@
   ("+" text-scale-increase)
   ("-" text-scale-decrease)
   ("f" nil "finished" :exit t))
+
+;;; Spacemacs
+(use-package spacemacs-theme
+  :defer t
+  :init (load-theme 'spacemacs-dark t))
+;;; End
