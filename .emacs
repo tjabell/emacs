@@ -73,4 +73,3 @@ There are two things you can do about this warning:
 
 (require 'org-tempo)
 ;; ********* Experimental/Local configuration can be placed here *********
-
