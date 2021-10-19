@@ -67,13 +67,10 @@
           (setq org-default-notes-file (concat org-directory "/notes.org"))
           (setq org-todo-keywords
                 '((sequence "TODO" "TEST" "DONE")))
-          ;; (setq org-capture-templates
-          ;;       '(("j" "Journal" entry (file+datetree "~/org/journal.org")
-          ;;          "* %?\nEntered on %U\n %i\n %a")
-          ;;         ("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
-          ;;          "* TODO %?\n %i\n %a")
-          ;;         ("p" "Project" entry (file+headline "~/org/projects.org" "Projects")
-          ;;          "* TODO %?\n %i\n %a")))
+          (setq org-capture-templates
+                '(("t" "Todo" entry
+                   (file+headline "~/projects/me/todo_misc.org" "Inbox")
+                   "* TODO %?\n %i\n %a\n %i" :empty-lines 1)))a
           ;; (setq org-capture-templates
           ;;       org-roam-capture-templates)
           (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
@@ -81,12 +78,18 @@
           (setq org-babel-default-header-args:C
                 (cons '(:tangle . "yes")
                       (assq-delete-all :tangle org-babel-default-header-args)))
-          (setq org-hide-emphasis-markers t)
+          (setq org-ellipsis " ⤵"
+           org-hide-emphasis-markers t)
           )
   :bind (("C-c c" . org-capture)
          ("C-c C-x m" . org-meta-return)
          ("C-c C-x r" . org-metaright)
-         ("C-c C-x l" . org-metaleft)))
+         ("C-c C-x l" . org-metaleft))
+  :custom
+  (setq org-confirm-babel-evaluate nil)
+  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("py" . "src python")))
 
 ;;; End Org
 ;;;;;;;;;;;
@@ -170,9 +173,10 @@
 
 (use-package org-bullets
   :config
-  (add-hook 'org-mode-hook (lambda ()
-                             (org-bullets-mode 1)
-                             (variable-pitch-mode 1))))
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (org-bullets-mode 1)
+              (variable-pitch-mode 1))))
 
 
 (use-package emmet-mode)
