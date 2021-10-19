@@ -1,5 +1,4 @@
 (require 'use-package)
-;;   "List of packages that I like.")
 
 (use-package paredit )
 (use-package iedit)
@@ -12,9 +11,6 @@
 (use-package js-comint )
 (use-package csv-mode )
 
-;(use-package geiser )
-
-;(use-package tern )
 (use-package js2-refactor )
 (use-package json-mode )
 
@@ -27,7 +23,6 @@
 
 ;(use-package cider )
 (use-package editorconfig
-
   :config (editorconfig-mode 1))
 
 (use-package prettier-js)
