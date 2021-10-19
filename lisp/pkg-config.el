@@ -500,3 +500,7 @@
   :defer t
   :init (load-theme 'spacemacs-dark t))
 ;;; End
+
+(use-package typescript-mode
+  :mode "\\.ts\\'"
+  :hook (typescript-mode . lsp-deferred))
