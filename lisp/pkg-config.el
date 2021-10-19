@@ -225,21 +225,24 @@
          ("C-x C-f" . counsel-find-file)
          ("C-c g" . counsel-git)
          ("C-c j" . counsel-git-grep)
-         ("C-c k" . counsel-ag)
+         ("C-c k" . counsel-rg)
          ("C-x l" . counsel-locate)))
 
 (use-package ivy
-
+  :init (ivy-mode 1)
   :config (progn (setq ivy-height 50)
                  (setq ivy-use-virtual-buffers t)
                  (setq ivy-count-format "(%d/%d) "))
   :bind (("C-c C-r" . ivy-resume)
          ("<f6>" . ivy-resume)))
-
 (define-key ivy-minibuffer-map (kbd "<left>") 'counsel-up-directory)
 (define-key ivy-minibuffer-map (kbd "C-l") 'counsel-up-directory)
 (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+
+(use-package ivy-rich
+  :init (ivy-rich-mode 1))
 ;;; End Ivy
+
 ;;;;;;;;;;;;;;;;;;
 (use-package projectile
   :config (setq projectile-completion-system 'ivy)
@@ -291,8 +294,7 @@
 ;;     (setq projectile-enable-caching t)))
 
 
-(use-package neotree
-  :bind ("<f8>" . neotree-toggle))
+(use-package neotree)
 
 (use-package magit
   :bind ("<f10>" . magit-status))
@@ -437,7 +439,7 @@
 ;; Misc file types and their default modes
 (add-to-list 'auto-mode-alist '("\\.editorconfig" . conf-mode))
 
-(ivy-mode 1)
+
 (show-paren-mode 1)
 (auto-complete-mode 0)
 (key-chord-mode 1)
@@ -461,9 +463,6 @@
   :diminish which-key-mode
   :config
   (setq which-key-idle-delay 0.3))
-
-(use-package ivy-rich
-  :init (ivy-rich-mode 1))
 
 (use-package helpful
   :commands (helpful-callable helpful-variable helpful-command helpful-key)
@@ -501,6 +500,29 @@
   :defer t
   :init (load-theme 'spacemacs-dark t))
 ;;; End
+
+;;; LSP
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :commands lsp)
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom))
+
+(use-package flymake)
+
+(use-package lsp-ivy)
+
+(use-package treemacs
+  :bind ("<f8>" . treemacs))
+
+(use-package lsp-treemacs
+  :after lsp)
+
+;;; End Omnisharp/Csharp config
 
 (use-package typescript-mode
   :mode "\\.ts\\'"
