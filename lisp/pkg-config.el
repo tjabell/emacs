@@ -20,8 +20,6 @@
 
 (use-package auto-yasnippet )
 (use-package exec-path-from-shell )
-(use-package counsel-projectile
-  :config (counsel-projectile-mode))
 (use-package paradox )
 (use-package keychain-environment )
 
@@ -247,6 +245,9 @@
   :config (setq projectile-completion-system 'ivy)
   :bind ("C-H" . projectile-find-file)
   :bind-keymap ("C-c p" . projectile-command-map))
+
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
 
 (use-package swiper
   :bind ("C-s" . swiper))
