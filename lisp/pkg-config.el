@@ -522,6 +522,8 @@
 (use-package lsp-treemacs
   :after lsp)
 
+(use-package treemacs-projectile)
+
 ;;; End Omnisharp/Csharp config
 
 (use-package typescript-mode
