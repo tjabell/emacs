@@ -90,8 +90,7 @@
 
 (when (and (require 'ivy nil t)
            (require 'counsel nil t)
-           (require 'swiper nil t))
-  (load-library "ivy-keys"))
+           (require 'swiper nil t)))
 
 (global-set-key (kbd "C-M-y") 'reverse-transpose-sexps)
 (global-set-key (kbd "C-x w") 'my-window-split-toggle)
