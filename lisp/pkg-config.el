@@ -52,7 +52,8 @@
    (python . t)
    (perl . t)
    (haskell . t)
-   (C . t)))
+   (C . t)
+   (shell . t)))
 
 
 (use-package org
