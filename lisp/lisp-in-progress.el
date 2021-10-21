@@ -122,7 +122,7 @@
 (defun my:copy-project-current-line-position-to-clipboard ()
   "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
   (interactive)
-  (flet ((find-git-dir  ()
+  (cl-flet ((find-git-dir  ()
                         (file-truename
                          (locate-dominating-file (buffer-file-name (current-buffer)) ".git"))))
     (let* ((project-dir (find-git-dir))
