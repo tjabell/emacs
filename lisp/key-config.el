@@ -88,10 +88,6 @@
 ;; (define-key global-map [remap dabbrev-expand] 'helm-dabbrev)
 ;; (global-set-key (kbd "M-x") 'helm-M-x)
 
-(when (and (require 'ivy nil t)
-           (require 'counsel nil t)
-           (require 'swiper nil t)))
-
 (global-set-key (kbd "C-M-y") 'reverse-transpose-sexps)
 (global-set-key (kbd "C-x w") 'my-window-split-toggle)
 
