@@ -520,8 +520,15 @@
 
 (use-package treemacs-projectile)
 
-;;; End Omnisharp/Csharp config
-
 (use-package typescript-mode
   :mode "\\.ts\\'"
   :hook (typescript-mode . lsp-deferred))
+
+(use-package csharp-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode)))
+
+;;; Tree sitter (experimental)
+(use-package tree-sitter)
+(use-package tree-sitter-langs)
+(use-package tree-sitter-indent)
