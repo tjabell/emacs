@@ -65,7 +65,7 @@
                 '(("t" "Todo" entry
                    (file+headline "~/projects/me/todo_misc.org" "Inbox")
                    "* TODO %?\n %i\n %a\n %i" :empty-lines 1)
-                  ("gt" "Goddard Todo" entry
+                  ("g" "Goddard Todo" entry
                    (file+headline "~/projects/goddard/todo_goddard.org" "Inbox")
                    "* TODO %?\n %i\n %a\n %i" :empty-lines 1)))
           ;; (setq org-capture-templates
