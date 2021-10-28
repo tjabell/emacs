@@ -83,16 +83,15 @@
   (magit-call-git "push")
   (magit-refresh))
 
-(defun my:magit-commit-rebase-push-project (repo &rest additional-files)
+;; Only pushes project specific files (environment.org) and any todos
+(defun my:magit-commit-rebase-push-project-files (repo &rest additional-files)
   (my:-call-git-process-no-output repo "fetch" "--all")
   (my:-call-git-process-no-output repo "add" "./environment.org")
   (if additional-files
       (apply 'my:-call-git-process-no-output (append (list repo) additional-files)))
   (my:-call-git-process-no-output repo "commit" "-m" "todos, env")
   (my:-call-git-process-no-output repo "rebase" "origin/master")
-  (condition-case
-      (my:-call-git-process-no-output repo "push")
-      (error nil)))
+  (my:-call-git-process-no-output repo "push"))
 
 (defun my:-call-git-process-no-output (repo &rest args)
   (apply 'call-process (append (list "git" nil nil nil "-C" repo) args)))
@@ -116,10 +115,10 @@
 (defun my:magit-commit-all-projects ()
   (interactive)
   (let ((repo "/home/trevor/projects/parsus/"))
-    (my:magit-commit-rebase-push-project repo "todo_parsus.org" "meeting_updates.org"))
+    (my:magit-commit-rebase-push-project-files repo "todo_parsus.org" "meeting_updates.org"))
   (let ((repo "/home/trevor/projects/goddard/"))
-    (my:magit-commit-rebase-push-project repo (list "todo_goddard"))))
-
+    (my:magit-commit-rebase-push-project-files repo "todo_goddard"))
+  )
 
 (global-set-key (kbd "C-c C-g A") 'my-magit-commit-all-and-push)
 
