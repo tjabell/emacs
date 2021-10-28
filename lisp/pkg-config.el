@@ -88,6 +88,8 @@
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("py" . "src python")))
 
+(use-package org-contrib)
+
 ;;; End Org
 ;;;;;;;;;;;
 

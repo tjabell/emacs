@@ -117,7 +117,7 @@
   (let ((repo "/home/trevor/projects/parsus/"))
     (my:magit-commit-rebase-push-project-files repo "todo_parsus.org" "meeting_updates.org"))
   (let ((repo "/home/trevor/projects/goddard/"))
-    (my:magit-commit-rebase-push-project-files repo "todo_goddard"))
+    (my:magit-commit-rebase-push-project-files repo "todo_goddard" "apis.org"))
   )
 
 (global-set-key (kbd "C-c C-g A") 'my-magit-commit-all-and-push)
