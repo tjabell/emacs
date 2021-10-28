@@ -88,7 +88,7 @@
   (my:-call-git-process-no-output repo "fetch" "--all")
   (my:-call-git-process-no-output repo "add" "./environment.org")
   (if additional-files
-      (apply 'my:-call-git-process-no-output (append (list repo) additional-files)))
+      (apply 'my:-call-git-process-no-output (append (list repo "add") additional-files)))
   (my:-call-git-process-no-output repo "commit" "-m" "todos, env")
   (my:-call-git-process-no-output repo "rebase" "origin/master")
   (my:-call-git-process-no-output repo "push"))
