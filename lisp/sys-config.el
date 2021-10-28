@@ -15,6 +15,10 @@
  auto-save-mode nil
  auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
+;;To “turn off” the backup feature for remote files and stop TRAMP from saving to the backup directory, use this:
+(add-to-list 'backup-directory-alist
+             (cons tramp-file-name-regexp nil))
+
 (if (or (eq system-type 'windows-nt)
         (eq system-type 'cygwin))
     (progn
