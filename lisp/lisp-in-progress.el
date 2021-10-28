@@ -109,6 +109,8 @@
   (let ((repo "/home/trevor/org-roam/"))
     (my:magit-commit-all-rebase-push repo))
   (let ((repo "/home/trevor/emacs/"))
+    (my:magit-commit-all-rebase-push repo))
+  (let ((repo "/home/trevor/projects/me"))
     (my:magit-commit-all-rebase-push repo)))
 
 (defun my:magit-commit-all-projects ()
