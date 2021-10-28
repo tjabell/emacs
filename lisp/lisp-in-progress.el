@@ -83,6 +83,15 @@
   (magit-call-git "push")
   (magit-refresh))
 
+(defun my:magit-commit-rebase-push-project (repo additional-files)
+  (magit-call-git "-C" repo "add" "./environment.org")
+  (if additional-files
+      (apply 'magit-call-git (append (list "-C" repo "add") additional-files)))
+  (magit-call-git "-C" repo "commit" "-a" "-m" "todo, env")
+  (magit-call-git "-C" repo "fetch" "--all")
+  (magit-call-git "-C" repo "rebase" "origin/master")
+  (magit-call-git "-C" repo "push"))
+
 (defun my:magit-commit-rebase-push (repo)
   (magit-call-git "-C" repo "add" "-A")
   (magit-call-git "-C" repo "commit" "-a" "-m" "dailies")
@@ -94,8 +103,11 @@
   (interactive)
   (let ((repo "/home/trevor/org-roam/"))
     (my:magit-commit-rebase-push repo))
-  (let ((repo "/home/trevor/projects/parsus/"))
-    (my:magit-commit-rebase-push repo)))
+  (let ((repo "/home/trevor/projects/parsus/")
+        (additional-files '("todo_parsus.org" "meeting_updates.org")))
+    (my:magit-commit-rebase-push-project repo additional-files))
+  (let ((repo "/home/trevor/projects/goddard/"))
+    (my:magit-commit-rebase-push-project repo (list "todo_goddard"))))
 
 
 (global-set-key (kbd "C-c C-g A") 'my-magit-commit-all-and-push)
