@@ -108,6 +108,11 @@
   (interactive)
   (let ((repo "/home/trevor/org-roam/"))
     (my:magit-commit-all-rebase-push repo))
+  (let ((repo "/home/trevor/emacs/"))
+    (my:magit-commit-all-rebase-push repo)))
+
+(defun my:magit-commit-all-projects ()
+  (interactive)
   (let ((repo "/home/trevor/projects/parsus/"))
     (my:magit-commit-rebase-push-project repo "todo_parsus.org" "meeting_updates.org"))
   (let ((repo "/home/trevor/projects/goddard/"))
