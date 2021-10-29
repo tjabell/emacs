@@ -309,6 +309,8 @@
             (key-chord-define-global "qo" 'other-window)
             (key-chord-define-global "qp" 'other-window)
             (key-chord-define-global "qf" 'find-file)
+            ;; This might be too easy to mis-type, I forget why I commented q-j below
+            (key-chord-define-global "qj" 'dired-jump)
             (key-chord-define-global "xf" 'find-file)
             (key-chord-define-global "qk" 'kill-this-buffer)
             (key-chord-define-global "xk" 'kill-this-buffer)
@@ -316,11 +318,11 @@
             (key-chord-define-global "qn" 'next-buffer)
             (key-chord-define-global "qs" 'save-buffer)
             (key-chord-define-global "xs" 'save-buffer)
-            (key-chord-define-global "qh" 'shell)
+            (key-chord-define-global "qh" 'vterm)
             (key-chord-define-global "xh" 'shell)
             ;; Too easy to misstype
-            ;; (key-chord-define-global "qe" 'eval-defun)
-            ;(key-chord-define-global "qj" 'eval-print-last-sexp)
+            ;;  (key-chord-define-global "qe" 'eval-defun)
+            ;;  (key-chord-define-global "qj" 'eval-print-last-sexp)
             (key-chord-define-global "qb" 'ivy-switch-buffer)
             (when (require 'xah-lee nil t)
               (key-chord-define-global "qr" 'xah-next-user-buffer)
