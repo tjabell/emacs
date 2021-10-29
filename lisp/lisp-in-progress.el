@@ -114,10 +114,12 @@
 
 (defun my:magit-commit-all-projects ()
   (interactive)
-  (let ((repo "/home/trevor/projects/parsus/"))
-    (my:magit-commit-rebase-push-project-files repo "todo_parsus.org" "meeting_updates.org"))
   (let ((repo "/home/trevor/projects/goddard/"))
-    (my:magit-commit-rebase-push-project-files repo "todo_goddard" "apis.org"))
+    (my:magit-commit-rebase-push-project-files repo "./todo_goddard"))
+  (let ((repo "/home/trevor/projects/parsus/"))
+    (my:magit-commit-rebase-push-project-files repo "./todo_parsus.org" "./meeting_updates.org"))
+  (let ((repo "/home/trevor/projects/acdhh/"))
+    (my:magit-commit-rebase-push-project-files repo "./todo_acdhh-cdbms.org" "./todo_acdhh-www.org"))
   )
 
 (global-set-key (kbd "C-c C-g A") 'my-magit-commit-all-and-push)
