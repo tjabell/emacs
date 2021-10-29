@@ -89,7 +89,7 @@
   (my:-call-git-process-no-output repo "add" "./environment.org")
   (if additional-files
       (apply 'my:-call-git-process-no-output (append (list repo "add") additional-files)))
-  (my:-call-git-process-no-output repo "commit" "-m" "todos, env")
+  (my:-call-git-process-no-output repo "commit" "-m" "[autocommit] todos, env")
   (my:-call-git-process-no-output repo "rebase" "origin/master")
   (my:-call-git-process-no-output repo "push"))
 
@@ -99,7 +99,7 @@
 (defun my:magit-commit-all-rebase-push (repo)
   (my:-call-git-process-no-output repo "fetch" "--all")
   (my:-call-git-process-no-output repo "add" "-A")
-  (my:-call-git-process-no-output repo "commit" "-a" "-m" "dailies")
+  (my:-call-git-process-no-output repo "commit" "-a" "-m" "[autocommit] dailies")
   (my:-call-git-process-no-output repo "rebase" "origin/master")
   (my:-call-git-process-no-output repo "push"))
 
