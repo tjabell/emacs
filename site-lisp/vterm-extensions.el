@@ -1,4 +1,5 @@
 ;;; https://www.reddit.com/r/emacs/comments/ft84xy/run_shell_command_in_new_vterm/
+;;; I really don't get what this is doing 20211029TJA
 (defun my:vterm-run-in-vterm-kill (process event)
   "A process sentinel. Kills PROCESS's buffer if it is live."
   (let ((b (process-buffer process)))
@@ -37,16 +38,14 @@ shell exits, the buffer is killed."
 (defun my:vterm-run-fbp-api ()
   (interactive)
   (with-current-buffer (vterm (concat "* FBP API *"))
-    (set-process-sentinel vterm--process #'run-in-vterm-kill)
     (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/")
     (vterm-send-return)
-    (vterm-send-string "/home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/local_startup.sh")
+    (vterm-send-string "./local_startup.sh")
     (vterm-send-return)))
 
 (defun my:vterm-run-fbp-web ()
   (interactive)
-  (with-current-buffer (vterm (concat "* FBP API *"))
-    (set-process-sentinel vterm--process #'run-in-vterm-kill)
+  (with-current-buffer (vterm (concat "* FBP WEB *"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/FranchiseePortal-Website/")
     (vterm-send-return)
     (vterm-send-string "./local_startup.sh")

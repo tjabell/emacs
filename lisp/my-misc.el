@@ -47,6 +47,7 @@ definition and running `eval-defun`."
 (defalias 'jm 'my:json-mode-and-format-buffer)
 
 (defalias 'icd 'insert-current-date)
+(defalias 'ics 'insert-signature-for-code)
 
 (require 'notifications)
 (defun my:remind-me-in (minutes body)
