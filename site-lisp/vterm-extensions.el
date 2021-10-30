@@ -1,11 +1,11 @@
 ;;; https://www.reddit.com/r/emacs/comments/ft84xy/run_shell_command_in_new_vterm/
-(defun run-in-vterm-kill (process event)
+(defun my:vterm-run-in-vterm-kill (process event)
   "A process sentinel. Kills PROCESS's buffer if it is live."
   (let ((b (process-buffer process)))
     (and (buffer-live-p b)
          (kill-buffer b))))
 
-(defun run-in-vterm (command)
+(defun my:vterm-run-in-vterm (command)
   "Execute string COMMAND in a new vterm.
 
 Interactively, prompt for COMMAND with the current buffer's file
@@ -32,4 +32,22 @@ shell exits, the buffer is killed."
   (with-current-buffer (vterm (concat "*" command "*"))
     (set-process-sentinel vterm--process #'run-in-vterm-kill)
     (vterm-send-string command)
+    (vterm-send-return)))
+
+(defun my:vterm-run-fbp-api ()
+  (interactive)
+  (with-current-buffer (vterm (concat "* FBP API *"))
+    (set-process-sentinel vterm--process #'run-in-vterm-kill)
+    (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/")
+    (vterm-send-return)
+    (vterm-send-string "/home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/local_startup.sh")
+    (vterm-send-return)))
+
+(defun my:vterm-run-fbp-web ()
+  (interactive)
+  (with-current-buffer (vterm (concat "* FBP API *"))
+    (set-process-sentinel vterm--process #'run-in-vterm-kill)
+    (vterm-send-string "cd /home/trevor/projects/goddard/src/FranchiseePortal-Website/")
+    (vterm-send-return)
+    (vterm-send-string "./local_startup.sh")
     (vterm-send-return)))

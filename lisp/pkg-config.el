@@ -1,5 +1,36 @@
 (require 'use-package)
 
+(use-package org
+  :init (progn
+          (setq org-todo-keywords
+                '((sequence "TODO" "IN-PROGRESS" "TEST" "DONE")))
+          (setq org-capture-templates
+                '(("t" "Todo" entry
+                   (file+headline "~/projects/me/todo_misc.org" "Inbox")
+                   "* TODO %?\n %i\n %a\n %i" :empty-lines 1)
+                  ("g" "Goddard Todo" entry
+                   (file+headline "~/projects/goddard/todo_goddard.org" "Inbox")
+                   "* TODO %?\n %i\n %a\n %i" :empty-lines 1)))
+          ;; (setq org-capture-templates
+          ;;       org-roam-capture-templates)
+          (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
+          (setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
+          (setq org-ellipsis " ⤵"
+           org-hide-emphasis-markers t))
+  :bind (("C-c c" . org-capture)
+         ("C-c C-x m" . org-meta-return)
+         ("C-c C-x r" . org-metaright)
+         ("C-c C-x l" . org-metaleft))
+  :config
+  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("py" . "src python"))
+  :custom
+  (org-confirm-babel-evaluate nil)
+  (org-babel-default-header-args:C
+                (cons '(:tangle . "yes")
+                      (assq-delete-all :tangle org-babel-default-header-args))))
+
 (use-package paredit )
 (use-package iedit)
 (use-package avy )
@@ -54,39 +85,6 @@
    (haskell . t)
    (C . t)
    (shell . t)))
-
-
-(use-package org
-  :init (progn
-          (setq org-default-notes-file (concat org-directory "/notes.org"))
-          (setq org-todo-keywords
-                '((sequence "TODO" "TEST" "DONE")))
-          (setq org-capture-templates
-                '(("t" "Todo" entry
-                   (file+headline "~/projects/me/todo_misc.org" "Inbox")
-                   "* TODO %?\n %i\n %a\n %i" :empty-lines 1)
-                  ("g" "Goddard Todo" entry
-                   (file+headline "~/projects/goddard/todo_goddard.org" "Inbox")
-                   "* TODO %?\n %i\n %a\n %i" :empty-lines 1)))
-          ;; (setq org-capture-templates
-          ;;       org-roam-capture-templates)
-          (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
-          (setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
-          (setq org-babel-default-header-args:C
-                (cons '(:tangle . "yes")
-                      (assq-delete-all :tangle org-babel-default-header-args)))
-          (setq org-ellipsis " ⤵"
-           org-hide-emphasis-markers t)
-          )
-  :bind (("C-c c" . org-capture)
-         ("C-c C-x m" . org-meta-return)
-         ("C-c C-x r" . org-metaright)
-         ("C-c C-x l" . org-metaleft))
-  :custom
-  (setq org-confirm-babel-evaluate nil)
-  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-  (add-to-list 'org-structure-template-alist '("py" . "src python")))
 
 (use-package org-contrib)
 

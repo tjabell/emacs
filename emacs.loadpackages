@@ -1,3 +1,6 @@
+;;; Site lisp
+(load-library "vterm-extensions")
+
 (load-library "sys-config")
 (load-library "pkg-config")
 (load-library "key-config")
@@ -21,4 +24,6 @@
 (load-library "tempo-snippets")
 (load-library "fast-project-find-file")
 (load-library "my-dotcms")
+(load-library "my-magit-scripting")
+
 (autoload 'refill-mode "refill" "Refill minor mode." t)

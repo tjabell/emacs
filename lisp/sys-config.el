@@ -1,12 +1,12 @@
 (if (fboundp 'tool-bar-mode)
-    (progn      
+    (progn
       (tool-bar-mode 0)
       (scroll-bar-mode 0))
   nil)
 
 (menu-bar-mode 0)
 
-;; Backup settings				
+;; Backup settings
 (setq
  make-backup-files t
  backup-by-copying t
@@ -58,7 +58,7 @@
 (defalias 'wm 'whitespace-mode)
 (defalias 'nxml 'nxml-mode)
 
-;; [IMPORTANT] This function needs to take a (frame) arg 
+;; [IMPORTANT] This function needs to take a (frame) arg
 (defun my:on-new-frame (frame)
   (select-frame frame)
   (if (eq system-type 'windows-nt)
@@ -82,5 +82,3 @@
 
 (add-hook 'lisp-mode-hook
           #'my:lisp-mode-init)
-
-
