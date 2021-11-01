@@ -32,7 +32,7 @@
   (my:-call-git-process-no-output repo "rebase" "origin/master")
   (my:-call-git-process-no-output repo "push"))
 
-(defun my:magit-commit-all-dailies ()
+(defun my:magit-commit-and-refresh-all-dailies ()
   (interactive)
   (let ((repo "/home/trevor/org-roam/"))
     (my:magit-commit-all-rebase-push repo))
@@ -41,7 +41,7 @@
   (let ((repo "/home/trevor/projects/me"))
     (my:magit-commit-all-rebase-push repo)))
 
-(defun my:magit-commit-all-projects ()
+(defun my:magit-commit-and-refresh-all-projects ()
   (interactive)
   (let ((repo "/home/trevor/projects/goddard/"))
     (my:magit-commit-rebase-push-project-files repo "./todo_goddard"))
