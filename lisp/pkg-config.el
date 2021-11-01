@@ -18,10 +18,12 @@
           (setq org-ellipsis " ⤵"
            org-hide-emphasis-markers t))
   :bind (("C-c c" . org-capture)
-         ("C-c C-x C-j" . org-clock-goto)
+         ("C-c C-x C-j" . org-clock-goto)         
          ("C-c C-x m" . org-meta-return)
          ("C-c C-x r" . org-metaright)
-         ("C-c C-x l" . org-metaleft))
+         ("C-c C-x l" . org-metaleft)
+         :map org-mode-map
+         ("C-c C-x C-u" . org-clock-update-time-maybe))
   :config
   (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
