@@ -10,6 +10,9 @@
                    "* TODO %?\n %i\n %a\n %i" :empty-lines 1)
                   ("g" "Goddard Todo" entry
                    (file+headline "~/projects/goddard/todo_goddard.org" "Inbox")
+                   "* TODO %?\n %i\n %a\n %i" :empty-lines 1)
+                  ("e" "ESA Todo" entry
+                   (file+headline "~/projects/extended_stay/todo_esa.org" "Inbox")
                    "* TODO %?\n %i\n %a\n %i" :empty-lines 1)))
           ;; (setq org-capture-templates
           ;;       org-roam-capture-templates)
