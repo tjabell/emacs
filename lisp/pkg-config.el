@@ -545,3 +545,7 @@
 (use-package tree-sitter-langs)
 (use-package tree-sitter-indent)
 
+(use-package perspective
+  :bind (("C-x k" . persp-kill-buffer*)
+         ("C-x C-b" . persp-ivy-switch-buffer))
+  :config (persp-mode))
