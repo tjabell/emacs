@@ -537,9 +537,11 @@
 
 (use-package csharp-mode
   :config
-  (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode)))
+  (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode))
+  :hook (csharp-mode . lsp-deferred))
 
 ;;; Tree sitter (experimental)
 (use-package tree-sitter)
 (use-package tree-sitter-langs)
 (use-package tree-sitter-indent)
+

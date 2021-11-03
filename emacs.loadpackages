@@ -1,6 +1,5 @@
 ;;; Site lisp
 (load-library "vterm-extensions")
-
 (load-library "sys-config")
 (load-library "pkg-config")
 (load-library "key-config")
@@ -19,10 +18,11 @@
 (load-library "howard-abrams")
 (load-library "open-buffer-with")
 (load-library "stackoverflow")
-(load-library "my-misc")
-(load-library "my-projects")
 (load-library "tempo-snippets")
 (load-library "fast-project-find-file")
+(load-library "make-password")
+(load-library "my-misc")
+(load-library "my-projects")
 (load-library "my-dotcms")
 (load-library "my-magit-scripting")
 
