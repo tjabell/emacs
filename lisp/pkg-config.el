@@ -273,14 +273,7 @@
 (use-package doom-modeline
   :init (doom-modeline-mode 1))
 
-(use-package ace-jump-mode
-  :bind ("C-." . ace-jump-mode)
-  :config (progn
-            (ace-jump-mode-enable-mark-sync)
-            (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)))
-
 (use-package xterm-color)
-
 
 (add-hook 'eshell-mode-hook
             (lambda ()

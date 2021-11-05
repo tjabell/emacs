@@ -50,6 +50,8 @@
   (let ((repo "/home/trevor/projects/acdhh/"))
     (my:magit-commit-rebase-push-project-files repo "./todo_acdhh-cdbms.org" "./todo_acdhh-www.org"))
   (let ((repo "/home/trevor/projects/extended_stay/"))
-    (my:magit-commit-rebase-push-project-files repo "./todo_esa.org")))
+    (my:magit-commit-rebase-push-project-files repo "./todo_esa.org"))
+  (let ((repo "/home/trevor/projects/me/"))
+    (my:magit-commit-rebase-push-project-files repo "./todo_misc.org")))
 
 (global-set-key (kbd "C-c C-g A") 'my-magit-commit-all-and-push)

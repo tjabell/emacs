@@ -50,3 +50,11 @@ shell exits, the buffer is killed."
     (vterm-send-return)
     (vterm-send-string "./local_startup.sh")
     (vterm-send-return)))
+
+(defun my:vterm-log-franchiseportal-api ()
+  (interactive)
+  (with-current-buffer (vterm (concat "* FBP WEB *"))
+    (vterm-send-string "cd /home/trevor/")
+    (vterm-send-return)
+    (vterm-send-string "az webapp log tail --name ipaas-franchiseeportal-dev-useast-api --resource-group ipaas-dev-useast-rsg")
+    (vterm-send-return)))
