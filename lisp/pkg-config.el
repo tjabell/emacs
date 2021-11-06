@@ -19,7 +19,8 @@
           (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
           (setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
           (setq org-ellipsis " ⤵"
-           org-hide-emphasis-markers t))
+           org-hide-emphasis-markers t)
+          (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
   :bind (("C-c c" . org-capture)
          ("C-c C-x C-j" . org-clock-goto)         
          ("C-c C-x m" . org-meta-return)
@@ -30,7 +31,7 @@
   :config
   (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-  (add-to-list 'org-structure-template-alist '("py" . "src python"))
+  (add-to-list 'org-structure-template-alist '("py" . "src python"))  
   :custom
   (org-confirm-babel-evaluate nil)
   (org-babel-default-header-args:C
