@@ -13,6 +13,9 @@
                    "* TODO %?\n %i\n %a\n %i" :empty-lines 1)
                   ("e" "ESA Todo" entry
                    (file+headline "~/projects/extended_stay/todo_esa.org" "Inbox")
+                   "* TODO %?\n %i\n %a\n %i" :empty-lines 1)
+                  ("a" "ACDHH CDBMS Todo" entry
+                   (file+headline "~/projects/acdhh/todo_acdhh-cdbms.org" "Inbox")
                    "* TODO %?\n %i\n %a\n %i" :empty-lines 1)))
           ;; (setq org-capture-templates
           ;;       org-roam-capture-templates)
@@ -236,7 +239,7 @@
 
 (use-package ivy
   :init (ivy-mode 1)
-  :config (progn (setq ivy-height 50)
+  :config (progn (setq ivy-height 25)
                  (setq ivy-use-virtual-buffers t)
                  (setq ivy-count-format "(%d/%d) "))
   :bind (("C-c C-r" . ivy-resume)

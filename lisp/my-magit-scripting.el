@@ -25,11 +25,11 @@
 (defun my:-call-git-process-no-output (repo &rest args)
   (apply 'call-process (append (list "git" nil nil nil "-C" repo) args)))
 
-(defun my:magit-commit-all-rebase-push (repo)
+(defun my:magit-commit-all-rebase-push (repo &optional master)
   (my:-call-git-process-no-output repo "fetch" "--all")
   (my:-call-git-process-no-output repo "add" "-A")
   (my:-call-git-process-no-output repo "commit" "-a" "-m" "[autocommit] dailies")
-  (my:-call-git-process-no-output repo "rebase" "origin/master")
+  (my:-call-git-process-no-output repo "rebase" (or master "origin/master"))
   (my:-call-git-process-no-output repo "push"))
 
 (defun my:magit-commit-and-refresh-all-dailies ()
@@ -39,7 +39,7 @@
   (let ((repo "/home/trevor/emacs/"))
     (my:magit-commit-all-rebase-push repo))
   (let ((repo "/home/trevor/projects/me"))
-    (my:magit-commit-all-rebase-push repo)))
+    (my:magit-commit-all-rebase-push repo "origin/main")))
 
 (defun my:magit-commit-and-refresh-all-projects ()
   (interactive)
