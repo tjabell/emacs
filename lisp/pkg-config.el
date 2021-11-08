@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (require 'use-package)
 
 (use-package org
@@ -41,28 +42,28 @@
                 (cons '(:tangle . "yes")
                       (assq-delete-all :tangle org-babel-default-header-args))))
 
-(use-package paredit )
+(use-package paredit)
 (use-package iedit)
-(use-package avy )
-(use-package ace-window )
-(use-package multiple-cursors )
+(use-package avy)
+(use-package ace-window)
+(use-package multiple-cursors)
 
-(use-package skewer-mode )
+(use-package skewer-mode)
 (use-package emmet-mode)
-(use-package js-comint )
-(use-package csv-mode )
+(use-package js-comint)
+(use-package csv-mode)
 
-(use-package js2-refactor )
-(use-package json-mode )
+(use-package js2-refactor)
+(use-package json-mode)
 
-(use-package auto-yasnippet )
-(use-package exec-path-from-shell )
-(use-package paradox )
-(use-package keychain-environment )
+(use-package auto-yasnippet)
+(use-package exec-path-from-shell)
+(use-package paradox)
+(use-package keychain-environment)
 
-(use-package persistent-scratch )
+(use-package persistent-scratch)
 
-;(use-package cider )
+;(use-package cider)
 (use-package editorconfig
   :config (editorconfig-mode 1))
 
@@ -83,6 +84,116 @@
 (global-set-key (kbd "<f12>") 'vterm-toggle)
 (global-set-key (kbd "C-<f12>") 'vterm-toggle-cd)
 ;;;
+
+;;; Vertico, Consult, Marginalia, Savehist
+;; Configuration below comes from
+;; /home/trevor/org-roam/20211107090342-emacs_new_stack_vertico_consult_marginalia_savehist.org
+(use-package vertico
+:ensure t
+:config    
+;; Cycles through the buffer list whne you hit the bottom
+(setq vertico-cycle t)
+:bind (:map minibuffer-local-map
+	    ;; Matching old ivy behavior
+	    ("C-l" . backward-kill-word)
+	    ;; Binding to allow inserting the current selection
+	    ("C-j" . vertico-insert))
+:init
+(vertico-mode))
+
+(use-package savehist
+  :init
+  (savehist-mode))
+
+(use-package marginalia
+  :after vertico
+  :ensure t
+  ;; Marginalia-cycle will switch through different annotators on each file
+  :bind (("M-A" . marginalia-cycle)
+       :map minibuffer-local-map
+       ("M-A" . marginalia-cycle))   
+  :init
+  (marginalia-mode))
+
+(global-set-key (kbd "M-o") 'other-window)
+
+(use-package org
+  :custom
+  (org-confirm-babel-evaluate nil))
+
+(use-package vertico
+:ensure t
+:config    
+;; Cycles through the buffer list whne you hit the bottom
+(setq vertico-cycle t)
+:bind (:map minibuffer-local-map
+	    ;; Matching old ivy behavior
+	    ("C-l" . backward-kill-word)
+	    ;; Binding to allow inserting the current selection
+	    ("C-j" . vertico-insert))
+:init
+(vertico-mode))
+
+(use-package savehist
+  :init
+  (savehist-mode))
+
+(use-package marginalia
+  :after vertico
+  :ensure t
+  ;; Marginalia-cycle will switch through different annotators on each file
+  :bind (("M-A" . marginalia-cycle)
+       :map minibuffer-local-map
+       ("M-A" . marginalia-cycle))   
+  :init
+  (marginalia-mode))
+
+(use-package consult
+  :bind (;; C-c bindings (mode-specific-map)
+	 ("C-c h" . consult-history)
+	 ("C-c m" . consult-mode-command)
+	 ("C-c b" . consult-bookmark)
+	 ("C-c k" . consult-kmacro)
+	 ("C-c b" . consult-bookmark)
+	 ;; M-g bindings (goto-map)
+	 ("M-g e" . consult-compile-error)
+	 ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+	 ("M-g g" . consult-goto-line)             ;; orig. goto-line
+	 ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+	 ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+	 ("M-g m" . consult-mark)
+	 ("M-g k" . consult-global-mark)
+	 ("M-g i" . consult-imenu)
+	 ("M-g I" . consult-imenu-multi)
+	 ;; M-s bindings (search-map)
+	 ("C-s" . consult-line)                   ;; needed by consult-line to detect isearch
+	 ("M-s g" . consult-grep)
+	 ("M-s G" . consult-git-grep)
+	 ("M-s r" . consult-ripgrep)
+     ("C-c k" . consult-ripgrep)
+	 ("M-s l" . isearch-forward)
+	 ("M-s L" . consult-line-multi)
+	 ("M-s t" . consult-theme))
+  :config
+
+  ;; Optionally configure preview. The default value
+  ;; is 'any, such that any key triggers the preview.
+  ;; (setq consult-preview-key 'any)
+  ;; (setq consult-preview-key (kbd "M-."))
+  ;; (setq consult-preview-key (list (kbd "<S-down>") (kbd "<S-up>")))
+  ;; For some commands and buffer sources it is useful to configure the
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (consult-customize
+   consult-theme
+   :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-file consult--source-project-file consult--source-bookmark
+   :preview-key (kbd "M-.")))
+
+(use-package orderless
+  :ensure t
+  :custom (completion-styles '(orderless)))
 
 ;;;;;;;;;;;;;;;;;;
 ;;; Org Mode
