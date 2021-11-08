@@ -88,112 +88,7 @@
 ;;; Vertico, Consult, Marginalia, Savehist
 ;; Configuration below comes from
 ;; /home/trevor/org-roam/20211107090342-emacs_new_stack_vertico_consult_marginalia_savehist.org
-(use-package vertico
-:ensure t
-:config    
-;; Cycles through the buffer list whne you hit the bottom
-(setq vertico-cycle t)
-:bind (:map minibuffer-local-map
-	    ;; Matching old ivy behavior
-	    ("C-l" . backward-kill-word)
-	    ;; Binding to allow inserting the current selection
-	    ("C-j" . vertico-insert))
-:init
-(vertico-mode))
-
-(use-package savehist
-  :init
-  (savehist-mode))
-
-(use-package marginalia
-  :after vertico
-  :ensure t
-  ;; Marginalia-cycle will switch through different annotators on each file
-  :bind (("M-A" . marginalia-cycle)
-       :map minibuffer-local-map
-       ("M-A" . marginalia-cycle))   
-  :init
-  (marginalia-mode))
-
-(global-set-key (kbd "M-o") 'other-window)
-
-(use-package org
-  :custom
-  (org-confirm-babel-evaluate nil))
-
-(use-package vertico
-:ensure t
-:config    
-;; Cycles through the buffer list whne you hit the bottom
-(setq vertico-cycle t)
-:bind (:map minibuffer-local-map
-	    ;; Matching old ivy behavior
-	    ("C-l" . backward-kill-word)
-	    ;; Binding to allow inserting the current selection
-	    ("C-j" . vertico-insert))
-:init
-(vertico-mode))
-
-(use-package savehist
-  :init
-  (savehist-mode))
-
-(use-package marginalia
-  :after vertico
-  :ensure t
-  ;; Marginalia-cycle will switch through different annotators on each file
-  :bind (("M-A" . marginalia-cycle)
-       :map minibuffer-local-map
-       ("M-A" . marginalia-cycle))   
-  :init
-  (marginalia-mode))
-
-(use-package consult
-  :bind (;; C-c bindings (mode-specific-map)
-	 ("C-c h" . consult-history)
-	 ("C-c m" . consult-mode-command)
-	 ("C-c b" . consult-bookmark)
-	 ("C-c k" . consult-kmacro)
-	 ("C-c b" . consult-bookmark)
-	 ;; M-g bindings (goto-map)
-	 ("M-g e" . consult-compile-error)
-	 ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
-	 ("M-g g" . consult-goto-line)             ;; orig. goto-line
-	 ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
-	 ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
-	 ("M-g m" . consult-mark)
-	 ("M-g k" . consult-global-mark)
-	 ("M-g i" . consult-imenu)
-	 ("M-g I" . consult-imenu-multi)
-	 ;; M-s bindings (search-map)
-	 ("C-s" . consult-line)                   ;; needed by consult-line to detect isearch
-	 ("M-s g" . consult-grep)
-	 ("M-s G" . consult-git-grep)
-	 ("M-s r" . consult-ripgrep)
-     ("C-c k" . consult-ripgrep)
-	 ("M-s l" . isearch-forward)
-	 ("M-s L" . consult-line-multi)
-	 ("M-s t" . consult-theme))
-  :config
-
-  ;; Optionally configure preview. The default value
-  ;; is 'any, such that any key triggers the preview.
-  ;; (setq consult-preview-key 'any)
-  ;; (setq consult-preview-key (kbd "M-."))
-  ;; (setq consult-preview-key (list (kbd "<S-down>") (kbd "<S-up>")))
-  ;; For some commands and buffer sources it is useful to configure the
-  ;; :preview-key on a per-command basis using the `consult-customize' macro.
-  (consult-customize
-   consult-theme
-   :preview-key '(:debounce 0.2 any)
-   consult-ripgrep consult-git-grep consult-grep
-   consult-bookmark consult-recent-file consult-xref
-   consult--source-file consult--source-project-file consult--source-bookmark
-   :preview-key (kbd "M-.")))
-
-(use-package orderless
-  :ensure t
-  :custom (completion-styles '(orderless)))
+(load-file "~/.emacs-min-new-stack.el")
 
 ;;;;;;;;;;;;;;;;;;
 ;;; Org Mode
@@ -250,9 +145,6 @@
   (org-roam-setup)
   (require 'org-roam-dailies)
   (org-roam-db-autosync-mode))
-
-(use-package key-chord)
-(key-chord-define org-mode-map "[[" #'my/insert-roam-link)
 
 (defun my/insert-roam-link ()
   "Inserts an Org-roam link."
@@ -381,6 +273,7 @@
 
 (use-package visual-regexp-steroids )
 
+
 (use-package key-chord
   :config (progn
             (key-chord-define-global "qo" 'other-window)
@@ -402,7 +295,9 @@
             ;;  (key-chord-define-global "qj" 'eval-print-last-sexp)
             (when (require 'xah-lee nil t)
               (key-chord-define-global "qr" 'xah-next-user-buffer)
-              (key-chord-define-global "qn" 'xah-previous-user-buffer))))
+              (key-chord-define-global "qn" 'xah-previous-user-buffer))
+            (when (fboundp 'my/insert-roam-link)
+              (key-chord-define org-mode-map "[[" #'my/insert-roam-link))))
 
 ;;; Ansi colors in compile buffer
 ;;; From: http://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-messing-up-emacs-compilation-buffer
@@ -525,15 +420,6 @@
 (global-ede-mode 1)
 (projectile-global-mode)
 
-;;; Semantic
-;(semantic-mode t)
-;(global-semantic-idle-completions-mode t)
-;(global-semantic-decoration-mode t)
-;(global-semantic-highlight-func-mode t)
-;(global-semantic-show-unmatched-syntax-mode 0)
-
-;;; End Semantic
-
 ;;; pass
 (use-package pass)
 
@@ -556,7 +442,6 @@
 
 
 (use-package hydra)
-
 (defhydra hydra-text-scale (:timeout 4)
   "scale text"
   ("+" text-scale-increase)
