@@ -71,7 +71,7 @@ shell exits, the buffer is killed."
   (with-current-buffer (vterm (concat "* AEM " instance " ERROR *"))
     (vterm-send-string "cd /home/trevor/")
     (vterm-send-return)
-    (vterm-send-string "aio cloudmanager:tail-logs 77402 " instance " " log)
+    (vterm-send-string (concat  "aio cloudmanager:tail-logs 77402 " instance " " log))
     (vterm-send-return)))
 
 (defun my:vterm-log-aem-author-dev-error ()
