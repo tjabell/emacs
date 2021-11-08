@@ -58,3 +58,27 @@ shell exits, the buffer is killed."
     (vterm-send-return)
     (vterm-send-string "az webapp log tail --name ipaas-franchiseeportal-dev-useast-api --resource-group ipaas-dev-useast-rsg")
     (vterm-send-return)))
+
+(defun my:vterm-az-webapp-log (api-name environment)
+  (interactive "sAPI Name \nsEnvironment ")
+  (with-current-buffer (vterm (concat "* FBP API - " api-name " *"))
+    (vterm-send-string "cd /home/trevor/")
+    (vterm-send-return)
+    (vterm-send-string (concat "az webapp log tail --name ipaas-" api-name "-" environment "-useast-api --resource-group ipaas-" environment "-useast-rsg"))
+    (vterm-send-return)))
+
+(defun my:-log-aem-dev-error (instance log)
+  (with-current-buffer (vterm (concat "* AEM " instance " ERROR *"))
+    (vterm-send-string "cd /home/trevor/")
+    (vterm-send-return)
+    (vterm-send-string "aio cloudmanager:tail-logs 77402 " instance " " log)
+    (vterm-send-return)))
+
+(defun my:vterm-log-aem-author-dev-error ()
+  (interactive)
+  (my:-log-aem-dev-error "author" "aemerror"))
+
+(defun my:vterm-log-aem-publish-dev-error ()
+  (interactive)
+  (my:-log-aem-dev-error "publish" "aemerror"))
+
