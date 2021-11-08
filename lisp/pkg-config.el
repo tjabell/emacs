@@ -224,45 +224,9 @@
   (yas-activate-extra-mode 'html-mode))
 
 ;;;;;;;;;;;;;;;;;;
-;;; Ivy/Counsel
-(use-package counsel
-  :bind (("C-h" . counsel-projectile)
-         ("<f1> f" . counsel-describe-function)
-         ("<f1> v" . counsel-describe-variable)
-         ("<f1> l" . counsel-find-library)
-         ("M-x" . counsel-M-x)
-         ("C-x C-f" . counsel-find-file)
-         ("C-c g" . counsel-git)
-         ("C-c j" . counsel-git-grep)
-         ("C-c k" . counsel-rg)
-         ("C-x l" . counsel-locate)))
-
-(use-package ivy
-  :init (ivy-mode 1)
-  :config (progn (setq ivy-height 25)
-                 (setq ivy-use-virtual-buffers t)
-                 (setq ivy-count-format "(%d/%d) "))
-  :bind (("C-c C-r" . ivy-resume)
-         ("<f6>" . ivy-resume)))
-(define-key ivy-minibuffer-map (kbd "<left>") 'counsel-up-directory)
-(define-key ivy-minibuffer-map (kbd "C-l") 'counsel-up-directory)
-(define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-
-(use-package ivy-rich
-  :init (ivy-rich-mode 1))
-;;; End Ivy
-
-;;;;;;;;;;;;;;;;;;
 (use-package projectile
-  :config (setq projectile-completion-system 'ivy)
   :bind ("C-H" . projectile-find-file)
   :bind-keymap ("C-c p" . projectile-command-map))
-
-(use-package counsel-projectile
-  :config (counsel-projectile-mode))
-
-(use-package swiper
-  :bind ("C-s" . swiper))
 
 (use-package yasnippet
   :config (add-to-list 'yas-snippet-dirs "~/emacs/data/snippets/"))
@@ -282,6 +246,7 @@
 (add-hook 'eshell-mode-hook
             (lambda ()
               (setq xterm-color-preserve-properties t)))
+
 (require 'eshell)
 ; TODO: Figure out why this is breaking
 ;(add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
@@ -324,7 +289,6 @@
             ;; Too easy to misstype
             ;;  (key-chord-define-global "qe" 'eval-defun)
             ;;  (key-chord-define-global "qj" 'eval-print-last-sexp)
-            (key-chord-define-global "qb" 'ivy-switch-buffer)
             (when (require 'xah-lee nil t)
               (key-chord-define-global "qr" 'xah-next-user-buffer)
               (key-chord-define-global "qn" 'xah-previous-user-buffer))))
@@ -468,17 +432,6 @@
   :config
   (setq which-key-idle-delay 0.3))
 
-(use-package helpful
-  :commands (helpful-callable helpful-variable helpful-command helpful-key)
-  :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  :bind
-  ([remap describe-function] . counsel-describe-function)
-  ([remap describe-command] . helpful-command)
-  ([remap describe-variable] . counsel-describe-variable)
-  ([remap describe-key] . helpful-key))
-
 ;;; Dont really get general yet
 ;; (use-package general
 ;;   :config
@@ -518,8 +471,6 @@
 
 (use-package flymake)
 
-(use-package lsp-ivy)
-
 (use-package treemacs
   :bind ("<f8>" . treemacs))
 
@@ -544,6 +495,5 @@
 (use-package tree-sitter-indent)
 
 (use-package perspective
-  :bind (("C-x k" . persp-kill-buffer*)
-         ("C-x C-b" . persp-ivy-switch-buffer))
+  :bind (("C-x k" . persp-kill-buffer*))
   :config (persp-mode))
