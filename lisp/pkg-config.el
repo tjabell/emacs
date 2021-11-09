@@ -227,6 +227,10 @@
   (yas-activate-extra-mode 'html-mode))
 
 ;;;;;;;;;;;;;;;;;;
+(use-package project
+  :custom
+  (project-vc-merge-submodules . nil))
+
 (use-package projectile
   :bind ("C-H" . projectile-find-file)
   :bind-keymap ("C-c p" . projectile-command-map))
@@ -267,7 +271,9 @@
 (use-package neotree)
 
 (use-package magit
-  :bind ("<f10>" . magit-status))
+  :bind
+  ("<f10>" . magit-status)
+  ("C-x g" . magit-status))
 
 (use-package visual-regexp )
 

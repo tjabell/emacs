@@ -73,7 +73,6 @@
 
 (global-set-key (kbd "C-S-o") 'my/insert-line-before)
 
-(global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key (kbd "C-x o") 'ace-window)
 
 (global-set-key (kbd "s-w") 'aya-create)
