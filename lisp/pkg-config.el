@@ -1,47 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 (require 'use-package)
 
-(use-package org
-  :init (progn
-          (setq org-todo-keywords
-                '((sequence "TODO" "IN-PROGRESS" "TEST" "DONE")))
-          (setq org-capture-templates
-                '(("t" "Todo" entry
-                   (file+headline "~/projects/me/todo_misc.org" "Inbox")
-                   "* TODO %?\n %i\n %a\n %i" :empty-lines 1)
-                  ("g" "Goddard Todo" entry
-                   (file+headline "~/projects/goddard/todo_goddard.org" "Inbox")
-                   "* TODO %?\n %i\n %a\n %i" :empty-lines 1)
-                  ("e" "ESA Todo" entry
-                   (file+headline "~/projects/extended_stay/todo_esa.org" "Inbox")
-                   "* TODO %?\n %i\n %a\n %i" :empty-lines 1)
-                  ("a" "ACDHH CDBMS Todo" entry
-                   (file+headline "~/projects/acdhh/todo_acdhh-cdbms.org" "Inbox")
-                   "* TODO %?\n %i\n %a\n %i" :empty-lines 1)))
-          ;; (setq org-capture-templates
-          ;;       org-roam-capture-templates)
-          (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
-          (setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
-          (setq org-ellipsis " ⤵"
-           org-hide-emphasis-markers t)
-          (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
-  :bind (("C-c c" . org-capture)
-         ("C-c C-x C-j" . org-clock-goto)         
-         ("C-c C-x m" . org-meta-return)
-         ("C-c C-x r" . org-metaright)
-         ("C-c C-x l" . org-metaleft)
-         :map org-mode-map
-         ("C-c C-x C-u" . org-clock-update-time-maybe))
-  :config
-  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-  (add-to-list 'org-structure-template-alist '("py" . "src python"))  
-  :custom
-  (org-confirm-babel-evaluate nil)
-  (org-babel-default-header-args:C
-                (cons '(:tangle . "yes")
-                      (assq-delete-all :tangle org-babel-default-header-args))))
-
 (use-package paredit)
 (use-package iedit)
 (use-package avy)
@@ -73,88 +32,17 @@
 
 (use-package string-inflection)
 
-(use-package vterm
-  :init (setq vterm-max-scrollback 2000))
-
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
-
-;;; Vterm Toggle
-(use-package vterm-toggle)
-(global-set-key (kbd "<f12>") 'vterm-toggle)
-(global-set-key (kbd "C-<f12>") 'vterm-toggle-cd)
-;;;
-
 ;;; Vertico, Consult, Marginalia, Savehist
 ;; Configuration below comes from
 ;; /home/trevor/org-roam/20211107090342-emacs_new_stack_vertico_consult_marginalia_savehist.org
 (load-file "~/.emacs-min-new-stack.el")
 
-;;;;;;;;;;;;;;;;;;
-;;; Org Mode
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((ruby . t)
-   (emacs-lisp . t)
-   (python . t)
-   (perl . t)
-   (haskell . t)
-   (C . t)
-   (shell . t)))
-
-(use-package org-contrib)
-
-;;; End Org
-;;;;;;;;;;;
-
-;;;;;;;;;;;;
-;;; Org Roam
-;;;;;;;;;;;;
-(use-package org-roam
-  :init
-  (setq org-roam-directory "~/org-roam")
-  (setq org-roam-v2-ack t)
-  (if (boundp 'org-roam-directory)
-    (unless (file-exists-p org-roam-directory)
-        (make-directory org-roam-directory)))
-  :custom
-  (org-roam-completion-everywhere t)
-  (org-roam-capture-templates
-   '(("d" "default" plain
-      "%?"
-      :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
-      :unnarrowed t)
-     ("v" "video" plain
-      "\n* Source\n\nLink: %^{Link}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
-      :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
-      :unnarrowed t)
-     ))
-  :bind (("C-c t" . org-roam-tag-add)
-         ("C-c n l" . org-roam-buffer-toggle)
-         ("C-c n i" . org-roam-node-insert)
-         ("C-c d" . org-roam-dailies-goto-today)
-         ("C-c o" . org-roam-node-find)
-         :map org-mode-map
-         ("C-M-i" . completion-at-point)
-         :map org-roam-dailies-map
-         ("Y" . org-roam-dailies-capture-yesterday)
-         ("T" . org-roam-dailies-capture-tomorrow))
-  :bind-keymap
-  ("C-c n d" . org-roam-dailies-map)
-  :config
-  (org-roam-setup)
-  (require 'org-roam-dailies)
-  (org-roam-db-autosync-mode))
 
 (defun my/insert-roam-link ()
   "Inserts an Org-roam link."
   (interactive)
   (insert "[[roam:]]")
   (backward-char 2))
-
-(require 'org-roam-dailies)
-
-(setq org-roam-dailies-directory "daily/")
 
 ;; (setq org-roam-dailies-capture-templates
 ;;       '(("d" "default" entry
@@ -181,18 +69,9 @@
 
 ;;; End org roam
 
-(use-package org-bullets
-  :config
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (org-bullets-mode 1)
-              (variable-pitch-mode 1))))
-
-
 (use-package emmet-mode)
 
 (use-package js-comint
-
   :config
    ;; From here: http://stackoverflow.com/questions/13862471/using-node-js-with-js-comint-in-emacs
    (setq inferior-js-mode-hook
@@ -206,7 +85,6 @@
              (replace-regexp-in-string "\033\\[[0-9]+[A-Z]" "" output))))))
 
 (use-package sgml-mode
-
   :config (progn
             (add-hook 'html-mode-hook 'emmet-mode)
             (define-key html-mode-map (kbd "C-/") 'emmet-expand-line)))
@@ -226,15 +104,6 @@
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
   (yas-activate-extra-mode 'html-mode))
 
-;;;;;;;;;;;;;;;;;;
-(use-package project
-  :custom
-  (project-vc-merge-submodules . nil))
-
-(use-package projectile
-  :bind ("C-H" . projectile-find-file)
-  :bind-keymap ("C-c p" . projectile-command-map))
-
 (use-package yasnippet
   :config (add-to-list 'yas-snippet-dirs "~/emacs/data/snippets/"))
 
@@ -243,7 +112,6 @@
   :config (progn
             (setq company-idle-delay 0.0
                   company-minimum-prefix-length 1)))
-
 
 (use-package doom-modeline
   :init (doom-modeline-mode 1))
@@ -276,9 +144,7 @@
   ("C-x g" . magit-status))
 
 (use-package visual-regexp )
-
 (use-package visual-regexp-steroids )
-
 
 (use-package key-chord
   :config (progn
