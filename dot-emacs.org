@@ -134,7 +134,7 @@ Shuts off backup creation for remote files
 #+RESULTS:
 | rainbow-delimiters-mode |
 
-* Org mode with org-tempo and org bullets
+* Org mode, org-tempo, org bullets, org-roam
 ** Main org config
 Org ellipsis has been bugging out tangle a little bit.
    The arrow is 2935: RET ARROW POINTING RIGHTWARDS THEN CURVING DOWNWARDS"
@@ -221,7 +221,7 @@ Org ellipsis has been bugging out tangle a little bit.
 #+end_src
 #+RESULTS:
 
-* Org Roam
+** Org Roam
 Configures org roam, dailies, tags, capture templates
 #+begin_src emacs-lisp 
   (use-package org-roam
@@ -270,7 +270,7 @@ Configures org roam, dailies, tags, capture templates
 #+RESULTS:
 : daily/
 
-* Vertico|Savehist|Marginalia|Consult|Orderless|Embark|+More
+* Completing Read Configuration: Vertico|Savehist|Marginalia|Consult|Orderless|Embark|Etc...
 ** Vertico
 #+begin_src emacs-lisp 
   (use-package vertico
