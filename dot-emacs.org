@@ -1,17 +1,9 @@
 -*- coding: utf-8 -*-
+
 #+title: Emacs: New Config in an Org file
 #+STARTUP: show3levels
 #+property: header-args:emacs-lisp  :tangle ~/.emacs
 * New Emacs configuration file
-
-* [Local/Optional when editing] Add hook for saving this file to also tangle it
-https://emacs.stackexchange.com/questions/41019/buffer-local-after-save-hook
-#+begin_src emacs-lisp :tangle no
-  (add-hook 'after-save-hook 'org-babel-tangle nil t)
-#+end_src
-
-#+RESULTS:
-| org-babel-tangle | t |
 
 * [Fix] For using multibyte characters
 Ended up putting -*- coding: utf-8 -*- on top of the file
@@ -549,7 +541,21 @@ embark-become: switches the command but keeps input
 
 ** Consult-dir
 
-* Projectile | Consult-projectile
+* Which Key
+https://github.com/justbur/emacs-which-key
+#+begin_src emacs-lisp
+  (use-package which-key
+    :init (which-key-mode)
+    :diminish which-key-mode
+    :config
+    (setq which-key-idle-delay 0.3)
+    (which-key-setup-side-window-right))
+#+end_src
+
+#+RESULTS:
+: t
+
+* Projects: Projectile | Consult-projectile
    #+begin_src emacs-lisp 
      (use-package project
        :custom
@@ -572,13 +578,23 @@ embark-become: switches the command but keeps input
    #+RESULTS:
    | projectile-project-current |
 
+** Perspective
+#+begin_src emacs-lisp
+  (use-package perspective
+    :bind (("C-x k" . persp-kill-buffer*))
+    :config (persp-mode))
+#+end_src
+
+#+RESULTS:
+: persp-kill-buffer*
+
 * Company
 #+begin_src emacs-lisp
-(use-package company
-  :hook (after-init . global-company-mode)
-  :config (progn
-            (setq company-idle-delay 0.0
-                  company-minimum-prefix-length 1)))
+  (use-package company
+    :hook (after-init . global-company-mode)
+    :config (progn	      
+	      (setq company-idle-delay 0.0
+		    company-minimum-prefix-length 1)))
 #+end_src
 
 #+RESULTS:
@@ -586,14 +602,30 @@ embark-become: switches the command but keeps input
 
 * Magit
 #+begin_src emacs-lisp 
-(use-package magit
-  :bind
-  ("<f10>" . magit-status)
-  ("C-x g" . magit-status))
+  (use-package magit
+    :config
+    (require 'magit-extras)
+    :bind
+    ("<f10>" . magit-status)
+    ("C-x g" . magit-status))
 #+end_src
 
 #+RESULTS:
 : magit-status
+
+** Forge
+#+begin_src emacs-lisp
+  (use-package forge
+    :after magit
+    :config (setcar forge-alist
+		    '("github.com"
+		      "api.github.com"
+		      "github.com"
+		      forge-github-repository)))
+#+end_src
+
+#+RESULTS:
+: t
 
 * Vterm | vterm-toggle
 #+begin_src emacs-lisp
@@ -616,10 +648,79 @@ embark-become: switches the command but keeps input
 
 #+RESULTS:
 
-* Open this file to start
+* IDE/Development
+** LSP
 #+begin_src emacs-lisp
-(find-file "~/emacs/dot-emacs.org")
+  ;;; LSP
+  (use-package lsp-mode
+    :init
+    (setq lsp-keymap-prefix "C-c l")
+    :commands lsp)
+
+  (use-package lsp-ui
+    :hook (lsp-mode . lsp-ui-mode)
+    :custom
+    (lsp-ui-doc-position 'bottom))
+
+  (use-package flymake)
+
+  (use-package treemacs
+    :bind ("<f8>" . treemacs))
+
+  (use-package lsp-treemacs
+    :after lsp)
+
+  (use-package treemacs-projectile)
 #+end_src
+
+#+RESULTS:
+
+** Flymake
+#+begin_src emacs-lisp
+  (use-package flymake)
+#+end_src
+
+#+RESULTS:
+
+** Tree sitter (experimental)
+#+begin_src emacs-lisp
+  (use-package tree-sitter)
+  (use-package tree-sitter-langs)
+  (use-package tree-sitter-indent)
+#+end_src
+
+** CSharp/Omnisharp with tree-sitter mode
+
+*** Csharp/omnisharp
+#+begin_src emacs-lisp
+  (setq my:lsp-server "/usr/bin/omnisharp")
+  (use-package csharp-mode
+    :config
+    (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode))
+    :hook ((csharp-mode . lsp-deferred)
+	   (csharp-tree-sitter-mode . lsp-deferred))
+    :custom (lsp-csharp-server-path my:lsp-server))
+#+end_src
+
+#+RESULTS:
+| lsp-deferred |
+
+* My Emacs lisp extensions
+#+begin_src emacs-lisp
+(push "~/emacs/lisp/" load-path)
+#+end_src
+
+#+RESULTS:
+| ~/emacs/lisp/ | /home/trevor/.emacs.d/straight/build/perspective | /home/trevor/.emacs.d/straight/build/tree-sitter-indent | /home/trevor/.emacs.d/straight/build/tree-sitter-langs | /home/trevor/.emacs.d/straight/build/tsc | /home/trevor/.emacs.d/straight/build/tree-sitter | /home/trevor/.emacs.d/straight/build/csharp-mode | /home/trevor/.emacs.d/straight/build/treemacs-projectile | /home/trevor/.emacs.d/straight/build/lsp-treemacs | /home/trevor/.emacs.d/straight/build/posframe | /home/trevor/.emacs.d/straight/build/cfrs | /home/trevor/.emacs.d/straight/build/hydra | /home/trevor/.emacs.d/straight/build/pfuture | /home/trevor/.emacs.d/straight/build/avy | /home/trevor/.emacs.d/straight/build/ace-window | /home/trevor/.emacs.d/straight/build/treemacs | /home/trevor/.emacs.d/straight/build/eldoc | /home/trevor/.emacs.d/straight/build/flymake | /home/trevor/.emacs.d/straight/build/lsp-ui | /home/trevor/.emacs.d/straight/build/lv | /home/trevor/.emacs.d/straight/build/spinner | /home/trevor/.emacs.d/straight/build/ht | /home/trevor/.emacs.d/straight/build/lsp-mode | /home/trevor/.emacs.d/straight/build/shrink-path | /home/trevor/.emacs.d/straight/build/all-the-icons | /home/trevor/.emacs.d/straight/build/doom-modeline | /home/trevor/.emacs.d/straight/build/vterm-toggle | /home/trevor/.emacs.d/straight/build/vterm | /home/trevor/.emacs.d/straight/build/yaml | /home/trevor/.emacs.d/straight/build/markdown-mode | /home/trevor/.emacs.d/straight/build/treepy | /home/trevor/.emacs.d/straight/build/let-alist | /home/trevor/.emacs.d/straight/build/ghub | /home/trevor/.emacs.d/straight/build/closql | /home/trevor/.emacs.d/straight/build/forge | /home/trevor/.emacs.d/straight/build/with-editor | /home/trevor/.emacs.d/straight/build/transient | /home/trevor/.emacs.d/straight/build/git-commit | /home/trevor/.emacs.d/straight/build/magit | /home/trevor/.emacs.d/straight/build/company | /home/trevor/.emacs.d/straight/build/consult-projectile | /home/trevor/.emacs.d/straight/build/projectile | /home/trevor/.emacs.d/straight/build/xref | /home/trevor/.emacs.d/straight/build/project | /home/trevor/.emacs.d/straight/build/which-key | /home/trevor/.emacs.d/straight/build/app-launcher | /home/trevor/.emacs.d/straight/build/embark-consult | /home/trevor/.emacs.d/straight/build/embark | /home/trevor/.emacs.d/straight/build/orderless | /home/trevor/.emacs.d/straight/build/consult | /home/trevor/.emacs.d/straight/build/marginalia | /home/trevor/.emacs.d/straight/build/vertico | /home/trevor/.emacs.d/straight/build/magit-section | /home/trevor/.emacs.d/straight/build/emacsql-sqlite | /home/trevor/.emacs.d/straight/build/emacsql | /home/trevor/.emacs.d/straight/build/s | /home/trevor/.emacs.d/straight/build/f | /home/trevor/.emacs.d/straight/build/dash | /home/trevor/.emacs.d/straight/build/org-roam | /home/trevor/.emacs.d/straight/build/org-contrib | /home/trevor/.emacs.d/straight/build/org-bullets | /home/trevor/.emacs.d/straight/build/org | /home/trevor/.emacs.d/straight/build/rainbow-delimiters | /home/trevor/.emacs.d/straight/build/key-chord | /home/trevor/.emacs.d/straight/build/spacemacs-theme | /home/trevor/.emacs.d/straight/build/bind-key | /home/trevor/.emacs.d/straight/build/use-package | /home/trevor/.emacs.d/straight/build/straight | /usr/share/emacs/28.0.60/site-lisp | /usr/share/emacs/site-lisp | /usr/share/emacs/28.0.60/lisp | /usr/share/emacs/28.0.60/lisp/vc | /usr/share/emacs/28.0.60/lisp/url | /usr/share/emacs/28.0.60/lisp/textmodes | /usr/share/emacs/28.0.60/lisp/progmodes | /usr/share/emacs/28.0.60/lisp/play | /usr/share/emacs/28.0.60/lisp/org | /usr/share/emacs/28.0.60/lisp/nxml | /usr/share/emacs/28.0.60/lisp/net | /usr/share/emacs/28.0.60/lisp/mh-e | /usr/share/emacs/28.0.60/lisp/mail | /usr/share/emacs/28.0.60/lisp/leim | /usr/share/emacs/28.0.60/lisp/language | /usr/share/emacs/28.0.60/lisp/international | /usr/share/emacs/28.0.60/lisp/image | /usr/share/emacs/28.0.60/lisp/gnus | /usr/share/emacs/28.0.60/lisp/eshell | /usr/share/emacs/28.0.60/lisp/erc | /usr/share/emacs/28.0.60/lisp/emulation | /usr/share/emacs/28.0.60/lisp/emacs-lisp | /usr/share/emacs/28.0.60/lisp/cedet | /usr/share/emacs/28.0.60/lisp/calendar | /usr/share/emacs/28.0.60/lisp/calc | /usr/share/emacs/28.0.60/lisp/obsolete |
+
+** My magit 'scripts'
+#+begin_src emacs-lisp
+(load "my-magit-scripting")
+#+end_src
+
+#+RESULTS:
+: t
+
 * --------- Experimental FOR NOW ---------
 
 ** MCT mode
@@ -789,7 +890,28 @@ https://github.com/karthink/consult-dir
 
 Swap vertico-map with  minibuffer-local-completion-map if not using vertico
 
-
 ** Affe
 Fuzzy finder
 
+* Adding hook to tangle after save
+Mark this as safe for next load
+#+begin_src emacs-lisp
+(push '(add-hook 'after-save-hook 'org-babel-tangle nil t) safe-local-eval-forms)
+#+end_src
+
+#+RESULTS:
+| add-hook | 'after-save-hook      | 'org-babel-tangle           | nil | t |
+| add-hook | 'write-file-hooks     | 'time-stamp                 |     |   |
+| add-hook | 'write-file-functions | 'time-stamp                 |     |   |
+| add-hook | 'before-save-hook     | 'time-stamp                 | nil | t |
+| add-hook | 'before-save-hook     | 'delete-trailing-whitespace | nil | t |
+
+** Then open this file on startup
+#+begin_src emacs-lisp
+  (find-file "~/emacs/dot-emacs.org")
+#+end_src
+
+* Local Variables
+# Local Variables:
+# eval: (add-hook 'after-save-hook 'org-babel-tangle nil t)
+# End:

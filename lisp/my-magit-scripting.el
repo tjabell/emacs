@@ -1,11 +1,13 @@
 ;;; MAGIT EXTENSION FUNCTIONS
-(require 'magit)
+;;; Note: Converting to just use call process - shouldn't (require magit) anymore
 
+;;;###autoload
 (defun my:magit-commit-all (message)
   (interactive "sCommit Message: ")
   (magit-call-git "commit" "-a" "-m" message)
   (magit-refresh))
 
+;;;###autoload
 (defun my:magit-commit-all-and-push (message)
   (interactive "sCommit Message: ")
   (magit-call-git "commit" "-a" "-m" message)
@@ -32,6 +34,7 @@
   (my:-call-git-process-no-output repo "rebase" (or master "origin/master"))
   (my:-call-git-process-no-output repo "push"))
 
+;;;###autoload
 (defun my:magit-commit-and-refresh-all-dailies ()
   (interactive)
   (let ((repo "/home/trevor/org-roam/"))
@@ -41,6 +44,7 @@
   (let ((repo "/home/trevor/projects/me"))
     (my:magit-commit-all-rebase-push repo "origin/main")))
 
+;;;###autoload
 (defun my:magit-commit-and-refresh-all-projects ()
   (interactive)
   (let ((repo "/home/trevor/projects/goddard/"))
@@ -54,4 +58,3 @@
   (let ((repo "/home/trevor/projects/me/"))
     (my:magit-commit-rebase-push-project-files repo "./todo_misc.org")))
 
-(global-set-key (kbd "C-c C-g A") 'my-magit-commit-all-and-push)
