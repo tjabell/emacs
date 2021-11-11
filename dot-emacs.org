@@ -739,6 +739,10 @@ https://github.com/justbur/emacs-which-key
 	(load-file filename)))
 #+end_src
 
+* Pass for password management
+#+begin_src emacs-lisp
+  (use-package pass)
+#+end_src
 #+RESULTS:
 
 * --------- Experimental FOR NOW ---------
