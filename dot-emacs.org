@@ -714,6 +714,11 @@ https://github.com/justbur/emacs-which-key
 #+RESULTS:
 | lsp-deferred |
 
+** ESA Web Development (vtl)
+#+begin_src emacs-lisp :results none
+  (add-to-list 'auto-mode-alist '("\\.vtl" . web-mode))
+#+end_src
+
 * My Emacs lisp extensions
 #+begin_src emacs-lisp
 (push "~/emacs/lisp/" load-path)
@@ -747,6 +752,9 @@ https://github.com/justbur/emacs-which-key
     (if (file-exists-p filename)
 	(load-file filename)))
 #+end_src
+
+#+RESULTS:
+: t
 
 * Pass for password management
 #+begin_src emacs-lisp
@@ -944,7 +952,7 @@ Mark this as safe for next load
   (find-file "~/emacs/dot-emacs.org")
 #+end_src
 
-* Local Variables
+* Local Variables - sets the after save hook to tangle this org file on save
 # Local Variables:
 # eval: (add-hook 'after-save-hook 'org-babel-tangle nil t)
 # End:
