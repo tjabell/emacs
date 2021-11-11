@@ -48,7 +48,7 @@
 (defun my:magit-commit-and-refresh-all-projects ()
   (interactive)
   (let ((repo "/home/trevor/projects/goddard/"))
-    (my:magit-commit-rebase-push-project-files repo "./todo_goddard.org"))
+    (my:magit-commit-rebase-push-project-files repo "./todo_goddard.org" "./apis.org"))
   (let ((repo "/home/trevor/projects/parsus/"))
     (my:magit-commit-rebase-push-project-files repo "./todo_parsus.org" "./meeting_updates.org"))
   (let ((repo "/home/trevor/projects/acdhh/"))
