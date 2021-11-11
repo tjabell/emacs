@@ -721,6 +721,26 @@ https://github.com/justbur/emacs-which-key
 #+RESULTS:
 : t
 
+* SQL
+
+#+begin_src emacs-lisp
+
+  ;;; Sql Server Setup
+  (defcustom sql-ms-program "sqlcmd"
+	"Command to start ;osql; (replaced for sqlcmd) by Microsoft.
+
+      Starts `sql-interactive-mode' after doing some setup."
+	:type 'file
+	:group 'SQL)
+
+  ;; Load connections if there are any
+  (let ((filename "~/sql-connections.el"))
+    (if (file-exists-p filename)
+	(load-file filename)))
+#+end_src
+
+#+RESULTS:
+
 * --------- Experimental FOR NOW ---------
 
 ** MCT mode
