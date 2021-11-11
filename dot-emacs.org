@@ -52,7 +52,7 @@ otherwide ⤵ would get converted to bytes when opening this file
 #+RESULTS:
 : t
 
-** Theme
+** Theme | Disable Menu Bar | Inihibit Startup
 #+begin_src emacs-lisp
 (straight-use-package 'spacemacs-theme)
 
@@ -78,23 +78,32 @@ Creates a .saves directory and puts backup files in there.
 
 Shuts off backup creation for remote files
 #+begin_src emacs-lisp 
-  ;; Backup settings
-  (setq
-   make-backup-files t
-   backup-by-copying t
-   backup-directory-alist '(("." . "~/.saves"))
-   delete-old-versions t
-   auto-save-mode nil
-   auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
+    ;; Backup settings
+    (setq
+     make-backup-files t
+     backup-by-copying t
+     backup-directory-alist '(("." . "~/.saves"))
+     delete-old-versions t
+     auto-save-mode nil
+     auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
-  ;;To turn off the backup feature for remote files and stop TRAMP from saving to the backup directory, use this:
-  (add-to-list 'backup-directory-alist
-	       (cons tramp-file-name-regexp nil))
+    ;;; Disable auto-save and auto-backup.
+    ;;; Especially in development directories, we can't have emacs creating random #lockfiles# everywhere
+    (setq create-lockfiles nil)
+    (setq backup-directory-alist
+	  `((".*" . ,temporary-file-directory)))
+    (setq auto-save-file-name-transforms
+	  `((".*" ,temporary-file-directory t)))
+    ;;; End Disable auto-save and auto-backup
+
+    ;;To turn off the backup feature for remote files and stop TRAMP from saving to the backup directory, use this:
+    (add-to-list 'backup-directory-alist
+		 (cons tramp-file-name-regexp nil))
 #+end_src
 
 #+RESULTS:
 : ((^/\(\(?:\([[:alnum:]-]+\):\(?:\([^/|: 	]+\)@\)?\(\(?:[[:alnum:]_.%-]+\|\[\(?:\(?:[[:alnum:]]*:\)+[[:alnum:].]+\)?]\)\(?:#[[:digit:]]+\)?\)?|\)+\)?\([[:alnum:]-]+\):\(?:\([^/|: 	]+\)@\)?\(\(?:[[:alnum:]_.%-]+\|\[\(?:\(?:[[:alnum:]]*:\)+[[:alnum:].]+\)?]\)\(?:#[[:digit:]]+\)?\)?:\([^
-: ]*\'\)) (. . ~/.saves))
+: ]*\'\)) (.* . /tmp/))
 
 ** Other window as M-o is nice
 #+begin_src emacs-lisp 
