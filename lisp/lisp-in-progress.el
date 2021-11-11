@@ -130,8 +130,6 @@
 
 
 ;;; Run in Vterm 
-
-
 (defun my:insert-shrug ()
   (interactive)
   (insert "¯\_(ツ)_/¯"))

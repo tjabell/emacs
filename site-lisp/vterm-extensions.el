@@ -82,3 +82,18 @@ shell exits, the buffer is killed."
   (interactive)
   (my:-log-aem-dev-error "publish" "aemerror"))
 
+(defun my:vterm-esa-run-dotcms ()
+  (interactive)
+  (with-current-buffer (vterm (concat "* DOTCMS *"))
+    (vterm-send-string "cd /home/trevor/hacking/dotcms/docker/single-node-clean/")
+    (vterm-send-return)
+    (vterm-send-string "docker-compose up")
+    (vterm-send-return)))
+
+(defun my:vterm-esa-run-esa-dotcms-node ()
+  (interactive)
+  (with-current-buffer (vterm (concat "* DOTCMS - Frontend *"))
+    (vterm-send-string "cd /home/trevor/projects/extended_stay/src/frontend/")
+    (vterm-send-return)
+    (vterm-send-string "npm start")
+    (vterm-send-return)))

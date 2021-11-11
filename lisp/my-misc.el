@@ -1,8 +1,12 @@
-(defun insert-current-date () (interactive)
-       (insert (shell-command-to-string "echo -n $(date +%Y-%m-%d)")))
+(defun insert-current-date ()
+  (interactive)
+  (insert (shell-command-to-string "echo -n $(date +%Y-%m-%d)")))
+(defalias 'icd 'insert-current-date)
 
-(defun insert-signature-for-code () (interactive)
-       (insert (shell-command-to-string "echo -n $(date +%Y%m%d)TJA")))
+(defun insert-signature-for-code ()
+  (interactive)
+  (insert (shell-command-to-string "echo -n $(date +%Y%m%d)TJA")))
+(defalias 'isc 'insert-signature-for-code)
 
 (defun price-amazon (n)
   (interactive "nEnter amount per hour: ")
@@ -45,9 +49,6 @@ definition and running `eval-defun`."
   (json-pretty-print-buffer))
 
 (defalias 'jm 'my:json-mode-and-format-buffer)
-
-(defalias 'icd 'insert-current-date)
-(defalias 'ics 'insert-signature-for-code)
 
 (require 'notifications)
 (defun my:remind-me-in (minutes body)
