@@ -757,6 +757,10 @@ https://github.com/justbur/emacs-which-key
 #+RESULTS:
 | lsp-deferred |
 
+#+begin_src emacs-lisp
+  (use-package dotnet
+    :hook (csharp-tree-sitter-mode . dotnet-mode))
+#+end_src
 ** LSP
 #+begin_src emacs-lisp
     (setq my:lsp-server "/usr/bin/omnisharp")
