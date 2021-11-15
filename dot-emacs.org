@@ -1049,25 +1049,21 @@ https://github.com/karthink/consult-dir
 
 Swap vertico-map with  minibuffer-local-completion-map if not using vertico
 
-** Affe
-Fuzzy finder
-
-* Adding hook to tangle after save
-Mark this as safe for next load
+* Adding org-babel-tangle as a safe form so I don't get bothered every time
 #+begin_src emacs-lisp
 (push '(add-hook 'after-save-hook 'org-babel-tangle nil t) safe-local-eval-forms)
 #+end_src
 
-#+RESULTS:
-| add-hook | 'after-save-hook      | 'org-babel-tangle           | nil | t |
-| add-hook | 'write-file-hooks     | 'time-stamp                 |     |   |
-| add-hook | 'write-file-functions | 'time-stamp                 |     |   |
-| add-hook | 'before-save-hook     | 'time-stamp                 | nil | t |
-| add-hook | 'before-save-hook     | 'delete-trailing-whitespace | nil | t |
-
 ** Then open this file on startup
 #+begin_src emacs-lisp
   (find-file "~/emacs/dot-emacs.org")
+#+end_src
+
+* My extensions
+#+begin_src emacs-lisp
+  (require 'tja-vterm)
+  (require 'tja-magit)
+  (require 'tja-misc)
 #+end_src
 
 * Local Variables - sets the after save hook to tangle this org file on save
