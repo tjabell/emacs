@@ -292,6 +292,7 @@ Org ellipsis has been bugging out tangle a little bit.
 
 ** Org Roam
 Configures org roam, dailies, tags, capture templates
+
 #+begin_src emacs-lisp
   (use-package org-roam
     :defer 3
@@ -339,6 +340,21 @@ Configures org roam, dailies, tags, capture templates
 #+RESULTS:
 : daily/
 
+** Add gutters to org mode
+
+#+begin_src emacs-lisp
+
+  ;; Seems to mess up org superstar
+  (defun tja-org-mode-visual-fill ()
+    (setq visual-fill-column-width 150
+	  visual-fill-column-center-text t)
+    (visual-fill-column-mode 1))
+
+  (use-package visual-fill-column
+    :defer t
+    :hook (org-mode . tja-org-mode-visual-fill))
+
+#+end_src
 * Completing Read Configuration: Vertico|Savehist|Marginalia|Consult|Orderless|Embark|Etc...
 ** Vertico
 #+begin_src emacs-lisp
