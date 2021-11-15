@@ -350,11 +350,11 @@ Configures org roam, dailies, tags, capture templates
 	  visual-fill-column-center-text t)
     (visual-fill-column-mode 1))
 
-  (use-package visual-fill-column
-    :defer t
-    :hook (org-mode . tja-org-mode-visual-fill))
+  (use-package visual-fill-column :defer t)
+    
 
 #+end_src
+
 * Completing Read Configuration: Vertico|Savehist|Marginalia|Consult|Orderless|Embark|Etc...
 ** Vertico
 #+begin_src emacs-lisp
