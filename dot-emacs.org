@@ -219,7 +219,7 @@ Org ellipsis has been bugging out tangle a little bit.
 			"~/projects/goddard/todo_goddard.org"
 			"~/projects/extended_stay/todo_esa.org"
 			"~/projects/parsus/parsus_misc.org"
-			"~/projects/acdhh/acdhh.org"))
+			"~/projects/acdhh/todo_acdhh-cdbms.org"))
     (org-clock-in-resume t)
     (org-clock-in-switch-to-state "IN-PROGRESS")
     (org-clock-persist t)
