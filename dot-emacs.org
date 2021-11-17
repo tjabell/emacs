@@ -5,6 +5,12 @@
 #+property: header-args:emacs-lisp  :tangle ~/.emacs :results none
 * New Emacs configuration file
 
+* Native compilation
+#+begin_src emacs-lisp
+;; Silence compiler warnings as they can be pretty disruptive
+(setq native-comp-async-report-warnings-errors nil)
+#+end_src
+
 * [Fix] For using multibyte characters
 Ended up putting -*- coding: utf-8 -*- on top of the file
 otherwide ⤵ would get converted to bytes when opening this file
@@ -162,6 +168,10 @@ Shuts off backup creation for remote files
 (add-to-list 'load-path "/home/trevor/emacs/lisp/")
 #+end_src
 
+** Use spaces instead of tabs
+#+begin_src emacs-lisp
+(setq-default indent-tabs-mode nil)
+#+end_src
 * Org mode, org-tempo, org bullets, org-roam
 ** Main org config
 Org ellipsis has been bugging out tangle a little bit.
