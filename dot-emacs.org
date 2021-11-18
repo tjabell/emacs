@@ -289,7 +289,7 @@ b
      (C . t)
      (shell . t)))
 
-  (push '("conf-unix" . conf-unix) org-src-lang-modes)
+  (push '("conf" . conf-unix) org-src-lang-modes)
 #+end_src
 
 #+RESULTS:
