@@ -275,7 +275,7 @@ Org ellipsis has been bugging out tangle a little bit.
 
 #+RESULTS:
 : org-tempo
-
+b
 ** Configure org babel languages
 #+begin_src emacs-lisp
   (org-babel-do-load-languages
@@ -363,7 +363,7 @@ Configures org roam, dailies, tags, capture templates
   (use-package visual-fill-column :defer t)
     
 
-#+end_src
+#+end_sr
 
 * Completing Read Configuration: Vertico|Savehist|Marginalia|Consult|Orderless|Embark|Etc...
 ** Vertico
