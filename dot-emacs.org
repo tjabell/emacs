@@ -165,12 +165,12 @@ Shuts off backup creation for remote files
 
 ** Add lisp extension directory to load path
 #+begin_src emacs-lisp
-(add-to-list 'load-path "/home/trevor/emacs/lisp/")
+  (add-to-list 'load-path "/home/trevor/emacs/lisp/")
 #+end_src
 
 ** Use spaces instead of tabs
 #+begin_src emacs-lisp
-(setq-default indent-tabs-mode nil)
+  (setq-default indent-tabs-mode nil)
 #+end_src
 * Org mode, org-tempo, org bullets, org-roam
 ** Main org config
@@ -700,7 +700,7 @@ https://github.com/justbur/emacs-which-key
     :hook (after-init . global-company-mode)
     :config (progn
 	      (setq company-idle-delay 0.0
-		    company-minimum-prefix-length 1)))
+		    company-minimum-prefix-length 3)))
 #+end_src
 
 #+RESULTS:
@@ -787,6 +787,7 @@ https://github.com/justbur/emacs-which-key
   (use-package dotnet
     :hook (csharp-tree-sitter-mode . dotnet-mode))
 #+end_src
+
 ** LSP
 #+begin_src emacs-lisp
     (setq my:lsp-server "/usr/bin/omnisharp")
@@ -830,7 +831,6 @@ https://github.com/justbur/emacs-which-key
     (add-to-list 'auto-mode-alist '("\\.vtl" . web-mode)))
 #+end_src
 
-
 ** Emacs Lisp
 #+begin_src emacs-lisp
   (use-package emacs-lisp-mode
@@ -839,12 +839,20 @@ https://github.com/justbur/emacs-which-key
     :bind (("C-c C-x b" . eval-buffer)))
 #+end_src
 
-
 ** Typescript
 #+begin_src emacs-lisp
-(use-package typescript-mode
-  :mode "\\.ts\\'"
-  :hook (typescript-mode . lsp-deferred))
+  (use-package typescript-mode
+    :mode "\\.ts\\'"
+    :hook (typescript-mode . lsp-deferred)
+    :custom ((typescript-indent-level 2)))
+#+end_src
+
+** Javascript
+
+#+begin_src emacs-lisp
+  (use-package js
+    :straight nil
+    :custom ((js-indent-level 2)))
 #+end_src
 
 * Add my Emacs lisp extensions
