@@ -172,6 +172,7 @@ Shuts off backup creation for remote files
 #+begin_src emacs-lisp
   (setq-default indent-tabs-mode nil)
 #+end_src
+
 * Org mode, org-tempo, org bullets, org-roam
 ** Main org config
 Org ellipsis has been bugging out tangle a little bit.
@@ -891,11 +892,22 @@ https://github.com/justbur/emacs-which-key
 #+RESULTS:
 : t
 
-* Pass for password management
+* Pass and org-password for password management
 #+begin_src emacs-lisp
   (use-package pass)
 #+end_src
 #+RESULTS:
+
+** Using org-password for password generation
+#+begin_src emacs-lisp
+(use-package org-passwords
+  :defer t
+  :straight nil)
+
+(defun tja-password-insert ()
+  (interactive)
+  (insert (org-passwords-generate-password-with-symbols "" 20)))
+#+end_src
 
 * --------- Experimental FOR NOW ---------
 
