@@ -104,7 +104,7 @@ shell exits, the buffer is killed."
 (defun tja-vterm-esa-run-dotcms ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm - DOTCMS*"))
-    (vterm-send-string "cd /home/trevor/hacking/dotcms/docker/single-node-clean/")
+    (vterm-send-string "cd /home/trevor/projects/extended_stay/src/frontend/")
     (vterm-send-return)
     (vterm-send-string "docker-compose up")
     (vterm-send-return)))
