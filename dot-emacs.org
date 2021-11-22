@@ -866,6 +866,7 @@ https://github.com/justbur/emacs-which-key
     :straight nil
     :custom ((python-indent 4)))
 #+end_src
+
 * Add my Emacs lisp extensions
 #+begin_src emacs-lisp
 (push "~/emacs/lisp/" load-path)
