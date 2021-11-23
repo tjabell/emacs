@@ -919,6 +919,15 @@ https://github.com/justbur/emacs-which-key
   (insert (org-passwords-generate-password-with-symbols "" 20)))
 #+end_src
 
+* Multiple cursors
+
+#+begin_src emacs-lisp
+    (use-package multiple-cursors
+    :bind (("C->" . mc/mark-next-like-this)
+           ("C-<" . mc/mark-previous-like-this)
+           ("C-c C-<" . mc/mark-all-like-this)))
+#+end_src
+
 * --------- Experimental FOR NOW ---------
 
 ** MCT mode
