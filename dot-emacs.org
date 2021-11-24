@@ -697,11 +697,11 @@ https://github.com/justbur/emacs-which-key
 
 * Company
 #+begin_src emacs-lisp
-  (use-package company
-    :hook (after-init . global-company-mode)
-    :config (progn
-	      (setq company-idle-delay 0.0
-		    company-minimum-prefix-length 3)))
+    (use-package company
+      :hook ((prog-mode . company-mode))
+      :config (progn
+                (setq company-idle-delay 0.0
+                      company-minimum-prefix-length 3)))
 #+end_src
 
 #+RESULTS:
