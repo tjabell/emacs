@@ -59,10 +59,5 @@
   (let ((repo "/home/trevor/projects/me/"))
     (tja-magit-commit-rebase-push-project-files repo "./todo_misc.org")))
 
-;;;###autoload
-(defun tja-magit-commit-and-refresh-all-projects-and-dailies ()
-  (interactive)
-  (tja-magit-commit-and-refresh-all-dailies)
-  (tja-magit-commit-and-refresh-all-projects))
 
 (provide 'tja-magit)

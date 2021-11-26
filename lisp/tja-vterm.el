@@ -6,7 +6,7 @@
   "A process sentinel. Kills PROCESS's buffer if it is live."
   (let ((b (process-buffer process)))
     (and (buffer-live-p b)
-	 (kill-buffer b))))
+         (kill-buffer b))))
 
 ;;;###autoload
 (defun tja-vterm-run-in-vterm (command)
@@ -26,13 +26,13 @@ shell exits, the buffer is killed."
   (interactive
    (list
     (let* ((f (cond (buffer-file-name)
-		    ((eq major-mode 'dired-mode)
-		     (dired-get-filename nil t))))
-	   (filename (concat " " (shell-quote-argument (and f (file-relative-name f))))))
+                    ((eq major-mode 'dired-mode)
+                     (dired-get-filename nil t))))
+           (filename (concat " " (shell-quote-argument (and f (file-relative-name f))))))
       (read-shell-command "Terminal command: "
-			  (cons filename 0)
-			  (cons 'shell-command-history 1)
-			  (list filename)))))
+                          (cons filename 0)
+                          (cons 'shell-command-history 1)
+                          (list filename)))))
   (with-current-buffer (vterm (concat "*" command "*"))
     (set-process-sentinel vterm--process #'run-in-vterm-kill)
     (vterm-send-string command)
@@ -70,12 +70,12 @@ shell exits, the buffer is killed."
   (interactive
    (list
     (completing-read "Api: "
-		     '(("franchiseeportal") 
-		       ("content")
-		       ("faculty")) nil t)
+                     '(("franchiseeportal") 
+                       ("content")
+                       ("faculty")) nil t)
     (completing-read "Environment: "
-		     '(("dev") 
-		       ("qa")) nil t)))
+                     '(("dev") 
+                       ("qa")) nil t)))
   (with-current-buffer (vterm (concat "* FBP API LOG Tail- " api-name " *"))
     (vterm-send-string "cd /home/trevor/")
     (vterm-send-return)
@@ -103,8 +103,8 @@ shell exits, the buffer is killed."
 ;;;###autoload
 (defun tja-vterm-esa-run-dotcms ()
   (interactive)
-  (with-current-buffer (vterm (concat "*vterm - DOTCMS*"))
-    (vterm-send-string "cd /home/trevor/projects/extended_stay/src/frontend/")
+  (with-current-buffer (vterm (concat "* DOTCMS *"))
+    (vterm-send-string "cd /home/trevor/hacking/dotcms/docker/single-node-clean/")
     (vterm-send-return)
     (vterm-send-string "docker-compose up")
     (vterm-send-return)))
@@ -112,7 +112,7 @@ shell exits, the buffer is killed."
 ;;;###autoload
 (defun tja-vterm-esa-run-esa-dotcms-node ()
   (interactive)
-  (with-current-buffer (vterm (concat "*vterm - DOTCMS - Frontend*"))
+  (with-current-buffer (vterm (concat "* DOTCMS - Frontend *"))
     (vterm-send-string "cd /home/trevor/projects/extended_stay/src/frontend/")
     (vterm-send-return)
     (vterm-send-string "npm start")

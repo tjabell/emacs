@@ -53,8 +53,8 @@ definition and running `eval-defun`."
 
 ;;;###autoload
 (defun tja-remind-me-in (minutes body)
-       (interactive "sMinutes:\nsBody:")
-       (let ((minutes (concat minutes " min")))
-         (run-at-time minutes nil 'notifications-notify :title "Emacs alert" :body body)))
+  (interactive "sMinutes:\nsBody:")
+  (let ((minutes (concat minutes " min")))
+    (run-at-time minutes nil 'notifications-notify :title "Emacs alert" :body body)))
 
 (provide 'tja-misc)
