@@ -825,6 +825,14 @@ https://github.com/justbur/emacs-which-key
 
 #+RESULTS:
 
+** Flyspell
+
+#+begin_src emacs-lisp
+  (use-package flyspell
+    :custom
+    (flyspell-issue-message-flag nil))
+#+end_src
+
 ** ESA Web Development (vtl)
 #+begin_src emacs-lisp :results raw
   (use-package web-mode
