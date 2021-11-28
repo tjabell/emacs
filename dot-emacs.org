@@ -244,7 +244,10 @@ Org ellipsis has been bugging out tangle a little bit.
     (org-superstar-remove-leading-stars t)
     (org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●")))
 
-  (require 'org-tempo)
+  ;; Supposedly not needed after org 9.2 (on 9.6-dev as of this comment)
+  (when (version<= "9.2" (org-version))
+    (require 'org-tempo))
+
 
   ;; Configuring font
   (set-face-attribute 'org-document-title nil :font "Iosevka Aile" :weight 'bold :height 1.3)
