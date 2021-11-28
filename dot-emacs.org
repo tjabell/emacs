@@ -729,7 +729,6 @@ https://github.com/justbur/emacs-which-key
 #+end_src
 
 #+RESULTS:
-: t
 
 * Vterm | vterm-toggle
 #+begin_src emacs-lisp
