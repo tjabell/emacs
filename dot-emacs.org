@@ -172,6 +172,15 @@ Shuts off backup creation for remote files
   (setq-default indent-tabs-mode nil)
 #+end_src
 
+** Turn off symlink warning
+Found in [[file:/usr/share/emacs/28.0.60/lisp/vc/vc-hooks.el::or (not (eq vc-follow-symlinks 'ask][vc-hooks.el]]
+
+or group vc
+
+#+begin_src emacs-lisp
+  (custom-set-variables '(vc-follow-symlinks t))
+#+end_src
+
 * Org mode, org-tempo, org bullets, org-roam
 
 ** Main org config
