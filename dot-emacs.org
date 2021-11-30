@@ -774,6 +774,11 @@ https://github.com/justbur/emacs-which-key
     (add-to-list 'auto-mode-alist '("\\.json" . json-mode)))
 #+end_src
 
+** YAML
+
+#+begin_src emacs-lisp
+  (use-package yaml-mode)
+#+end_src
 ** Tree sitter (experimental)
 #+begin_src emacs-lisp
   (use-package tree-sitter)
