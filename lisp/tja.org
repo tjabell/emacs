@@ -2,7 +2,7 @@
 
 #+title: Emacs: New Config in an Org file
 #+STARTUP: show3levels
-#+property: header-args:emacs-lisp :results none
+#+property: header-args:emacs-lisp  :tangle ~/emacs/lisp/tja.el
 * Org file for my private extensions to emacs packages
 Installing, creating these
 
@@ -12,9 +12,6 @@ Installing, creating these
 4. (require 'new-package) in dot-emacs.org
 
 * Magit
-:PROPERTIES:
-:header-args: :tangle ~/emacs/lisp/tja-magit.el :results none
-:END:
 #+begin_src emacs-lisp
   ;;; MAGIT EXTENSION FUNCTIONS
   ;;; Note: Converting to just use call process - shouldn't (require magit) anymore
@@ -82,10 +79,7 @@ Installing, creating these
 #+end_src
 
 * Vterm
-:PROPERTIES:
-:header-args: :tangle ~/emacs/lisp/tja-vterm.el :results none
-:END:
-#+begin_src emacs-lisp  
+#+begin_src emacs-lisp
   (require 'vterm)
 
   ;;; https://www.reddit.com/r/emacs/comments/ft84xy/run_shell_command_in_new_vterm/
@@ -158,11 +152,11 @@ Installing, creating these
     (interactive
      (list
       (completing-read "Api: "
-                       '(("franchiseeportal") 
+                       '(("franchiseeportal")
                          ("content")
                          ("faculty")) nil t)
       (completing-read "Environment: "
-                       '(("dev") 
+                       '(("dev")
                          ("qa")) nil t)))
     (with-current-buffer (vterm (concat "* FBP API LOG Tail- " api-name " *"))
       (vterm-send-string "cd /home/trevor/")
@@ -210,10 +204,6 @@ Installing, creating these
 #+end_src
 
 * Misc fns
-:PROPERTIES:
-:header-args: :tangle ~/emacs/lisp/tja-misc.el :results none
-:END:
-
 #+begin_src emacs-lisp
   ;;;###autoload
   (defun insert-current-date ()
@@ -279,9 +269,7 @@ Installing, creating these
 #+end_src
 
 * Org
-:PROPERTIES:
-:header-args: :tangle ~/emacs/lisp/tja-org.el :results none
-:END:
+
 ** org screenshot
 #+begin_src emacs-lisp
   (defun tja-org-screenshot ()
@@ -302,9 +290,6 @@ Installing, creating these
 #+end_src
 
 * OCR
-:PROPERTIES:
-:header-args: :tangle ~/emacs/lisp/tja-ocr.el :results none
-:END:
 #+begin_src emacs-lisp
   ;;;###autoload
   (defun tja-ocr-screenshot ()
