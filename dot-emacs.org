@@ -703,6 +703,7 @@ https://github.com/justbur/emacs-which-key
    | projectile-project-current |
 
 ** Perspective
+
 #+begin_src emacs-lisp
   (use-package perspective
     :bind (("C-x k" . persp-kill-buffer*))

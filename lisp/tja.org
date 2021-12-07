@@ -17,6 +17,9 @@ Installing, creating these
   ;;; Note: Converting to just use call process - shouldn't (require magit) anymore
   (require 'magit)
 
+  (defun -get-autocommit-string (s)
+    (format "[autocommit %s] %s" (shell-command-to-string "echo -n $(date +%Y-%m-%d)") s))
+  
   ;;;###autoload
   (defun tja-magit-commit-all (message)
     (interactive "sCommit Message: ")
@@ -36,7 +39,9 @@ Installing, creating these
     (tja--call-git-process-no-output repo "add" "./environment.org")
     (if additional-files
         (apply 'tja--call-git-process-no-output (append (list repo "add") additional-files)))
-    (tja--call-git-process-no-output repo "commit" "-m" "[autocommit] todos, env")
+    (tja--call-git-process-no-output
+     repo "commit" "-m"
+     (-get-autocommit-string "todos, env"))
     (tja--call-git-process-no-output repo "rebase" "origin/master")
     (tja--call-git-process-no-output repo "push"))
 
@@ -46,7 +51,9 @@ Installing, creating these
   (defun tja-magit-commit-all-rebase-push (repo &optional master)
     (tja--call-git-process-no-output repo "fetch" "--all")
     (tja--call-git-process-no-output repo "add" "-A")
-    (tja--call-git-process-no-output repo "commit" "-a" "-m" "[autocommit] dailies")
+    (tja--call-git-process-no-output
+     repo "commit" "-a" "-m"
+     (-get-autocommit-string "dailies"))
     (tja--call-git-process-no-output repo "rebase" (or master "origin/master"))
     (tja--call-git-process-no-output repo "push"))
 
