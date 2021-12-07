@@ -383,6 +383,15 @@ Configures org roam, dailies, tags, capture templates
 
 #+end_src
 
+** Org Transclusion
+
+#+begin_src emacs-lisp
+  (use-package org-transclusion
+    :bind (:map org-mode-map
+           ("<f11>" . org-transclusion-add)
+           ("C-c n t" . org-transclusion-mode)))
+#+end_src
+
 * Completing Read Configuration: Vertico|Savehist|Marginalia|Consult|Orderless|Embark|Etc...
 ** Vertico
 #+begin_src emacs-lisp
@@ -913,10 +922,11 @@ Using apache velocity template langage for ESA
 
 ** Typescript
 #+begin_src emacs-lisp
-  (use-package typescript-mode
-    :mode "\\.ts\\'"
-    :hook (typescript-mode . lsp-deferred)
-    :custom ((typescript-indent-level 2)))
+    (use-package typescript-mode
+      :mode "\\.ts\\'"
+      :hook (typescript-mode . lsp-deferred)
+      :custom ((typescript-indent-level 2))
+      :init (remhash 'angular-ls lsp-clients))
 #+end_src
 
 ** Javascript
