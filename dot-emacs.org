@@ -922,11 +922,12 @@ Using apache velocity template langage for ESA
 
 ** Typescript
 #+begin_src emacs-lisp
-    (use-package typescript-mode
-      :mode "\\.ts\\'"
-      :hook (typescript-mode . lsp-deferred)
-      :custom ((typescript-indent-level 2))
-      :init (remhash 'angular-ls lsp-clients))
+  (use-package typescript-mode
+    :mode "\\.ts\\'"
+    :hook
+    (typescript-mode . lsp-deferred)
+    (typescript-mode . (lambda () (remhash 'angular-ls lsp-clients)))
+    :custom ((typescript-indent-level 2)))
 #+end_src
 
 ** Javascript
