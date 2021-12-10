@@ -112,7 +112,7 @@ shell exits, the buffer is killed."
 ;;;###autoload
 (defun tja-vterm-run-fbp-api ()
   (interactive)
-  (with-current-buffer (vterm (concat "* FBP API *"))
+  (with-current-buffer (vterm (concat "*vterm* *FBP API*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/")
     (vterm-send-return)
     (vterm-send-string "./local_startup.sh")
@@ -121,7 +121,7 @@ shell exits, the buffer is killed."
 ;;;###autoload
 (defun tja-vterm-run-fbp-web ()
   (interactive)
-  (with-current-buffer (vterm (concat "* FBP WEB *"))
+  (with-current-buffer (vterm (concat "*vterm* *FBP WEB*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/FranchiseePortal-Website/")
     (vterm-send-return)
     (vterm-send-string "./local_startup.sh")
@@ -130,7 +130,7 @@ shell exits, the buffer is killed."
 ;;;###autoload
 (defun tja-vterm-log-franchiseportal-api ()
   (interactive)
-  (with-current-buffer (vterm (concat "* FBP WEB *"))
+  (with-current-buffer (vterm (concat "*vterm* *FBP WEB*"))
     (vterm-send-string "cd /home/trevor/")
     (vterm-send-return)
     (vterm-send-string "az webapp log tail --name ipaas-franchiseeportal-dev-useast-api --resource-group ipaas-dev-useast-rsg")
@@ -174,7 +174,7 @@ shell exits, the buffer is killed."
 ;;;###autoload
 (defun tja-vterm-esa-run-dotcms ()
   (interactive)
-  (with-current-buffer (vterm (concat "* DOTCMS *"))
+  (with-current-buffer (vterm (concat "*vterm* *DOTCMS*"))
     (vterm-send-string "cd /home/trevor/hacking/dotcms/docker/single-node-clean/")
     (vterm-send-return)
     (vterm-send-string "docker-compose up")
@@ -183,7 +183,7 @@ shell exits, the buffer is killed."
 ;;;###autoload
 (defun tja-vterm-esa-run-esa-dotcms-node ()
   (interactive)
-  (with-current-buffer (vterm (concat "* DOTCMS - Frontend *"))
+  (with-current-buffer (vterm (concat "*vterm* *DOTCMS - Frontend*"))
     (vterm-send-string "cd /home/trevor/projects/extended_stay/src/frontend/")
     (vterm-send-return)
     (vterm-send-string "npm start")
