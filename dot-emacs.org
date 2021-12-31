@@ -777,6 +777,8 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 
 * Modeline (Doom)
 #+begin_src emacs-lisp
+  (use-package doom-themes)
+
   (use-package doom-modeline
     :init (doom-modeline-mode 1))
 #+end_src
