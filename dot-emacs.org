@@ -241,12 +241,15 @@ Org ellipsis has been bugging out tangle a little bit.
     (org-babel-default-header-args:C
      (cons '(:tangle . "yes")
            (assq-delete-all :tangle org-babel-default-header-args)))
-    (org-agenda-files '("~/projects/me/todo_misc.org"
+    (org-agenda-files '("~/projects/me/todo_me.org"
                         "~/projects/goddard/todo_goddard.org"
                         "~/projects/extended_stay/todo_esa.org"
                         "~/projects/parsus/parsus_misc.org"
                         "~/projects/parsus/meeting_updates.org"
-                        "~/projects/acdhh/todo_acdhh-cdbms.org"))
+                        "~/projects/acdhh/todo_acdhh-cdbms.org"
+                        "~/projects/acdhh/todo_acdhh-www.org"))
+    (org-columns-default-format "%25ITEM %TODO %3PRIORITY %TAGS")
+    (org-agenda-start-with-clockreport-mode nil)
     (org-clock-in-resume t)
     (org-clock-in-switch-to-state "IN-PROGRESS")
     (org-clock-persist t)
@@ -296,7 +299,6 @@ Org ellipsis has been bugging out tangle a little bit.
 #+RESULTS:
 : org-tempo
 b
-
 ** Configure org babel languages
 #+begin_src emacs-lisp
   (org-babel-do-load-languages
@@ -712,7 +714,7 @@ https://github.com/justbur/emacs-which-key
    | projectile-project-current |
 
 ** Perspective
-
+Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x s on startup?
 #+begin_src emacs-lisp
   (use-package perspective
     :bind (("C-x k" . persp-kill-buffer*))
@@ -950,7 +952,7 @@ Using apache velocity template langage for ESA
 (use-package rust-mode)
 #+end_src
 
-* Add my Emacs lisp extensions
+* TJA.el Add my Emacs lisp extensions
 #+begin_src emacs-lisp
 (push "~/emacs/lisp/" load-path)
 #+end_src

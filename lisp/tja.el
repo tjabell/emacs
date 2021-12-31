@@ -71,29 +71,29 @@
 
 (require 'vterm)
 
-;;; https://www.reddit.com/r/emacs/comments/ft84xy/run_shell_command_in_new_vterm/
-;;; I really don't get what this is doing 20211029TJA
+  ;;; https://www.reddit.com/r/emacs/comments/ft84xy/run_shell_command_in_new_vterm/
+  ;;; I really don't get what this is doing 20211029TJA
 (defun tja-vterm-run-in-vterm-kill (process event)
   "A process sentinel. Kills PROCESS's buffer if it is live."
   (let ((b (process-buffer process)))
     (and (buffer-live-p b)
          (kill-buffer b))))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-run-in-vterm (command)
   "Execute string COMMAND in a new vterm.
 
-Interactively, prompt for COMMAND with the current buffer's file
-name supplied. When called from Dired, supply the name of the
-file at point.
+  Interactively, prompt for COMMAND with the current buffer's file
+  name supplied. When called from Dired, supply the name of the
+  file at point.
 
-Like `async-shell-command`, but run in a vterm for full terminal features.
+  Like `async-shell-command`, but run in a vterm for full terminal features.
 
-The new vterm buffer is named in the form `*foo bar.baz*`, the
-command and its arguments in earmuffs.
+  The new vterm buffer is named in the form `*foo bar.baz*`, the
+  command and its arguments in earmuffs.
 
-When the command terminates, the shell remains open, but when the
-shell exits, the buffer is killed."
+  When the command terminates, the shell remains open, but when the
+  shell exits, the buffer is killed."
   (interactive
    (list
     (let* ((f (cond (buffer-file-name)
@@ -109,7 +109,7 @@ shell exits, the buffer is killed."
     (vterm-send-string command)
     (vterm-send-return)))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-run-fbp-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FBP API*"))
@@ -118,7 +118,7 @@ shell exits, the buffer is killed."
     (vterm-send-string "./local_startup.sh")
     (vterm-send-return)))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-run-fbp-web ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FBP WEB*"))
@@ -127,7 +127,7 @@ shell exits, the buffer is killed."
     (vterm-send-string "./local_startup.sh")
     (vterm-send-return)))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-log-franchiseportal-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FBP WEB*"))
@@ -136,7 +136,7 @@ shell exits, the buffer is killed."
     (vterm-send-string "az webapp log tail --name ipaas-franchiseeportal-dev-useast-api --resource-group ipaas-dev-useast-rsg")
     (vterm-send-return)))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-az-webapp-log (api-name environment)
   (interactive
    (list
@@ -154,42 +154,55 @@ shell exits, the buffer is killed."
     (vterm-send-return)))
 
 ;;;###autoload
-(defun tja--log-aem-dev-error (instance log)
-  (with-current-buffer (vterm (concat "* AEM " instance " ERROR *"))
+(defun tja--log-aem (env instance log)
+(let ((number (if (string-equal env "qa") "85656" "77402")))
+  (with-current-buffer (vterm (concat "*vterm* *AEM LOG: " env "-"instance " ERROR *"))
     (vterm-send-string "cd /home/trevor/")
     (vterm-send-return)
-    (vterm-send-string (concat  "aio cloudmanager:tail-logs 77402 " instance " " log))
-    (vterm-send-return)))
+    (vterm-send-string (concat  "aio cloudmanager:tail-logs " number " " instance " " log))
+    (vterm-send-return))))  
 
 ;;;###autoload
-(defun tja-vterm-log-aem-author-dev-error ()
-  (interactive)
-  (tja--log-aem-dev-error "author" "aemerror"))
+  (defun tja-vterm-log-aem-author-dev-error ()
+    (interactive)
+    (tja--log-aem "dev" "author" "aemerror"))
 
 ;;;###autoload
-(defun tja-vterm-log-aem-publish-dev-error ()
-  (interactive)
-  (tja--log-aem-dev-error "publish" "aemerror"))
+  (defun tja-vterm-log-aem-publish-dev-error ()
+    (interactive)
+    (tja--log-aem "dev" "publish" "aemerror"))
 
 ;;;###autoload
-(defun tja-vterm-esa-run-dotcms ()
-  (interactive)
-  (with-current-buffer (vterm (concat "*vterm* *DOTCMS*"))
-    (vterm-send-string "cd /home/trevor/hacking/dotcms/docker/single-node-clean/")
-    (vterm-send-return)
-    (vterm-send-string "docker-compose up")
-    (vterm-send-return)))
+  (defun tja-vterm-log-aem-author-qa-error ()
+    (interactive)
+    (tja--log-aem "qa" "author" "aemerror"))
 
 ;;;###autoload
-(defun tja-vterm-esa-run-esa-dotcms-node ()
-  (interactive)
-  (with-current-buffer (vterm (concat "*vterm* *DOTCMS - Frontend*"))
-    (vterm-send-string "cd /home/trevor/projects/extended_stay/src/frontend/")
-    (vterm-send-return)
-    (vterm-send-string "npm start")
-    (vterm-send-return)))
+  (defun tja-vterm-log-aem-publish-qa-error ()
+    (interactive)
+    (tja--log-aem-dev "qa" "publish" "aemerror"))
 
-(provide 'tja-vterm)
+  ;;;###autoload
+  (defun tja-vterm-esa-run-dotcms ()
+    (interactive)
+    (with-current-buffer (vterm (concat "*vterm* *DOTCMS*"))
+      (vterm-send-string "cd /home/trevor/projects/extended_stay/src/frontend/")
+      (vterm-send-return)
+      (vterm-send-string "systemctl is-active --quiet docker || (echo 'Starting docker... ' && sudo systemctl start docker)")
+      (vterm-send-return)
+      (vterm-send-string "docker-compose up")
+      (vterm-send-return)))
+
+  ;;;###autoload
+  (defun tja-vterm-esa-run-esa-dotcms-node ()
+    (interactive)
+    (with-current-buffer (vterm (concat "*vterm* *DOTCMS - Frontend*"))
+      (vterm-send-string "cd /home/trevor/projects/extended_stay/src/frontend/")
+      (vterm-send-return)
+      (vterm-send-string "npm start")
+      (vterm-send-return)))
+
+  (provide 'tja-vterm)
 
 ;;;###autoload
 (defun insert-current-date ()
