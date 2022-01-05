@@ -300,7 +300,6 @@ Org ellipsis has been bugging out tangle a little bit.
 
 #+RESULTS:
 : org-tempo
-b
 
 ** Configure org babel languages
 #+begin_src emacs-lisp
@@ -395,6 +394,12 @@ Configures org roam, dailies, tags, capture templates
     :bind (:map org-mode-map
            ("<f11>" . org-transclusion-add)
            ("C-c n t" . org-transclusion-mode)))
+#+end_src
+
+** Org anki
+
+#+begin_src emacs-lisp
+    (use-package org-anki)
 #+end_src
 
 * Completing Read Configuration: Vertico|Savehist|Marginalia|Consult|Orderless|Embark|Etc...
@@ -958,6 +963,7 @@ Using apache velocity template langage for ESA
 #+end_src
 
 * TJA.el Add my Emacs lisp extensions
+[[file:lisp/tja.org::*Org file for my private extensions to emacs packages][TJA.org file]]
 #+begin_src emacs-lisp
 (push "~/emacs/lisp/" load-path)
 #+end_src

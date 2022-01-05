@@ -19,7 +19,7 @@ Installing, creating these
 
   (defun -get-autocommit-string (s)
     (format "[autocommit %s] %s" (shell-command-to-string "echo -n $(date +%Y-%m-%d)") s))
-  
+
   ;;;###autoload
   (defun tja-magit-commit-all (message)
     (interactive "sCommit Message: ")
@@ -178,7 +178,7 @@ Installing, creating these
       (vterm-send-string "cd /home/trevor/")
       (vterm-send-return)
       (vterm-send-string (concat  "aio cloudmanager:tail-logs " number " " instance " " log))
-      (vterm-send-return))))  
+      (vterm-send-return))))
 
   ;;;###autoload
     (defun tja-vterm-log-aem-author-dev-error ()
@@ -331,14 +331,13 @@ Installing, creating these
   (provide 'tja-ocr)
 #+end_src
 
-
 * Azure
 
 #+begin_src emacs-lisp
   (defun tja-insert-azure-title-text (ticket-number)
     (interactive "sTicket Number ")
     (insert (get-azure-title-text ticket-number)))
-  
+
   (defun tja-get-azure-title-text (ticket-number)
     (interactive)
     (with-current-buffer
@@ -364,3 +363,18 @@ Installing, creating these
 
 #+RESULTS:
 : tja-get-azure-title-text
+
+* SQL
+
+#+begin_src emacs-lisp
+  (defun tja-sql-capitalize-all-sqlserver-keywords (min max)
+    (interactive "r")
+    (require 'sql)
+    (save-excursion
+      (dolist (keywords sql-mode-ms-font-lock-keywords)
+        (goto-char min)
+        (while (re-search-forward (car keywords) nil t)
+          (unless (or (point-in-comment) (> (point) max))
+            (goto-char (match-beginning 0))
+            (upcase-word 1))))))
+#+end_src

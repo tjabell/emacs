@@ -296,3 +296,40 @@ same directory as the org-buffer and insert a link to this file."
   (call-process "tesseract" nil t nil filename "stdout"))
 
 (provide 'tja-ocr)
+
+(defun tja-insert-azure-title-text (ticket-number)
+  (interactive "sTicket Number ")
+  (insert (get-azure-title-text ticket-number)))
+
+(defun tja-get-azure-title-text (ticket-number)
+  (interactive)
+  (with-current-buffer
+      (get-buffer-create
+       (let* ((username "parsus-ta@goddardsystems.com")
+              (password "xa2ygb53qqic6k76ycugksdetvopbhvkew5hlpt34xgr7pnhm6cq")
+              (ticket-url (format "https://dev.azure.com/GoddardSystemsIT/_apis/wit/workitems?ids=%s&api-version=6.1-preview.3" ticket-number))
+              (url-request-extra-headers
+               `(("Authorization" . ,(concat "Basic "
+                                             (base64-encode-string
+                                              (concat username ":" password) t))))))
+         (url-retrieve-synchronously ticket-url)))
+    (goto-char (point-min))
+    (re-search-forward "^$")
+    (delete-region (point) (point-min))
+    (let ((my-obj (json-parse-string (buffer-string))))
+      (gethash "System.Title"
+               (gethash "fields"
+                        (aref
+                         (gethash "value" my-obj)
+                         0))))))
+
+(defun tja-sql-capitalize-all-sqlserver-keywords (min max)
+  (interactive "r")
+  (require 'sql)
+  (save-excursion
+    (dolist (keywords sql-mode-ms-font-lock-keywords) 
+      (goto-char min)
+      (while (re-search-forward (car keywords) nil t)
+        (unless (or (point-in-comment) (> (point) max))
+          (goto-char (match-beginning 0))
+          (upcase-word 1))))))
