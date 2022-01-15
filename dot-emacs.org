@@ -1,6 +1,6 @@
 ;;-*- coding: utf-8; lexical-binding: t; -*-
 #+title: Emacs: New Config in an Org file
-#+STARTUP: show2levels
+#+STARTUP: overview
 #+property: header-args:emacs-lisp  :tangle ~/.emacs :results none
 * New Emacs configuration file
 
