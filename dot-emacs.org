@@ -62,6 +62,13 @@ otherwide ⤵ would get converted to bytes when opening this file
 #+RESULTS:
 : t
 
+** Custom on ws laptop, load exwm
+
+#+begin_src emacs-lisp
+(when (string-equal (system-name) "trevor-laptop2")
+  (org-babel-load-file "~/emacs/exwm.org"))
+#+end_src
+
 ** Theme | Disable Menu Bar | Inihibit Startup
 
 #+begin_src emacs-lisp
@@ -97,7 +104,7 @@ otherwide ⤵ would get converted to bytes when opening this file
                     ;; :font "Cantarell"
                     :font "Iosevka Aile"
                     :weight 'light)
-#+end_src
+#+end_srch
 
 ** Backup settings
 

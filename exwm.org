@@ -1,0 +1,50 @@
+** CUSTOM EXWM DO NOT COMMIT FOR NOW
+#+begin_src emacs-lisp
+  (use-package exwm)
+  (use-package exwm-config
+    :straight nil)
+  (exwm-config-default)
+#+end_src
+
+*** EXWM Customizations/Extensions
+#+begin_src emacs-lisp
+
+
+    ;; From https://emacs.stackexchange.com/questions/33326/how-do-i-cut-and-paste-effectively-between-applications-while-using-exwm
+      (defun fhd/exwm-input-line-mode ()
+      "Set exwm window to line-mode and show mode line"
+      (call-interactively #'exwm-input-grab-keyboard)
+      (exwm-layout-show-mode-line))
+
+    (defun fhd/exwm-input-char-mode ()
+      "Set exwm window to char-mode and hide mode line"
+      (call-interactively #'exwm-input-release-keyboard)
+      (exwm-layout-hide-mode-line))
+
+    (defun fhd/exwm-input-toggle-mode ()
+      "Toggle between line- and char-mode"
+      (interactive)
+      (message "hello")
+      (with-current-buffer (window-buffer)
+        (when (eq major-mode 'exwm-mode)
+          (if (equal (second (second mode-line-process)) "line")
+              (fhd/exwm-input-char-mode)
+            (fhd/exwm-input-line-mode)))))
+
+    ;(exwm-input-set-key (kbd "s-i") #'fhd/exwm-input-toggle-mode)
+    (exwm-input-set-key (kbd "s-i") #'exwm-input-toggle-keyboard)
+
+    (defun fhd/toggle-exwm-input-line-mode-passthrough ()
+    (interactive)
+    (if exwm-input-line-mode-passthrough
+      (progn
+        (setq exwm-input-line-mode-passthrough nil)
+        (message "App receives all the keys now (with some simulation)"))
+     (progn
+       (setq exwm-input-line-mode-passthrough t)
+       (message "emacs receives all the keys now")))
+    (force-mode-line-update))
+
+    (exwm-input-set-key (kbd "s-p") 'fhd/toggle-exwm-input-line-mode-passthrough)
+
+#+end_src
