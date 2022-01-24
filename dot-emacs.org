@@ -65,8 +65,8 @@ otherwide ⤵ would get converted to bytes when opening this file
 ** Custom on ws laptop, load exwm
 
 #+begin_src emacs-lisp
-(when (string-equal (system-name) "trevor-laptop2")
-  (org-babel-load-file "~/emacs/exwm.org"))
+  (when (string-equal (system-name) "trevor-laptop2")
+    (org-babel-load-file "~/emacs/exwm.org"))
 #+end_src
 
 ** Theme | Disable Menu Bar | Inihibit Startup
@@ -139,6 +139,11 @@ Shuts off backup creation for remote files
 : ((^/\(\(?:\([[:alnum:]-]+\):\(?:\([^/|: 	]+\)@\)?\(\(?:[[:alnum:]_.%-]+\|\[\(?:\(?:[[:alnum:]]*:\)+[[:alnum:].]+\)?]\)\(?:#[[:digit:]]+\)?\)?|\)+\)?\([[:alnum:]-]+\):\(?:\([^/|: 	]+\)@\)?\(\(?:[[:alnum:]_.%-]+\|\[\(?:\(?:[[:alnum:]]*:\)+[[:alnum:].]+\)?]\)\(?:#[[:digit:]]+\)?\)?:\([^
 : ]*\'\)) (.* . /tmp/))
 
+** Visible Bell
+#+begin_src emacs-lisp
+  (setq visible-bell t)
+#+end_src
+
 ** Other window as M-o is nice
 #+begin_src emacs-lisp
   (global-set-key (kbd "M-o") 'other-window)
@@ -201,11 +206,12 @@ Org ellipsis has been bugging out tangle a little bit.
    The arrow is 2935: RET ARROW POINTING RIGHTWARDS THEN CURVING DOWNWARDS"
    to input: type "C-x 8 RET 2935" or "C-x 8 RET ARROW POINTING RIGHTWARDS THEN CURVING DOWNWARDS"
 
-   fixed by putting a -*- coding: utf-8 -*- at the top of the file
+   fixed by putting a -*- coding: utf-8 -*- at the top of this file
 
 #+begin_src emacs-lisp
 
   (use-package org
+    :straight (:type built-in)
     :init (progn
             (setq org-ellipsis " ⤵")
             (setq org-todo-keywords
@@ -326,104 +332,21 @@ Org ellipsis has been bugging out tangle a little bit.
 #+RESULTS:
 : ((conf-unix . conf-unix) (redis . redis) (php . php) (arduino . arduino) (conf-unix . conf-unix) (C . c) (C++ . c++) (asymptote . asy) (bash . sh) (beamer . latex) (calc . fundamental) (cpp . c++) (ditaa . artist) (dot . fundamental) (elisp . emacs-lisp) (ocaml . tuareg) (screen . shell-script) (shell . sh) (sqlite . sql))
 
-** Org contrib.  I forget why this was in here but I think it was important
-#+begin_src emacs-lisp
-(use-package org-contrib)
-#+end_src
-#+RESULTS:
-
-** Org Roam
-Configures org roam, dailies, tags, capture templates
-
-#+begin_src emacs-lisp
-  (use-package org-roam
-    :defer 3
-    :init
-    (setq org-roam-directory "~/org-roam")
-    (setq org-roam-v2-ack t)
-    (if (boundp 'org-roam-directory)
-      (unless (file-exists-p org-roam-directory)
-          (make-directory org-roam-directory)))
-    (require 'org-roam-dailies)
-    :custom
-    (org-roam-completion-everywhere t)
-    (org-roam-capture-templates
-     '(("d" "default" plain
-        "%?"
-        :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
-        :unnarrowed t)
-       ("v" "video" plain
-        "\n* Source\n\nLink: %^{Link}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
-        :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
-        :unnarrowed t)
-       ))
-    :bind (("C-c t" . org-roam-tag-add)
-           ("C-c n l" . org-roam-buffer-toggle)
-           ("C-c n i" . org-roam-node-insert)
-           ("C-c d" . org-roam-dailies-goto-today)
-           ("C-c o" . org-roam-node-find)
-           :map org-mode-map
-           ("C-M-i" . completion-at-point)
-           :map org-roam-dailies-map
-           ("Y" . org-roam-dailies-capture-yesterday)
-           ("T" . org-roam-dailies-capture-tomorrow))
-    :bind-keymap
-    ("C-c n d" . org-roam-dailies-map)
-    :config
-    (org-roam-setup)
-    (org-roam-db-autosync-mode))
-
-  (setq org-roam-dailies-directory "daily/")
-#+end_src
-
-#+RESULTS:
-: daily/
-
-** Add gutters to org mode
-
-#+begin_src emacs-lisp
-
-  ;; Seems to mess up org superstar
-  (defun tja-org-mode-visual-fill ()
-    (setq visual-fill-column-width 150
-	  visual-fill-column-center-text t)
-    (visual-fill-column-mode 1))
-
-  (use-package visual-fill-column :defer t)
-
-
-#+end_src
-
-** Org Transclusion
-
-#+begin_src emacs-lisp
-  (use-package org-transclusion
-    :bind (:map org-mode-map
-           ("<f11>" . org-transclusion-add)
-           ("C-c n t" . org-transclusion-mode)))
-#+end_src
-
-** Org anki
-
-#+begin_src emacs-lisp
-    (use-package org-anki)
-#+end_src
-
 * Completing Read Configuration: Vertico|Savehist|Marginalia|Consult|Orderless|Embark|Etc...
 ** Vertico
 #+begin_src emacs-lisp
   (use-package vertico
-  :ensure t
-  :config
-  ;; Cycles through the buffer list whne you hit the bottom
-  (setq vertico-cycle t)
-  :bind (:map minibuffer-local-map
-	      ;; Matching old ivy behavior
-	      ("C-l" . backward-kill-word)
-	      ;; Binding to allow inserting the current selection
-	      ("C-j" . vertico-insert))
-  :init
-  (vertico-mode))
+    :ensure t
+    :config
+    ;; Cycles through the buffer list whne you hit the bottom
+    (setq vertico-cycle t)
+    :bind (:map minibuffer-local-map
+                ;; Matching old ivy behavior
+                ("C-l" . backward-kill-word)
+                ;; Binding to allow inserting the current selection
+                ("C-j" . vertico-insert))
+    :init
+    (vertico-mode))
 #+end_src
 
 #+RESULTS:
@@ -1037,6 +960,90 @@ Using apache velocity template langage for ESA
     :bind (("C->" . mc/mark-next-like-this)
            ("C-<" . mc/mark-previous-like-this)
            ("C-c C-<" . mc/mark-all-like-this)))
+#+end_src
+
+* Additional Org Packages
+** Org contrib.  I forget why this was in here but I think it was important
+#+begin_src emacs-lisp
+(use-package org-contrib)
+#+end_src
+#+RESULTS:
+
+** Org Roam
+Configures org roam, dailies, tags, capture templates
+
+#+begin_src emacs-lisp
+  (use-package org-roam
+    :defer 3
+    :init
+    (setq org-roam-directory "~/org-roam")
+    (setq org-roam-v2-ack t)
+    (if (boundp 'org-roam-directory)
+      (unless (file-exists-p org-roam-directory)
+          (make-directory org-roam-directory)))
+    (require 'org-roam-dailies)
+    :custom
+    (org-roam-completion-everywhere t)
+    (org-roam-capture-templates
+     '(("d" "default" plain
+        "%?"
+        :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+        :unnarrowed t)
+       ("v" "video" plain
+        "\n* Source\n\nLink: %^{Link}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
+        :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+        :unnarrowed t)
+       ))
+    :bind (("C-c t" . org-roam-tag-add)
+           ("C-c n l" . org-roam-buffer-toggle)
+           ("C-c n i" . org-roam-node-insert)
+           ("C-c d" . org-roam-dailies-goto-today)
+           ("C-c o" . org-roam-node-find)
+           :map org-mode-map
+           ("C-M-i" . completion-at-point)
+           :map org-roam-dailies-map
+           ("Y" . org-roam-dailies-capture-yesterday)
+           ("T" . org-roam-dailies-capture-tomorrow))
+    :bind-keymap
+    ("C-c n d" . org-roam-dailies-map)
+    :config
+    (org-roam-setup)
+    (org-roam-db-autosync-mode))
+
+  (setq org-roam-dailies-directory "daily/")
+#+end_src
+
+#+RESULTS:
+: daily/
+
+** Add gutters to org mode
+
+#+begin_src emacs-lisp
+
+  ;; Seems to mess up org superstar
+  (defun tja-org-mode-visual-fill ()
+    (setq visual-fill-column-width 150
+	  visual-fill-column-center-text t)
+    (visual-fill-column-mode 1))
+
+  (use-package visual-fill-column :defer t)
+
+
+#+end_src
+
+** Org Transclusion
+
+#+begin_src emacs-lisp
+  (use-package org-transclusion
+    :bind (:map org-mode-map
+           ("<f11>" . org-transclusion-add)
+           ("C-c n t" . org-transclusion-mode)))
+#+end_src
+
+** Org anki
+
+#+begin_src emacs-lisp
+    (use-package org-anki)
 #+end_src
 
 * --------- Experimental FOR NOW ---------
