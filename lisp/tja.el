@@ -160,7 +160,7 @@
     (vterm-send-string "cd /home/trevor/")
     (vterm-send-return)
     (vterm-send-string (concat  "aio cloudmanager:tail-logs " number " " instance " " log))
-    (vterm-send-return))))  
+    (vterm-send-return))))
 
 ;;;###autoload
   (defun tja-vterm-log-aem-author-dev-error ()
@@ -188,9 +188,7 @@
     (with-current-buffer (vterm (concat "*vterm* *DOTCMS*"))
       (vterm-send-string "cd /home/trevor/projects/extended_stay/src/frontend/")
       (vterm-send-return)
-      (vterm-send-string "systemctl is-active --quiet docker || (echo 'Starting docker... ' && sudo systemctl start docker)")
-      (vterm-send-return)
-      (vterm-send-string "docker-compose up")
+      (vterm-send-string "./local-startup.sh")
       (vterm-send-return)))
 
   ;;;###autoload
@@ -306,7 +304,7 @@ same directory as the org-buffer and insert a link to this file."
   (with-current-buffer
       (get-buffer-create
        (let* ((username "parsus-ta@goddardsystems.com")
-              (password "xa2ygb53qqic6k76ycugksdetvopbhvkew5hlpt34xgr7pnhm6cq")
+              (password "")
               (ticket-url (format "https://dev.azure.com/GoddardSystemsIT/_apis/wit/workitems?ids=%s&api-version=6.1-preview.3" ticket-number))
               (url-request-extra-headers
                `(("Authorization" . ,(concat "Basic "
@@ -327,7 +325,7 @@ same directory as the org-buffer and insert a link to this file."
   (interactive "r")
   (require 'sql)
   (save-excursion
-    (dolist (keywords sql-mode-ms-font-lock-keywords) 
+    (dolist (keywords sql-mode-ms-font-lock-keywords)
       (goto-char min)
       (while (re-search-forward (car keywords) nil t)
         (unless (or (point-in-comment) (> (point) max))

@@ -737,6 +737,7 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 #+begin_src emacs-lisp
   (use-package yaml-mode)
 #+end_src
+
 ** Tree sitter (experimental)
 #+begin_src emacs-lisp
   (use-package tree-sitter)
@@ -933,24 +934,27 @@ Using apache velocity template langage for ESA
 : t
 
 * Pass and org-password for password management
+
 #+begin_src emacs-lisp
   (use-package pass)
 #+end_src
-#+RESULTS:
 
 ** Using org-password for password generation
 #+begin_src emacs-lisp
-      (use-package org-passwords
-        :defer t
-        :straight nil)
+  (use-package org-passwords
+    :defer t)
 
-      (use-package org-contrib
-        :straight nil
-        :after org-mode)
-  
-      (defun tja-password-insert ()
+  (use-package org-contrib
+    :straight nil
+    :after org-mode)
+
+  (defun tja-password-insert ()
+    (interactive)
+    (insert (org-passwords-generate-password-with-symbols "" 20)))
+
+  (defun tja-password-insert-no-symbols ()
         (interactive)
-        (insert (org-passwords-generate-password-with-symbols "" 20)))
+        (insert (org-passwords-generate-password-without-symbols "" 20)))
 #+end_src
 
 * Multiple cursors
@@ -963,11 +967,11 @@ Using apache velocity template langage for ESA
 #+end_src
 
 * Additional Org Packages
+
 ** Org contrib.  I forget why this was in here but I think it was important
 #+begin_src emacs-lisp
-(use-package org-contrib)
+  (use-package org-contrib)
 #+end_src
-#+RESULTS:
 
 ** Org Roam
 Configures org roam, dailies, tags, capture templates
@@ -1044,6 +1048,12 @@ Configures org roam, dailies, tags, capture templates
 
 #+begin_src emacs-lisp
     (use-package org-anki)
+#+end_src
+
+* Vue JS
+
+#+begin_src emacs-lisp
+(use-package vue-mode)
 #+end_src
 
 * --------- Experimental FOR NOW ---------
