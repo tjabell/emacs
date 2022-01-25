@@ -94,4 +94,6 @@
   (exwm-input-set-key (kbd "s-p") 'fhd/toggle-exwm-input-line-mode-passthrough)
 
   (tja-exwm-config)
+
+  (exwm-workspace-switch-create 1)
 #+end_src

@@ -69,20 +69,24 @@
           (fhd/exwm-input-char-mode)
         (fhd/exwm-input-line-mode)))))
 
-;(exwm-input-set-key (kbd "s-i") #'fhd/exwm-input-toggle-mode)
+                                        ;(exwm-input-set-key (kbd "s-i") #'fhd/exwm-input-toggle-mode)
 (exwm-input-set-key (kbd "s-i") #'exwm-input-toggle-keyboard)
 
 (defun fhd/toggle-exwm-input-line-mode-passthrough ()
-(interactive)
-(if exwm-input-line-mode-passthrough
-  (progn
-    (setq exwm-input-line-mode-passthrough nil)
-    (message "App receives all the keys now (with some simulation)"))
- (progn
-   (setq exwm-input-line-mode-passthrough t)
-   (message "emacs receives all the keys now")))
-(force-mode-line-update))
+  (interactive)
+  (if exwm-input-line-mode-passthrough
+      (progn
+        (setq exwm-input-line-mode-passthrough nil)
+        (message "App receives all the keys now (with some simulation)"))
+    (progn
+      (setq exwm-input-line-mode-passthrough t)
+      (message "emacs receives all the keys now")))
+  (force-mode-line-update))
+
+(exwm-input-set-key (kbd "s-<f12>")
+                    (lambda () (interactive) (start-process "" nil "sudo" "systemctl suspend")))
 
 (exwm-input-set-key (kbd "s-p") 'fhd/toggle-exwm-input-line-mode-passthrough)
 
 (tja-exwm-config)
+(exwm-workspace-switch-create 1)
