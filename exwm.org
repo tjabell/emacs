@@ -71,8 +71,8 @@
 *** Additional EXWM Customizations/Extensions
 #+begin_src emacs-lisp
   (exwm-workspace-switch-create 1)
-  
-  
+
+
   ;; From https://emacs.stackexchange.com/questions/33326/how-do-i-cut-and-paste-effectively-between-applications-while-using-exwm
   (defun fhd/exwm-input-line-mode ()
     "Set exwm window to line-mode and show mode line"
@@ -110,4 +110,8 @@
 
 
   (exwm-input-set-key (kbd "s-p") 'fhd/toggle-exwm-input-line-mode-passthrough)
+
+  (display-battery-mode 1)
+  (setq display-time-day-and-date t)
+  (display-time-mode 1)
 #+end_src
