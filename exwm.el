@@ -103,3 +103,7 @@
 
 
 (exwm-input-set-key (kbd "s-p") 'fhd/toggle-exwm-input-line-mode-passthrough)
+
+(display-battery-mode 1)
+(setq display-time-day-and-date t)
+(display-time-mode 1)

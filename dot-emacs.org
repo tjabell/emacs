@@ -199,6 +199,15 @@ or group vc
   (enable-command #'narrow-to-region)
 #+end_src
 
+** Window Management
+
+Transpose Frame, to rotate, flip, flop frames
+
+https://www.emacswiki.org/emacs/TransposeFrame
+
+#+begin_src emacs-lisp
+  (use-package transpose-frame)
+#+end_src
 * Org mode, org-tempo, org bullets, org-roam
 
 ** Main org config
