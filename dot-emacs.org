@@ -324,6 +324,11 @@ Org ellipsis has been bugging out tangle a little bit.
 #+RESULTS:
 : org-tempo
 
+** Get ob-rust for org babel rust
+#+begin_src emacs-lisp
+  (use-package ob-rust)
+#+end_src
+
 ** Configure org babel languages
 #+begin_src emacs-lisp
   (org-babel-do-load-languages
@@ -334,7 +339,8 @@ Org ellipsis has been bugging out tangle a little bit.
      (perl . t)
      (haskell . t)
      (C . t)
-     (shell . t)))
+     (shell . t)
+     (rust . t)))
 
   (push '("conf" . conf-unix) org-src-lang-modes)
 #+end_src
