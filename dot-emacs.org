@@ -208,6 +208,7 @@ https://www.emacswiki.org/emacs/TransposeFrame
 #+begin_src emacs-lisp
   (use-package transpose-frame)
 #+end_src
+
 * Org mode, org-tempo, org bullets, org-roam
 
 ** Main org config
@@ -331,6 +332,8 @@ Org ellipsis has been bugging out tangle a little bit.
 
 ** Configure org babel languages
 #+begin_src emacs-lisp
+  (require 'ob-js)
+
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((ruby . t)
@@ -340,7 +343,8 @@ Org ellipsis has been bugging out tangle a little bit.
      (haskell . t)
      (C . t)
      (shell . t)
-     (rust . t)))
+     (rust . t)
+     (js . t)))
 
   (push '("conf" . conf-unix) org-src-lang-modes)
 #+end_src
