@@ -72,7 +72,7 @@
 (global-set-key (kbd "<f7>") 'pop-global-mark)
 
 ;;; https://gist.github.com/kristianhellquist/3082383#gistcomment-2373734
-(defun my:copy-current-line-position-to-clipboard ()
+(defun tja-copy-current-line-position-to-clipboard ()
   "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
   (interactive)
   (let ((path-with-line-number
@@ -80,7 +80,7 @@
     (kill-new path-with-line-number)
     (message (concat path-with-line-number " copied to clipboard"))))
 
-(defun my:copy-relative-current-line-position-to-clipboard ()
+(defun tja-esa-frontend-copy-relative-current-line-position-to-clipboard ()
   "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
   (interactive)
   (let ((path-with-line-number
@@ -88,7 +88,7 @@
     (kill-new path-with-line-number)
     (message (concat path-with-line-number " copied to clipboard"))))
 
-(defun my:copy-project-current-line-position-to-clipboard ()
+(defun tja-copy-project-current-line-position-to-clipboard ()
   "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
   (interactive)
   (cl-flet ((find-git-dir  ()

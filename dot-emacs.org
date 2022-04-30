@@ -219,7 +219,6 @@ Org ellipsis has been bugging out tangle a little bit.
    fixed by putting a -*- coding: utf-8 -*- at the top of this file
 
 #+begin_src emacs-lisp
-
   (use-package org
     :straight (:type built-in)
     :init (progn
@@ -243,7 +242,8 @@ Org ellipsis has been bugging out tangle a little bit.
             (setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
             (setq org-hide-emphasis-markers t)
             (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
-            (setq org-cycle-separator-lines -1))
+            (setq org-cycle-separator-lines -1)
+            (setq org-use-speed-commands t))
     :bind (("C-c c" . org-capture)
            ("C-c C-x C-j" . org-clock-goto)
            ( "C-c l" . org-store-link)
@@ -347,6 +347,8 @@ Org ellipsis has been bugging out tangle a little bit.
      (js . t)))
 
   (push '("conf" . conf-unix) org-src-lang-modes)
+
+  (add-to-list 'org-babel-tangle-lang-exts '("js" . "js"))
 #+end_src
 
 #+RESULTS:
@@ -579,6 +581,7 @@ Minibuffer completion map toggle C-l to get orderless literal style
 Everything goes through `embark-act`
 
 Learning embark
+
 #+begin_src emacs-lisp
   (use-package embark
     :ensure t
@@ -1087,6 +1090,7 @@ Configures org roam, dailies, tags, capture templates
 #+begin_src emacs-lisp :tangle no
 (straight-use-package '(mct :repo "protesilaos/mct"
 			    :host gitlab))
+
 
 (mct-mode 1)
 
