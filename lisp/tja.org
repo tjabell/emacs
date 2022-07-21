@@ -376,3 +376,76 @@ Installing, creating these
             (goto-char (match-beginning 0))
             (upcase-word 1))))))
 #+end_src
+
+
+* EXPERIMENTAL
+
+#+begin_src emacs-lisp
+
+  ;;; https://gist.github.com/kristianhellquist/3082383#gistcomment-2373734
+  (defun tja-copy-current-line-position-to-clipboard ()
+    "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
+    (interactive)
+    (let ((path-with-line-number
+           (concat (buffer-file-name) ":" (number-to-string (line-number-at-pos)))))
+      (kill-new path-with-line-number)
+      (message (concat path-with-line-number " copied to clipboard"))))
+
+  (defun tja-esa-frontend-copy-relative-current-line-position-to-clipboard ()
+    "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
+    (interactive)
+    (let ((path-with-line-number
+           (concat (s-replace "/home/trevor/projects/extended_stay/src/frontend/" ""  (buffer-file-name)) ":" (number-to-string (line-number-at-pos)))))
+      (kill-new path-with-line-number)
+      (message (concat path-with-line-number " copied to clipboard"))))
+
+  (defun tja-copy-project-current-line-position-to-clipboard ()
+    "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
+    (interactive)
+    (cl-flet ((find-git-dir  ()
+                          (file-truename
+                           (locate-dominating-file (buffer-file-name (current-buffer)) ".git"))))
+      (let* ((project-dir (find-git-dir))
+            (path-with-line-number
+             (concat "<proj>/" (s-replace project-dir ""  (buffer-file-name)) ":" (number-to-string (line-number-at-pos)))))
+        (kill-new path-with-line-number)
+        (message (concat path-with-line-number " copied to clipboard")))))
+
+  ;;; ESA Functions to swap environments in URLs
+  (defun my-esa:replace-url-with-local ()
+    (interactive)
+    (let ((regex "http\[s\]*://.*?/")
+          (replacement "http://localhost:8080/"))
+      (while (re-search-forward regex nil t)
+        (replace-match replacement))))
+
+  (defun my-esa:replace-url-with-dev ()
+    (interactive)
+    (let ((regex "http\[s\]*://.*?/")
+          (replacement "http://***REMOVED***/"))
+      (while (re-search-forward regex nil t)
+        (replace-match replacement))))
+
+  (defun my-esa:vtl-copy-to-local ()
+    (let* ((dest-suffix (substring
+                         (buffer-file-name)
+                         (length "/home/trevor/projects/extended_stay/src/frontend/src/"))))
+      (message "copying %s %s"  buffer-file-name (concat "/mnt/local-dav/***REMOVED***/application/" dest-suffix))))
+
+  (defun my-esa:vtl-copy-to-dev ()
+    (let* ((dest-suffix (substring
+                         (buffer-file-name)
+                         (length "/home/trevor/projects/extended_stay/src/frontend/src/"))))
+      (message "copying: %s %s" buffer-file-name (concat "/mnt/dev-dav/***REMOVED***/application/" dest-suffix))
+      (copy-file buffer-file-name (concat "/mnt/dev-dav/***REMOVED***/application/" dest-suffix) t)))
+
+
+  ;;; Run in Vterm 
+  (defun my:insert-shrug ()
+    (interactive)
+    (insert "¯\_(ツ)_/¯"))
+
+#+end_src
+
+#+RESULTS:
+: my:insert-shrug
