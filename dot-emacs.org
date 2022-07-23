@@ -10,6 +10,14 @@
   (setq native-comp-async-report-warnings-errors nil)
 #+end_src
 
+* Window Management
+#+begin_src emacs-lisp
+(use-package transpose-frame)
+#+end_src
+
+Storing an arrangement in a register:
+
+
 * [Fix] For using multibyte characters
 Ended up putting -*- coding: utf-8 -*- on top of the file
 otherwide ⤵ would get converted to bytes when opening this file
@@ -957,9 +965,8 @@ Using apache velocity template langage for ESA
     :hook
     (typescript-mode . lsp-deferred)
     (typescript-mode . (lambda () (remhash 'angular-ls lsp-clients)))
-    :custom ((typescript-indent-level 2)))
+    :custom ((typescript-indent-level 4)))
 #+end_src
-
 ** Javascript
 
 #+begin_src emacs-lisp
