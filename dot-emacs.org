@@ -10,14 +10,6 @@
   (setq native-comp-async-report-warnings-errors nil)
 #+end_src
 
-* Window Management
-#+begin_src emacs-lisp
-(use-package transpose-frame)
-#+end_src
-
-Storing an arrangement in a register:
-
-
 * [Fix] For using multibyte characters
 Ended up putting -*- coding: utf-8 -*- on top of the file
 otherwide ⤵ would get converted to bytes when opening this file
@@ -221,6 +213,61 @@ https://www.emacswiki.org/emacs/TransposeFrame
 
 #+begin_src emacs-lisp
   (use-package transpose-frame)
+#+end_src
+
+Storing an arrangement in a register:
+
+Rotate windows from emacs wiki
+https://www.emacswiki.org/emacs/TransposeWindows#:~:text=To%20swap%20the%20top%20and,window%2Dswap%2Dstates'%20.
+#+begin_src emacs-lisp
+  ;; https://www.emacswiki.org/emacs/TransposeWindows#:~:text=To%20swap%20the%20top%20and,window%2Dswap%2Dstates'%20.
+  (defun rotate-windows (arg)
+  "Rotate your windows; use the prefix argument to rotate the other direction"
+  (interactive "P")
+  (if (not (> (count-windows) 1))
+      (message "You can't rotate a single window!")
+    (let* ((rotate-times (prefix-numeric-value arg))
+           (direction (if (or (< rotate-times 0) (equal arg '(4)))
+                          'reverse 'identity)))
+      (dotimes (_ (abs rotate-times))
+        (dotimes (i (- (count-windows) 1))
+          (let* ((w1 (elt (funcall direction (window-list)) i))
+                 (w2 (elt (funcall direction (window-list)) (+ i 1)))
+                 (b1 (window-buffer w1))
+                 (b2 (window-buffer w2))
+                 (s1 (window-start w1))
+                 (s2 (window-start w2))
+                 (p1 (window-point w1))
+                 (p2 (window-point w2)))
+            (set-window-buffer-start-and-point w1 b2 s2 p2)
+            (set-window-buffer-start-and-point w2 b1 s1 p1)))))))  
+#+end_src
+
+Swaps windows and lets you choose which to swap
+#+begin_src emacs-lisp
+  (setq swapping-buffer nil)
+  (setq swapping-window nil)
+  (defun swap-buffers-in-windows ()
+      "Swap buffers between two windows"
+      (interactive)
+      (if (and swapping-window
+               swapping-buffer)
+          (let ((this-buffer (current-buffer))
+                (this-window (selected-window)))
+            (if (and (window-live-p swapping-window)
+                     (buffer-live-p swapping-buffer))
+                (progn (switch-to-buffer swapping-buffer)
+                       (select-window swapping-window)
+                       (switch-to-buffer this-buffer)
+                       (select-window this-window)
+                       (message "Swapped buffers."))
+              (message "Old buffer/window killed.  Aborting."))
+            (setq swapping-buffer nil)
+            (setq swapping-window nil))
+        (progn
+          (setq swapping-buffer (current-buffer))
+          (setq swapping-window (selected-window))
+          (message "Buffer and window marked for swapping."))))
 #+end_src
 
 * Org mode, org-tempo, org bullets, org-roam
