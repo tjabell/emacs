@@ -160,12 +160,14 @@ Shuts off backup creation for remote files
 
 ** Key chord mode
 #+begin_src emacs-lisp
-    (use-package key-chord
-      :init
-      (key-chord-mode 1)
-      :config
-      (progn (key-chord-define-global "qf" 'find-file)
-	     (key-chord-define-global "qk" 'kill-this-buffer)))
+  (use-package key-chord
+    :init
+    (key-chord-mode 1)
+    :config
+    (progn (key-chord-define-global "qf" 'find-file)
+           (key-chord-define-global "qk" 'kill-this-buffer)
+           (key-chord-define-global "qr" 'next-buffer)
+           (key-chord-define-global "ql" 'previous-buffer)))
 #+end_src
 
 #+RESULTS:
