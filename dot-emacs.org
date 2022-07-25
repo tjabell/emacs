@@ -19,7 +19,7 @@ otherwide ⤵ would get converted to bytes when opening this file
 ** Auto mode alist config (dot files)
 
 #+begin_src emacs-lisp
-(add-to-list 'auto-mode-alist '("\\zshrc$" . sh-mode))  
+(add-to-list 'auto-mode-alist '("\\zshrc$" . sh-mode))
 #+end_src
 
 ** [Optional] If debugging this may help
@@ -242,7 +242,7 @@ https://www.emacswiki.org/emacs/TransposeWindows#:~:text=To%20swap%20the%20top%2
                  (p1 (window-point w1))
                  (p2 (window-point w2)))
             (set-window-buffer-start-and-point w1 b2 s2 p2)
-            (set-window-buffer-start-and-point w2 b1 s1 p1)))))))  
+            (set-window-buffer-start-and-point w2 b1 s1 p1)))))))
 #+end_src
 
 Swaps windows and lets you choose which to swap
@@ -1079,7 +1079,7 @@ Using apache velocity template langage for ESA
   :type '(repeat string)
   :version "22.1"
   :group 'SQL)
-  
+
   ;; Load connections if there are any
   (let ((filename "~/sql-connections.el"))
     (if (file-exists-p filename)
