@@ -377,13 +377,6 @@ same directory as the org-buffer and insert a link to this file."
     (while (re-search-forward regex nil t)
       (replace-match replacement))))
 
-(defun my-esa:replace-url-with-dev ()
-  (interactive)
-  (let ((regex "http\[s\]*://.*?/")
-        (replacement "http://***REMOVED***/"))
-    (while (re-search-forward regex nil t)
-      (replace-match replacement))))
-
 (defun my-esa:vtl-copy-to-local ()
   (let* ((dest-suffix (substring
                        (buffer-file-name)
