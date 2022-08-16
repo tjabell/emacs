@@ -136,6 +136,14 @@ Installing, creating these
       (vterm-send-string "./local_startup.sh")
       (vterm-send-return)))
 
+  (defun tja-vterm-run-faculty-api ()
+    (interactive)
+    (with-current-buffer (vterm (concat "*vterm* *FACULTY API*"))
+      (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-faculty-api/")
+      (vterm-send-return)
+      (vterm-send-string "./local-startup.sh")
+      (vterm-send-return)))
+
     ;;;###autoload
   (defun tja-vterm-run-fbp-web ()
     (interactive)

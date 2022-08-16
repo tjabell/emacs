@@ -167,7 +167,7 @@ Shuts off backup creation for remote files
     (progn (key-chord-define-global "qf" 'find-file)
            (key-chord-define-global "qk" 'kill-this-buffer)
            (key-chord-define-global "qr" 'next-buffer)
-           (key-chord-define-global "ql" 'previous-buffer)))
+           (key-chord-define-global "qe" 'previous-buffer)))
 #+end_src
 
 #+RESULTS:
@@ -646,16 +646,17 @@ Everything goes through `embark-act`
 Learning embark
 
 #+begin_src emacs-lisp
+  ;; Credit: https://karthinks.com/software/fifteen-ways-to-use-embark/#open-any-buffer-by-splitting-any-window
   (use-package embark
     :ensure t
 
     :bind
     (("C-." . embark-act)         ;; pick some comfortable binding
-     ;;; Right now this is jump to definition.  I need to find a good key for this
-     ;;;("C-;" . embark-dwim)        ;; good alternative: M-.
-     ;;; Right now this is jump to definition.  I need to find a good key for this
-     ;;;("M-." . embark-dwim)        ;;
-     ;;;("C-h B" . embark-bindings) ;; alternative for `describe-bindings'
+             ;;; Right now this is jump to definition.  I need to find a good key for this
+             ;;;("C-;" . embark-dwim)        ;; good alternative: M-.
+             ;;; Right now this is jump to definition.  I need to find a good key for this
+             ;;;("M-." . embark-dwim)        ;;
+             ;;;("C-h B" . embark-bindings) ;; alternative for `describe-bindings'
      )
     ;;:init
 
@@ -666,9 +667,29 @@ Learning embark
 
     ;; Hide the mode line of the Embark live/completions buffers
     (add-to-list 'display-buffer-alist
-		 '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-		   nil
-		   (window-parameters (mode-line-format . none)))))
+                 '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                   nil
+                   (window-parameters (mode-line-format . none))))
+
+    ;; Is this the right place for this?  It works but when is config running and should this be run at 'compile time' here?
+    (eval-when-compile
+      (defmacro my/embark-split-action (fn split-type)
+        `(defun ,(intern (concat "my/embark-"
+                                 (symbol-name fn)
+                                 "-"
+                                 (car (last  (split-string
+                                              (symbol-name split-type) "-"))))) ()
+           (interactive)
+           (funcall #',split-type)
+           (call-interactively #',fn))))
+
+    (define-key embark-file-map     (kbd "2") (my/embark-split-action find-file split-window-below))
+    (define-key embark-buffer-map   (kbd "2") (my/embark-split-action switch-to-buffer split-window-below))
+    (define-key embark-bookmark-map (kbd "2") (my/embark-split-action bookmark-jump split-window-below))
+
+    (define-key embark-file-map     (kbd "3") (my/embark-split-action find-file split-window-right))
+    (define-key embark-buffer-map   (kbd "3") (my/embark-split-action switch-to-buffer split-window-right))
+    (define-key embark-bookmark-map (kbd "3") (my/embark-split-action bookmark-jump split-window-right)))
 
   ;; Consult users will also want the embark-consult package.
   (use-package embark-consult
@@ -813,7 +834,7 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 
 ** JSON
 #+begin_src emacs-lisp
-  (use-package json-mode
+  (use-package json-mode  
     :config
     (add-to-list 'auto-mode-alist '("\\.json" . json-mode)))
 #+end_src
