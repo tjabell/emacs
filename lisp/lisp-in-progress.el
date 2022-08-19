@@ -115,20 +115,6 @@
     (while (re-search-forward regex nil t)
       (replace-match replacement))))
 
-(defun my-esa:vtl-copy-to-local ()
-  (let* ((dest-suffix (substring
-                       (buffer-file-name)
-                       (length "/home/trevor/projects/extended_stay/src/frontend/src/"))))
-    (message "copying %s %s"  buffer-file-name (concat "/mnt/local-dav/***REMOVED***/application/" dest-suffix))))
-
-(defun my-esa:vtl-copy-to-dev ()
-  (let* ((dest-suffix (substring
-                       (buffer-file-name)
-                       (length "/home/trevor/projects/extended_stay/src/frontend/src/"))))
-    (message "copying: %s %s" buffer-file-name (concat "/mnt/dev-dav/***REMOVED***/application/" dest-suffix))
-    (copy-file buffer-file-name (concat "/mnt/dev-dav/***REMOVED***/application/" dest-suffix) t)))
-
-
 ;;; Run in Vterm 
 (defun my:insert-shrug ()
   (interactive)
