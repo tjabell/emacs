@@ -894,10 +894,10 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
   (use-package eglot
     :config
     (add-to-list 'eglot-server-programs
-                 `(csharp-tree-sitter-mode . ("/usr/bin/omnisharp" "-stdio" "-lsp"))))
+                 `(csharp-tree-sitter-mode . ("/usr/bin/omnisharp" "-lsp"))))
 
   (add-to-list 'eglot-server-programs
-                 `(csharp-tree-sitter-mode . ("/usr/bin/omnisharp" "-stdio" "-lsp")))
+               `(csharp-tree-sitter-mode . ("/usr/bin/omnisharp" "-lsp")))
   (use-package flymake)
 
   (use-package treemacs
@@ -918,7 +918,7 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 #+begin_src emacs-lisp
   (use-package csharp-mode
     :config
-    (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-mode)))
+    (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode)))
 #+end_src
 
 #+RESULTS:
