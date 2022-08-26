@@ -846,6 +846,10 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 
 * IDE/Development
 
+** Editorconfig
+#+begin_src emacs-lisp
+  (use-package editorconfig)
+#+end_src
 ** JSON
 #+begin_src emacs-lisp
   (use-package json-mode  
