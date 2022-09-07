@@ -852,7 +852,7 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 #+end_src
 ** JSON
 #+begin_src emacs-lisp
-  (use-package json-mode  
+  (use-package json-mode
     :config
     (add-to-list 'auto-mode-alist '("\\.json" . json-mode)))
 #+end_src
@@ -865,48 +865,61 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 
 ** Tree sitter (experimental)
 #+begin_src emacs-lisp
-  (use-package tree-sitter)
+  (use-package tree-sitter
+    :config
+    (global-tree-sitter-mode)
+    (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+
   (use-package tree-sitter-langs)
   (use-package tree-sitter-indent)
 #+end_src
 
-** LSP
+** LSP/Eglot
 #+begin_src emacs-lisp
-  (setq my:csharp-lsp-server "/usr/bin/omnisharp")
+   ;;(setq my:csharp-lsp-server "/usr/bin/omnisharp")
 
-  ;;; LSP
-  ;; (use-package lsp-mode
-  ;;   :hook (
-  ;;          (csharp-tree-sitter-mode . lsp-deferred)
-  ;;          (java-mode . lsp-deferred)
-  ;;          )
-  ;;   :init
-  ;;   (setq lsp-keymap-prefix "C-c l")
-  ;;   :commands lsp lsp-deferred
-  ;;   :custom (lsp-csharp-server-path my:csharp-lsp-server))
+   ;;; LSP
+   ;; (use-package lsp-mode
+   ;;   :hook (
+   ;;          (csharp-tree-sitter-mode . lsp-deferred)
+   ;;          (java-mode . lsp-deferred)
+   ;;          )
+   ;;   :init
+   ;;   (setq lsp-keymap-prefix "C-c l")
+   ;;   :commands lsp lsp-deferred
+   ;;   :custom (lsp-csharp-server-path my:csharp-lsp-server))
 
-  ;; (use-package lsp-ui
-  ;;   :after (lsp-mode)
-  ;;   :hook (lsp-mode . lsp-ui-mode)
-  ;;   :custom
-  ;;   (lsp-ui-doc-position 'bottom))
+   ;; (use-package lsp-ui
+   ;;   :after (lsp-mode)
+   ;;   :hook (lsp-mode . lsp-ui-mode)
+   ;;   :custom
+   ;;   (lsp-ui-doc-position 'bottom))
 
-  (use-package eglot
-    :config
-    (add-to-list 'eglot-server-programs
-                 `(csharp-tree-sitter-mode . ("/usr/bin/omnisharp" "-lsp"))))
+   (use-package eglot
+     :config
+     (add-to-list 'eglot-server-programs
+                  `(csharp-tree-sitter-mode . ("/usr/bin/omnisharp" "-lsp"))))
 
-  (add-to-list 'eglot-server-programs
-               `(csharp-tree-sitter-mode . ("/usr/bin/omnisharp" "-lsp")))
-  (use-package flymake)
+   (add-to-list 'eglot-server-programs
+                `(csharp-tree-sitter-mode . ("/usr/bin/omnisharp" "-lsp")))
 
-  (use-package treemacs
-    :bind ("<f8>" . treemacs))
+  (setcdr
+   (assoc '(js-mode typescript-mode) eglot-server-programs)
+   '("typescript-language-server"
+     "--stdio"
+     "--tsserver-path"
+     "~/.nvm/versions/node/v16.16.0/lib/node_modules/typescript/lib/"))
 
-  ;; (use-package lsp-treemacs
-  ;;   :after lsp)
+   (use-package flymake)
 
-  (use-package treemacs-projectile)
+   (use-package treemacs
+     :bind ("<f8>" . treemacs))
+
+   ;; (use-package lsp-treemacs
+   ;;   :after lsp)
+
+   (use-package treemacs-projectile)
+
 #+end_src
 
 #+RESULTS:
@@ -935,8 +948,8 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 *** LSP Java
 
 #+begin_src emacs-lisp
-  (use-package lsp-java
-    :hook (java-mode . lsp-deferred))
+  ;; (use-package lsp-java
+  ;;   :hook (java-mode . lsp-deferred))
 #+end_src
 
 ** Flymake
@@ -957,21 +970,21 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 ** DAP Mode
 
 #+begin_src emacs-lisp
+  ;; (use-package dap-java
+  ;;   :straight nil)
 
-    (use-package dap-mode
-      :after (lsp-mode)
-      :functions dap-hydra/nil
-      :config
-      (require 'dap-java)
-      :bind (:map lsp-mode-map
-             ("<f5>" . dap-debug)
-             ("M-<f5>" . dap-hydra))
-      :hook ((dap-mode . dap-ui-mode)
-        (dap-session-created . (lambda (&_rest) (dap-hydra)))
-        (dap-terminated . (lambda (&_rest) (dap-hydra/nil)))))
+  (use-package dap-mode
+    :after (lsp-mode)
+    :functions dap-hydra/nil
+    ;; :config
+    ;; (require 'dap-java)
+    :bind (:map lsp-mode-map
+           ("<f5>" . dap-debug)
+           ("M-<f5>" . dap-hydra))
+    :hook ((dap-mode . dap-ui-mode)
+      (dap-session-created . (lambda (&_rest) (dap-hydra)))
+      (dap-terminated . (lambda (&_rest) (dap-hydra/nil)))))
 
-    (use-package dap-java
-      :straight nil)
 #+end_src
 
 DAP netcoredbg
@@ -982,6 +995,7 @@ DAP netcoredbg
   ;;   (dap--put-if-absent conf :process-id? (read-string "Process ID:"))
   ;;   (dap--put-if-absent conf :dap-server-path (list (dap-netcore--debugger-locate) "--interpreter=vscode" "--engineLogging=c:/log.dbg")))
 
+  (require 'dap-mode)
   (defun dap-netcore--populate-attach-args (conf)
     "Populate CONF with the attach arguments."
     (dap--put-if-absent conf :processId (string-to-number (read-string "Enter PID: " "2345")))
@@ -1050,9 +1064,6 @@ Using apache velocity template langage for ESA
 #+begin_src emacs-lisp
   (use-package typescript-mode
     :mode "\\.ts\\'"
-    :hook
-    (typescript-mode . lsp-deferred)
-    (typescript-mode . (lambda () (remhash 'angular-ls lsp-clients)))
     :custom ((typescript-indent-level 4)))
 #+end_src
 ** Javascript
