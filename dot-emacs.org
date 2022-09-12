@@ -426,6 +426,7 @@ Org ellipsis has been bugging out tangle a little bit.
 #+RESULTS:
 : ((conf-unix . conf-unix) (redis . redis) (php . php) (arduino . arduino) (conf-unix . conf-unix) (C . c) (C++ . c++) (asymptote . asy) (bash . sh) (beamer . latex) (calc . fundamental) (cpp . c++) (ditaa . artist) (dot . fundamental) (elisp . emacs-lisp) (ocaml . tuareg) (screen . shell-script) (shell . sh) (sqlite . sql))
 
+
 * Completing Read Configuration: Vertico|Savehist|Marginalia|Consult|Orderless|Embark|Etc...
 ** Vertico
 #+begin_src emacs-lisp
@@ -879,49 +880,51 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 
 ** LSP/Eglot
 #+begin_src emacs-lisp
-   ;;(setq my:csharp-lsp-server "/usr/bin/omnisharp")
+     ;;(setq my:csharp-lsp-server "/usr/bin/omnisharp")
 
-   ;;; LSP
-   ;; (use-package lsp-mode
-   ;;   :hook (
-   ;;          (csharp-tree-sitter-mode . lsp-deferred)
-   ;;          (java-mode . lsp-deferred)
-   ;;          )
-   ;;   :init
-   ;;   (setq lsp-keymap-prefix "C-c l")
-   ;;   :commands lsp lsp-deferred
-   ;;   :custom (lsp-csharp-server-path my:csharp-lsp-server))
+     ;;; LSP
+     ;; (use-package lsp-mode
+     ;;   :hook (
+     ;;          (csharp-tree-sitter-mode . lsp-deferred)
+     ;;          (java-mode . lsp-deferred)
+     ;;          )
+     ;;   :init
+     ;;   (setq lsp-keymap-prefix "C-c l")
+     ;;   :commands lsp lsp-deferred
+     ;;   :custom (lsp-csharp-server-path my:csharp-lsp-server))
 
-   ;; (use-package lsp-ui
-   ;;   :after (lsp-mode)
-   ;;   :hook (lsp-mode . lsp-ui-mode)
-   ;;   :custom
-   ;;   (lsp-ui-doc-position 'bottom))
+     ;; (use-package lsp-ui
+     ;;   :after (lsp-mode)
+     ;;   :hook (lsp-mode . lsp-ui-mode)
+     ;;   :custom
+     ;;   (lsp-ui-doc-position 'bottom))
 
-   (use-package eglot
-     :config
+     (use-package eglot
+       :config
+       (add-to-list 'eglot-server-programs
+                    `(csharp-tree-sitter-mode . ("/usr/bin/omnisharp" "-lsp"))))
+
      (add-to-list 'eglot-server-programs
-                  `(csharp-tree-sitter-mode . ("/usr/bin/omnisharp" "-lsp"))))
+                  `(csharp-tree-sitter-mode . ("/usr/bin/omnisharp" "-lsp")))
 
-   (add-to-list 'eglot-server-programs
-                `(csharp-tree-sitter-mode . ("/usr/bin/omnisharp" "-lsp")))
+    (setcdr
+     (assoc '(js-mode typescript-mode) eglot-server-programs)
+     '("typescript-language-server"
+       "--stdio"
+       "--tsserver-path"
+       "/usr/lib/node_modules/typescript/lib/"
+       ;"~/.nvm/versions/node/v16.16.0/lib/node_modules/typescript/lib/"
+       ))
 
-  (setcdr
-   (assoc '(js-mode typescript-mode) eglot-server-programs)
-   '("typescript-language-server"
-     "--stdio"
-     "--tsserver-path"
-     "~/.nvm/versions/node/v16.16.0/lib/node_modules/typescript/lib/"))
+     (use-package flymake)
 
-   (use-package flymake)
+     (use-package treemacs
+       :bind ("<f8>" . treemacs))
 
-   (use-package treemacs
-     :bind ("<f8>" . treemacs))
+     ;; (use-package lsp-treemacs
+     ;;   :after lsp)
 
-   ;; (use-package lsp-treemacs
-   ;;   :after lsp)
-
-   (use-package treemacs-projectile)
+     (use-package treemacs-projectile)
 
 #+end_src
 
