@@ -289,8 +289,7 @@ same directory as the org-buffer and insert a link to this file."
 
 ;;;###autoload
 (defun tja-ocr-screenshot ()
-  "Take a screenshot into a time stamped unique-named file in the
-same directory as the org-buffer and insert a link to this file."
+  "Read a screenshot from the wl-paste clipboard and ocr the text into the current buffer at point"
   (interactive)
   (setq filename
         (concat
