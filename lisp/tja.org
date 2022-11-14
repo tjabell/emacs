@@ -152,6 +152,14 @@ Installing, creating these
       (vterm-send-return)
       (vterm-send-string "./local_startup.sh")
       (vterm-send-return)))
+  ;;;###autoload
+  (defun tja-vterm-run-fbp-test ()
+    (interactive)
+    (with-current-buffer (vterm (concat "*vterm* *FBP Tests*"))
+      (vterm-send-string "cd /home/trevor/projects/goddard/src/FranchiseePortal-Website/")
+      (vterm-send-return)
+      (vterm-send-string "npm run test")
+      (vterm-send-return)))
 
   ;;;###autoload
   (defun tja-vterm-log-franchiseportal-api ()
@@ -428,7 +436,7 @@ Installing, creating these
         (replace-match replacement))))
 
 
-  ;;; Run in Vterm 
+  ;;; Run in Vterm
   (defun my:insert-shrug ()
     (interactive)
     (insert "¯\_(ツ)_/¯"))
