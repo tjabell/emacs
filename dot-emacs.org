@@ -902,12 +902,16 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
   ;;   (lsp-ui-doc-position 'bottom))
 
   (use-package eglot
+    :straight nil
     :config
     (add-to-list 'eglot-server-programs
                  `(csharp-tree-sitter-mode . ("/usr/bin/omnisharp" "-lsp")))
 
     (defclass eglot-sqls (eglot-lsp-server) () :documentation "SQL's Language Server")
-    (add-to-list 'eglot-server-programs '(sql-mode . (eglot-sqls "sqls")))
+
+    (add-to-list 'eglot-server-programs '(sql-mode . (eglot-sqls "/home/trevor/go/sqls/sqls" "--config" "~/.config/sqls/config.yml")))
+
+
     (cl-defmethod eglot-execute-command
       ((server eglot-sqls) (_cmd (eql switchDatabase)) arguments)
       "For switchDatabase."
@@ -917,7 +921,7 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
              (menu `("Eglot code actions:" ("dummy" ,@menu-items)))
              (db (if (listp last-nonmenu-event)
                      (x-popup-menu last-nonmenu-event menu)
-                   (completing-read "[eglot] Pick an database: "
+                   (completing-read "[eglot] Pick a database: "
                                     menu-items nil t
                                     nil nil (car menu-items))
                    ))
@@ -964,7 +968,9 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
              )
         (jsonrpc-request server :workspace/executeCommand
                          `(:command "switchDatabase" :arguments [,db] :timeout 0.5))
-        )))
+        ))
+    :custom
+    (eglot-confirm-server-initiated-edits nil))
 
   (add-to-list 'eglot-server-programs
                `(csharp-tree-sitter-mode . ("/usr/bin/omnisharp" "-lsp")))
