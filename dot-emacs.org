@@ -576,7 +576,7 @@ https://github.com/minad/marginalia#disabling-annotators-builtin-or-lightweight-
        :preview-key '(:debounce 0.2 any)
        consult-ripgrep consult-git-grep consult-grep
        consult-bookmark consult-recent-file consult-xref
-       consult--source-file consult--source-project-file consult--source-bookmark
+       consult--source-recent-file consult--source-project-recent-file consult--source-bookmark
        :preview-key (kbd "M-."))
       (autoload 'projectile-project-root "projectile")
       (setq consult-project-root-function #'projectile-project-root)
@@ -757,12 +757,12 @@ https://github.com/justbur/emacs-which-key
      (use-package consult-projectile
        :straight (consult-projectile :type git :host gitlab :repo "OlMon/consult-projectile" :branch "master"))
 
-     ;; we need this wrapper to match Projectile's API
-     (defun projectile-project-current (dir)
-       "Retrieve the root directory of the project at DIR using `project-current'."
-       (cdr (project-current nil dir)))
+     ;; ;; we need this wrapper to match Projectile's API
+     ;; (defun projectile-project-current (dir)
+     ;;   "Retrieve the root directory of the project at DIR using `project-current'."
+     ;;   (cdr (project-current nil dir)))
 
-     (setq projectile-project-root-functions '(projectile-project-current))
+     ;; (setq projectile-project-root-functions '(projectile-project-current))
 
      (projectile-mode)
    #+end_src
