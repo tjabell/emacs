@@ -99,6 +99,7 @@ otherwide ⤵ would get converted to bytes when opening this file
 : t
 
 ** Font
+
 #+begin_src emacs-lisp
 ;; Set the fixed pitch face
 (set-face-attribute 'fixed-pitch nil
@@ -107,11 +108,11 @@ otherwide ⤵ would get converted to bytes when opening this file
 
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil
-                    ;; :font "Cantarell"
-                    :font "Iosevka Aile"
+                    ;;:font "Cantarell"
+                    :font "DejaVu Sans"
+                    ;;:font "Iosevka Aile"
                     :weight 'light)
-#+end_srch
-
+#+end_src
 ** Backup settings
 
 Creates a .saves directory and puts backup files in there.
@@ -358,6 +359,8 @@ Org ellipsis has been bugging out tangle a little bit.
     (org-superstar-remove-leading-stars t)
     (org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●")))
 
+  (setq-default line-spacing 2)
+
   ;; Async shell execution
   (use-package ob-async)
 
@@ -425,7 +428,6 @@ Org ellipsis has been bugging out tangle a little bit.
 
 #+RESULTS:
 : ((conf-unix . conf-unix) (redis . redis) (php . php) (arduino . arduino) (conf-unix . conf-unix) (C . c) (C++ . c++) (asymptote . asy) (bash . sh) (beamer . latex) (calc . fundamental) (cpp . c++) (ditaa . artist) (dot . fundamental) (elisp . emacs-lisp) (ocaml . tuareg) (screen . shell-script) (shell . sh) (sqlite . sql))
-
 
 * Completing Read Configuration: Vertico|Savehist|Marginalia|Consult|Orderless|Embark|Etc...
 ** Vertico
@@ -1295,16 +1297,15 @@ Configures org roam, dailies, tags, capture templates
 ** Add gutters to org mode
 
 #+begin_src emacs-lisp
+      ;; Seems to mess up org superstar
+      (defun tja-org-mode-visual-fill ()
+        (setq visual-fill-column-width 150
+              visual-fill-column-center-text t)
+        (visual-fill-column-mode t))
 
-  ;; Seems to mess up org superstar
-  (defun tja-org-mode-visual-fill ()
-    (setq visual-fill-column-width 150
-	  visual-fill-column-center-text t)
-    (visual-fill-column-mode 1))
-
-  (use-package visual-fill-column :defer t)
-
-
+      (use-package visual-fill-column
+        :defer t
+        :hook (org-mode . tja-org-mode-visual-fill))
 #+end_src
 
 ** Org Transclusion
