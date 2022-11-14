@@ -301,7 +301,7 @@ Installing, creating these
 
 ** org screenshot
 #+begin_src emacs-lisp
-  (defun tja-org-screenshot ()
+  (defun tja-org-insert-image-from-wayland-clipboard ()
     "Take a screenshot into a time stamped unique-named file in the
   same directory as the org-buffer and insert a link to this file."
     (interactive)

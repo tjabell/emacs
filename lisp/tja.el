@@ -271,7 +271,7 @@ definition and running `eval-defun`."
 
 (provide 'tja-misc)
 
-(defun tja-org-screenshot ()
+(defun tja-org-insert-image-from-wayland-clipboard ()
   "Take a screenshot into a time stamped unique-named file in the
 same directory as the org-buffer and insert a link to this file."
   (interactive)
