@@ -89,15 +89,15 @@ Installing, creating these
 #+begin_src emacs-lisp
   (require 'vterm)
 
-    ;;; https://www.reddit.com/r/emacs/comments/ft84xy/run_shell_command_in_new_vterm/
-    ;;; I really don't get what this is doing 20211029TJA
+  ;;; https://www.reddit.com/r/emacs/comments/ft84xy/run_shell_command_in_new_vterm/
+  ;;; I really don't get what this is doing 20211029TJA
   (defun tja-vterm-run-in-vterm-kill (process event)
     "A process sentinel. Kills PROCESS's buffer if it is live."
     (let ((b (process-buffer process)))
       (and (buffer-live-p b)
            (kill-buffer b))))
 
-    ;;;###autoload
+  ;;;###autoload
   (defun tja-vterm-run-in-vterm (command)
     "Execute string COMMAND in a new vterm.
 
@@ -127,7 +127,7 @@ Installing, creating these
       (vterm-send-string command)
       (vterm-send-return)))
 
-    ;;;###autoload
+  ;;;###autoload
   (defun tja-vterm-run-fbp-api ()
     (interactive)
     (with-current-buffer (vterm (concat "*vterm* *FBP API*"))
@@ -135,7 +135,7 @@ Installing, creating these
       (vterm-send-return)
       (vterm-send-string "./local_startup.sh")
       (vterm-send-return)))
-
+  ;;;###autoload
   (defun tja-vterm-run-faculty-api ()
     (interactive)
     (with-current-buffer (vterm (concat "*vterm* *FACULTY API*"))
@@ -144,7 +144,7 @@ Installing, creating these
       (vterm-send-string "./local-startup.sh")
       (vterm-send-return)))
 
-    ;;;###autoload
+  ;;;###autoload
   (defun tja-vterm-run-fbp-web ()
     (interactive)
     (with-current-buffer (vterm (concat "*vterm* *FBP WEB*"))
@@ -162,7 +162,7 @@ Installing, creating these
       (vterm-send-string "az webapp log tail --name ipaas-franchiseeportal-dev-useast-api --resource-group ipaas-dev-useast-rsg")
       (vterm-send-return)))
 
-    ;;;###autoload
+  ;;;###autoload
   (defun tja-vterm-az-webapp-log (api-name environment)
     (interactive
      (list
@@ -208,7 +208,7 @@ Installing, creating these
     (interactive)
     (tja--log-aem-dev "qa" "publish" "aemerror"))
 
-    ;;;###autoload
+  ;;;###autoload
   (defun tja-vterm-esa-run-dotcms ()
     (interactive)
     (with-current-buffer (vterm (concat "*vterm* *DOTCMS*"))
@@ -217,7 +217,7 @@ Installing, creating these
       (vterm-send-string "./local-startup.sh")
       (vterm-send-return)))
 
-    ;;;###autoload
+  ;;;###autoload
   (defun tja-vterm-esa-run-esa-dotcms-node ()
     (interactive)
     (with-current-buffer (vterm (concat "*vterm* *DOTCMS - Frontend*"))
