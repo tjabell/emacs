@@ -731,6 +731,16 @@ embark-become: switches the command but keeps input
 ** Consult-dir
 TBD
 
+* Compilation
+#+begin_src emacs-lisp
+  (require 'ansi-color)
+  (defun colorize-compilation-buffer ()
+    (read-only-mode)
+    (ansi-color-apply-on-region compilation-filter-start (point))
+    (read-only-mode))
+  (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+#+end_src
+
 * Which Key
 https://github.com/justbur/emacs-which-key
 #+begin_src emacs-lisp
@@ -856,6 +866,7 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 #+begin_src emacs-lisp
   (use-package editorconfig)
 #+end_src
+
 ** JSON
 #+begin_src emacs-lisp
   (use-package json-mode
@@ -1012,9 +1023,16 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 | lsp-deferred |
 
 #+begin_src emacs-lisp
-  (use-package dotnet
-    :hook (csharp-tree-sitter-mode . dotnet-mode)
-    (csharp-mode . dotnet-mode))
+  ;; (use-package dotnet
+  ;;   :hook (csharp-tree-sitter-mode . dotnet-mode)
+  ;;   (csharp-mode . dotnet-mode))
+#+end_src
+
+Trying Sharper
+#+begin_src emacs-lisp
+  (use-package sharper
+    :bind
+    ("C-c n s" . sharper-main-transient))
 #+end_src
 
 ** Java
@@ -1140,6 +1158,7 @@ Using apache velocity template langage for ESA
     :mode "\\.ts\\'"
     :custom ((typescript-indent-level 4)))
 #+end_src
+
 ** Javascript
 
 #+begin_src emacs-lisp

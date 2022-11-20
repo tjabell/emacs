@@ -71,15 +71,15 @@
 
 (require 'vterm)
 
-  ;;; https://www.reddit.com/r/emacs/comments/ft84xy/run_shell_command_in_new_vterm/
-  ;;; I really don't get what this is doing 20211029TJA
+;;; https://www.reddit.com/r/emacs/comments/ft84xy/run_shell_command_in_new_vterm/
+;;; I really don't get what this is doing 20211029TJA
 (defun tja-vterm-run-in-vterm-kill (process event)
   "A process sentinel. Kills PROCESS's buffer if it is live."
   (let ((b (process-buffer process)))
     (and (buffer-live-p b)
          (kill-buffer b))))
 
-  ;;;###autoload
+;;;###autoload
 (defun tja-vterm-run-in-vterm (command)
   "Execute string COMMAND in a new vterm.
 
@@ -109,7 +109,7 @@
     (vterm-send-string command)
     (vterm-send-return)))
 
-  ;;;###autoload
+;;;###autoload
 (defun tja-vterm-run-fbp-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FBP API*"))
@@ -117,7 +117,7 @@
     (vterm-send-return)
     (vterm-send-string "./local_startup.sh")
     (vterm-send-return)))
-
+;;;###autoload
 (defun tja-vterm-run-faculty-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FACULTY API*"))
@@ -126,7 +126,7 @@
     (vterm-send-string "./local-startup.sh")
     (vterm-send-return)))
 
-  ;;;###autoload
+;;;###autoload
 (defun tja-vterm-run-fbp-web ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FBP WEB*"))
@@ -134,8 +134,16 @@
     (vterm-send-return)
     (vterm-send-string "./local_startup.sh")
     (vterm-send-return)))
+;;;###autoload
+(defun tja-vterm-run-fbp-test ()
+  (interactive)
+  (with-current-buffer (vterm (concat "*vterm* *FBP Tests*"))
+    (vterm-send-string "cd /home/trevor/projects/goddard/src/FranchiseePortal-Website/")
+    (vterm-send-return)
+    (vterm-send-string "npm run test")
+    (vterm-send-return)))
 
-  ;;;###autoload
+;;;###autoload
 (defun tja-vterm-log-franchiseportal-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FBP WEB*"))
@@ -144,7 +152,7 @@
     (vterm-send-string "az webapp log tail --name ipaas-franchiseeportal-dev-useast-api --resource-group ipaas-dev-useast-rsg")
     (vterm-send-return)))
 
-  ;;;###autoload
+;;;###autoload
 (defun tja-vterm-az-webapp-log (api-name environment)
   (interactive
    (list
@@ -163,52 +171,52 @@
 
 ;;;###autoload
 (defun tja--log-aem (env instance log)
-(let ((number (if (string-equal env "qa") "85656" "77402")))
-  (with-current-buffer (vterm (concat "*vterm* *AEM LOG: " env "-"instance " ERROR *"))
-    (vterm-send-string "cd /home/trevor/")
+  (let ((number (if (string-equal env "qa") "85656" "77402")))
+    (with-current-buffer (vterm (concat "*vterm* *AEM LOG: " env "-"instance " ERROR *"))
+      (vterm-send-string "cd /home/trevor/")
+      (vterm-send-return)
+      (vterm-send-string (concat  "aio cloudmanager:tail-logs " number " " instance " " log))
+      (vterm-send-return))))
+
+;;;###autoload
+(defun tja-vterm-log-aem-author-dev-error ()
+  (interactive)
+  (tja--log-aem "dev" "author" "aemerror"))
+
+;;;###autoload
+(defun tja-vterm-log-aem-publish-dev-error ()
+  (interactive)
+  (tja--log-aem "dev" "publish" "aemerror"))
+
+;;;###autoload
+(defun tja-vterm-log-aem-author-qa-error ()
+  (interactive)
+  (tja--log-aem "qa" "author" "aemerror"))
+
+;;;###autoload
+(defun tja-vterm-log-aem-publish-qa-error ()
+  (interactive)
+  (tja--log-aem-dev "qa" "publish" "aemerror"))
+
+;;;###autoload
+(defun tja-vterm-esa-run-dotcms ()
+  (interactive)
+  (with-current-buffer (vterm (concat "*vterm* *DOTCMS*"))
+    (vterm-send-string "cd /home/trevor/projects/extended_stay/src/frontend/")
     (vterm-send-return)
-    (vterm-send-string (concat  "aio cloudmanager:tail-logs " number " " instance " " log))
-    (vterm-send-return))))
+    (vterm-send-string "./local-startup.sh")
+    (vterm-send-return)))
 
 ;;;###autoload
-  (defun tja-vterm-log-aem-author-dev-error ()
-    (interactive)
-    (tja--log-aem "dev" "author" "aemerror"))
+(defun tja-vterm-esa-run-esa-dotcms-node ()
+  (interactive)
+  (with-current-buffer (vterm (concat "*vterm* *DOTCMS - Frontend*"))
+    (vterm-send-string "cd /home/trevor/projects/extended_stay/src/frontend/")
+    (vterm-send-return)
+    (vterm-send-string "npm start")
+    (vterm-send-return)))
 
-;;;###autoload
-  (defun tja-vterm-log-aem-publish-dev-error ()
-    (interactive)
-    (tja--log-aem "dev" "publish" "aemerror"))
-
-;;;###autoload
-  (defun tja-vterm-log-aem-author-qa-error ()
-    (interactive)
-    (tja--log-aem "qa" "author" "aemerror"))
-
-;;;###autoload
-  (defun tja-vterm-log-aem-publish-qa-error ()
-    (interactive)
-    (tja--log-aem-dev "qa" "publish" "aemerror"))
-
-  ;;;###autoload
-  (defun tja-vterm-esa-run-dotcms ()
-    (interactive)
-    (with-current-buffer (vterm (concat "*vterm* *DOTCMS*"))
-      (vterm-send-string "cd /home/trevor/projects/extended_stay/src/frontend/")
-      (vterm-send-return)
-      (vterm-send-string "./local-startup.sh")
-      (vterm-send-return)))
-
-  ;;;###autoload
-  (defun tja-vterm-esa-run-esa-dotcms-node ()
-    (interactive)
-    (with-current-buffer (vterm (concat "*vterm* *DOTCMS - Frontend*"))
-      (vterm-send-string "cd /home/trevor/projects/extended_stay/src/frontend/")
-      (vterm-send-return)
-      (vterm-send-string "npm start")
-      (vterm-send-return)))
-
-  (provide 'tja-vterm)
+(provide 'tja-vterm)
 
 ;;;###autoload
 (defun insert-current-date ()
@@ -289,7 +297,8 @@ same directory as the org-buffer and insert a link to this file."
 
 ;;;###autoload
 (defun tja-ocr-screenshot ()
-  "Read a screenshot from the wl-paste clipboard and ocr the text into the current buffer at point"
+  "Take a screenshot into a time stamped unique-named file in the
+same directory as the org-buffer and insert a link to this file."
   (interactive)
   (setq filename
         (concat
@@ -377,7 +386,7 @@ same directory as the org-buffer and insert a link to this file."
       (replace-match replacement))))
 
 
-;;; Run in Vterm 
+;;; Run in Vterm
 (defun my:insert-shrug ()
   (interactive)
   (insert "¯\_(ツ)_/¯"))
