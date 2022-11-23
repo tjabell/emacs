@@ -411,7 +411,8 @@ Org ellipsis has been bugging out tangle a little bit.
 
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((ruby . t)
+   '((lisp . t)
+     (ruby . t)
      (emacs-lisp . t)
      (python . t)
      (perl . t)
@@ -1185,6 +1186,23 @@ Using apache velocity template langage for ESA
   (use-package bazel)
 #+end_src
 
+** Kotlin
+
+#+begin_src emacs-lisp
+(use-package kotlin-mode)
+#+end_src
+
+** Common Lisp
+
+#+begin_src emacs-lisp
+(load (expand-file-name "~/quicklisp/slime-helper.el"))
+(setq inferior-lisp-program "sbcl")
+#+end_src
+
+Add init file as lisp file
+#+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.sbclrc$" . lisp-mode))
+#+end_src
 * TJA.el Add my Emacs lisp extensions
 [[file:lisp/tja.org::*Org file for my private extensions to emacs packages][TJA.org file]]
 #+begin_src emacs-lisp
