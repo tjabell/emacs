@@ -117,11 +117,30 @@
     (vterm-send-return)
     (vterm-send-string "./local_startup.sh")
     (vterm-send-return)))
+
 ;;;###autoload
 (defun tja-vterm-run-faculty-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FACULTY API*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-faculty-api/")
+    (vterm-send-return)
+    (vterm-send-string "./local-startup.sh")
+    (vterm-send-return)))
+
+;;;###autoload
+(defun tja-vterm-run-tours-api ()
+  (interactive)
+  (with-current-buffer (vterm (concat "*vterm* *TOURS API*"))
+    (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-tours-api/")
+    (vterm-send-return)
+    (vterm-send-string "./local-startup.sh")
+    (vterm-send-return)))
+
+;;;###autoload
+(defun tja-vterm-run-content-api ()
+  (interactive)
+  (with-current-buffer (vterm (concat "*vterm* *CONTENT API*"))
+    (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-content-api/")
     (vterm-send-return)
     (vterm-send-string "./local-startup.sh")
     (vterm-send-return)))
@@ -204,7 +223,7 @@
   (with-current-buffer (vterm (concat "*vterm* *DOTCMS*"))
     (vterm-send-string "cd /home/trevor/projects/extended_stay/src/frontend/")
     (vterm-send-return)
-    (vterm-send-string "./local-startup.sh")
+    (vterm-send-string ". ./local-startup.sh")
     (vterm-send-return)))
 
 ;;;###autoload
@@ -266,6 +285,31 @@ definition and running `eval-defun`."
   (interactive)
   (json-mode)
   (json-pretty-print-buffer))
+
+;; https://stackoverflow.com/questions/39861580/emacs-program-to-collapse-json-to-single-line
+(defun json-to-single-line (beg end)
+  "Collapse prettified json in region between BEG and END to a single line"
+  (interactive "r")
+  (if (use-region-p)
+      (save-excursion
+        (save-restriction
+          (narrow-to-region beg end)
+          (goto-char (point-min))
+          (while (re-search-forward "\\s-+" nil t)
+            (replace-match " "))))
+    (print "This function operates on a region")))
+
+(defun json-escape-for-common-lisp (beg end)
+  "escapes json for use in a common lisp string"
+  (interactive "r")
+  (if (use-region-p)
+      (save-excursion
+        (save-restriction
+          (narrow-to-region beg end)
+          (goto-char (point-min))
+          (while (re-search-forward "\"" nil t)
+            (replace-match "\\\\\""))))
+    (print "This function operates on a region")))
 
 (defalias 'jm 'tja-json-mode-and-format-buffer)
 
@@ -337,6 +381,10 @@ same directory as the org-buffer and insert a link to this file."
                          (gethash "value" my-obj)
                          0))))))
 
+(defun point-in-comment ()
+(let ((syn (syntax-ppss)))
+  (and (nth 8 syn)
+       (not (nth 3 syn)))))
 (defun tja-sql-capitalize-all-sqlserver-keywords (min max)
   (interactive "r")
   (require 'sql)

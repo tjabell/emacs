@@ -118,6 +118,7 @@ otherwide ⤵ would get converted to bytes when opening this file
 Creates a .saves directory and puts backup files in there.
 
 Shuts off backup creation for remote files
+https://www.gnu.org/software/emacs/manual/html_node/tramp/Auto_002dsave-File-Lock-and-Backup.html
 #+begin_src emacs-lisp
     ;; Backup settings
     (setq
@@ -987,14 +988,14 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
   (add-to-list 'eglot-server-programs
                `(csharp-tree-sitter-mode . ("/usr/bin/omnisharp" "-lsp")))
 
-  (setcdr
-   (assoc '(js-mode typescript-mode) eglot-server-programs)
-   '("typescript-language-server"
-     "--stdio"
-     "--tsserver-path"
-     "/usr/lib/node_modules/typescript/lib/"
-                                          ;"~/.nvm/versions/node/v16.16.0/lib/node_modules/typescript/lib/"
-     ))
+  ;; (setcdr
+  ;;  (assoc '(js-mode typescript-mode) eglot-server-programs)
+  ;;  '("typescript-language-server"
+  ;;    "--stdio"
+  ;;    "--tsserver-path"
+  ;;    "/usr/lib/node_modules/typescript/lib/"
+  ;;                                         ;"~/.nvm/versions/node/v16.16.0/lib/node_modules/typescript/lib/"
+  ;;    ))
 
   (use-package flymake)
 
@@ -1015,9 +1016,9 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 *** Csharp/omnisharp/dotnet
 
 #+begin_src emacs-lisp
-  (use-package csharp-mode
-    :config
-    (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode)))
+  ;; (use-package csharp-mode
+  ;;   :config
+  ;;   (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode)))
 #+end_src
 
 #+RESULTS:
@@ -1192,17 +1193,21 @@ Using apache velocity template langage for ESA
 (use-package kotlin-mode)
 #+end_src
 
-** Common Lisp
+** Common Lisp/Slime setup
 
 #+begin_src emacs-lisp
-(load (expand-file-name "~/quicklisp/slime-helper.el"))
-(setq inferior-lisp-program "sbcl")
+  (load (expand-file-name "~/quicklisp/slime-helper.el"))
+  (setq inferior-lisp-program "sbcl")
+
+  ;; Slime contrip
+  (require 'slime-autoloads)
 #+end_src
 
 Add init file as lisp file
 #+begin_src emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.sbclrc$" . lisp-mode))
 #+end_src
+
 * TJA.el Add my Emacs lisp extensions
 [[file:lisp/tja.org::*Org file for my private extensions to emacs packages][TJA.org file]]
 #+begin_src emacs-lisp
@@ -1383,6 +1388,15 @@ Configures org roam, dailies, tags, capture templates
   (use-package string-inflection)
 #+end_src
 
+* EDiff
+This is trying to turn off opening ediff in a new frame since it does not work well with tiling wm's
+https://emacs.stackexchange.com/questions/17064/never-create-frame-in-ediff
+#+begin_src emacs-lisp
+  ;; Kind of works, control window ends up in the same frame, but in a wonky spot
+  (setq ediff-window-setup-function #'ediff-setup-windows-plain)
+
+  (defun ediff-window-display-p () nil)
+#+end_src
 * --------- Experimental FOR NOW ---------
 
 ** MCT mode
