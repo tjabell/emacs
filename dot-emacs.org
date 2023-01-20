@@ -808,6 +808,7 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 * Magit
 #+begin_src emacs-lisp
   (use-package magit
+    :straight (:host github :repo "magit/magit" :branch "main")
     :config
     (require 'magit-extras)
     :bind
@@ -820,13 +821,13 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 
 ** Forge
 #+begin_src emacs-lisp
-  (use-package forge
-    :after magit
-    :config (setcar forge-alist
-		    '("github.com"
-		      "api.github.com"
-		      "github.com"
-		      forge-github-repository)))
+  ;; (use-package forge
+  ;;   :after magit
+  ;;   :config (setcar forge-alist
+  ;; 		  '("github.com"
+  ;; 		    "api.github.com"
+  ;; 		    "github.com"
+  ;; 		    forge-github-repository)))
 #+end_src
 
 #+RESULTS:
@@ -1396,6 +1397,18 @@ https://emacs.stackexchange.com/questions/17064/never-create-frame-in-ediff
   (setq ediff-window-setup-function #'ediff-setup-windows-plain)
 
   (defun ediff-window-display-p () nil)
+#+end_src
+
+* HAM Mode (html and markdown)
+
+#+begin_src emacs-lisp
+  (use-package ham-mode)
+#+end_src
+
+* Winner Mode
+#+begin_src emacs-lisp
+  (use-package winner)
+  (winner-mode)
 #+end_src
 * --------- Experimental FOR NOW ---------
 
