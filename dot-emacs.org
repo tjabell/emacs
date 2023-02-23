@@ -829,13 +829,13 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 
 ** Forge
 #+begin_src emacs-lisp
-  ;; (use-package forge
-  ;;   :after magit
-  ;;   :config (setcar forge-alist
-  ;; 		  '("github.com"
-  ;; 		    "api.github.com"
-  ;; 		    "github.com"
-  ;; 		    forge-github-repository)))
+  (use-package forge
+    :after magit
+    :config (setcar forge-alist
+                    '("github.com"
+                      "api.github.com"
+                      "github.com"
+                      forge-github-repository)))
 #+end_src
 
 #+RESULTS:
