@@ -104,15 +104,17 @@ otherwide ⤵ would get converted to bytes when opening this file
 ;; Set the fixed pitch face
 (set-face-attribute 'fixed-pitch nil
                     :font "JetBrains Mono"
-                    :weight 'light)
-
-;; Set the variable pitch face
+                    :weight 'light
+                    :height 80)
+; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil
                     ;;:font "Cantarell"
                     :font "DejaVu Sans"
                     ;;:font "Iosevka Aile"
-                    :weight 'light)
+                    :weight 'light
+                    :height 80)
 #+end_src
+
 ** Backup settings
 
 Creates a .saves directory and puts backup files in there.
