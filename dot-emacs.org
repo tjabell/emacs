@@ -406,6 +406,13 @@ Org ellipsis has been bugging out tangle a little bit.
   (use-package ob-rust)
 #+end_src
 
+
+** Org babel graph ql (ob-graphql)
+https://github.com/jdormit/ob-graphql
+
+#+begin_src emacs-lisp
+(use-package ob-graphql)
+#+end_src
 ** Configure org babel languages
 #+begin_src emacs-lisp
   (require 'ob-js)
@@ -413,6 +420,7 @@ Org ellipsis has been bugging out tangle a little bit.
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((lisp . t)
+     (graphql . t)
      (ruby . t)
      (emacs-lisp . t)
      (python . t)
