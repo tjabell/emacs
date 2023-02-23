@@ -115,7 +115,7 @@
   (with-current-buffer (vterm (concat "*vterm* *FBP API*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/")
     (vterm-send-return)
-    (vterm-send-string "./local_startup.sh")
+    (vterm-send-string "./local-startup.sh")
     (vterm-send-return)))
 
 ;;;###autoload
@@ -232,7 +232,7 @@
   (with-current-buffer (vterm (concat "*vterm* *DOTCMS - Frontend*"))
     (vterm-send-string "cd /home/trevor/projects/extended_stay/src/frontend/")
     (vterm-send-return)
-    (vterm-send-string "npm start")
+    (vterm-send-string ". ./local-startup-node.sh")
     (vterm-send-return)))
 
 (provide 'tja-vterm)
@@ -396,6 +396,52 @@ same directory as the org-buffer and insert a link to this file."
           (goto-char (match-beginning 0))
           (upcase-word 1))))))
 
+(defun arrayify (start end quote)
+  "Turn strings on newlines into a QUOTEd, comma-separated one-liner."
+  (interactive "r\nMQuote: ")
+  (let ((insertion
+         (mapconcat
+          (lambda (x) (format "%s%s%s" quote x quote))
+          (split-string (buffer-substring start end)) ", ")))
+    (delete-region start end)
+    (insert insertion)))
+
+;;; js-beautify.el -- beautify some js code
+
+(defgroup js-beautify nil
+  "Use jsbeautify to beautify some js"
+  :group 'editing)
+
+(defcustom js-beautify-args "--keep-array-indentation"
+  "Arguments to pass to jsbeautify script"
+  :type '(string)
+  :group 'js-beautify)
+
+(defcustom js-beautify-path "/usr/bin/js-beautify"
+  "Path to jsbeautifier node file"
+  :type '(string)
+  :group 'js-beautify)
+
+(defun js-beautify ()
+  "Beautify a region of javascript using the code from jsbeautify.org"
+  (interactive)
+  (let ((orig-point (point))
+        (js-beautify-command (concat js-beautify-path
+                                     " "
+                                     js-beautify-args
+                                     " "
+                                     "-f -")))
+    (unless (mark)
+      (mark-defun))
+    (shell-command-on-region (point)
+                             (mark)
+                             js-beautify-command
+                             nil t)
+    (goto-char orig-point)))
+
+(provide 'js-beautify)
+;;; js-beautify.el ends here
+
 ;;; https://gist.github.com/kristianhellquist/3082383#gistcomment-2373734
 (defun tja-copy-current-line-position-to-clipboard ()
   "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
@@ -409,7 +455,7 @@ same directory as the org-buffer and insert a link to this file."
   "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
   (interactive)
   (let ((path-with-line-number
-         (concat (s-replace "/home/trevor/projects/extended_stay/src/frontend/" ""  (buffer-file-name)) ":" (number-to-string (line-number-at-pos)))))
+         (concat (s-replace (expand-file-name (vc-root-dir)) ""  (buffer-file-name)) ":" (number-to-string (line-number-at-pos)))))
     (kill-new path-with-line-number)
     (message (concat path-with-line-number " copied to clipboard"))))
 
