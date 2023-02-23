@@ -1009,7 +1009,12 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
   (use-package flymake)
 
   (use-package treemacs
-    :bind ("<f8>" . treemacs))
+    :bind (("<f8>" . treemacs)
+           :map treemacs-mode-map
+           ;; Bind single left click to open directory/file
+           ;; https://github.com/jwiegley/use-package#binding-within-local-keymaps
+           ;; https://github.com/Alexander-Miller/treemacs/issues/228
+           ([mouse-1] . #'treemacs-single-click-expand-action)))
 
   ;; (use-package lsp-treemacs
   ;;   :after lsp)
