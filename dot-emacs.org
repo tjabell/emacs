@@ -1423,6 +1423,17 @@ https://emacs.stackexchange.com/questions/17064/never-create-frame-in-ediff
   (use-package winner)
   (winner-mode)
 #+end_src
+
+* NXML
+
+#+begin_src emacs-lisp
+  (use-package nxml
+    :straight nil
+    :bind (;; Matching old ivy behavior
+           ("C-c f" . sgml-skip-tag-forward)
+           ;; Binding to allow inserting the current selection
+           ("C-c b" . sgml-skip-tag-backward)))
+#+end_src
 * --------- Experimental FOR NOW ---------
 
 ** MCT mode
