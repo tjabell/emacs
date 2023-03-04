@@ -444,6 +444,7 @@ https://github.com/jdormit/ob-graphql
 : ((conf-unix . conf-unix) (redis . redis) (php . php) (arduino . arduino) (conf-unix . conf-unix) (C . c) (C++ . c++) (asymptote . asy) (bash . sh) (beamer . latex) (calc . fundamental) (cpp . c++) (ditaa . artist) (dot . fundamental) (elisp . emacs-lisp) (ocaml . tuareg) (screen . shell-script) (shell . sh) (sqlite . sql))
 
 * Completing Read Configuration: Vertico|Savehist|Marginalia|Consult|Orderless|Embark|Etc...
+
 ** Vertico
 #+begin_src emacs-lisp
   (use-package vertico
@@ -847,7 +848,7 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 * Vterm | vterm-toggle
 #+begin_src emacs-lisp
   (use-package vterm
-    :init (setq vterm-max-scrollback 2000))
+    :init (setq vterm-max-scrollback 16000))
   (use-package vterm-toggle
     :bind
     ("<f12>" . vterm-toggle)
