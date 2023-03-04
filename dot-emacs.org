@@ -1438,6 +1438,19 @@ https://emacs.stackexchange.com/questions/17064/never-create-frame-in-ediff
            ;; Binding to allow inserting the current selection
            ("C-c b" . sgml-skip-tag-backward)))
 #+end_src
+
+
+* Beancount
+#+begin_src emacs-lisp
+  (use-package beancount
+    :straight '(beancount :host github :repo "beancount/beancount-mode")
+    :hook (outline-minor-mode)
+    :config
+    (add-to-list 'auto-mode-alist '("\\.beancount" . beancount-mode))
+    :bind (("C-c C-n" . #'outline-next-visible-heading)
+           ("C-c C-p" . #'outline-previous-visible-heading)))
+#+end_src
+
 * --------- Experimental FOR NOW ---------
 
 ** MCT mode
