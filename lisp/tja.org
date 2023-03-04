@@ -169,7 +169,7 @@ Installing, creating these
     (with-current-buffer (vterm (concat "*vterm* *FBP WEB*"))
       (vterm-send-string "cd /home/trevor/projects/goddard/src/FranchiseePortal-Website/")
       (vterm-send-return)
-      (vterm-send-string "./local_startup.sh")
+      (vterm-send-string ". ./local-startup.sh")
       (vterm-send-return)))
   ;;;###autoload
   (defun tja-vterm-run-fbp-test ()
