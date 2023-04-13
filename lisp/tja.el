@@ -243,6 +243,10 @@
   (insert (shell-command-to-string "echo -n $(date +%Y-%m-%d)")))
 (defalias 'icd 'insert-current-date)
 
+(defun insert-current-date2 ()
+  (interactive)
+  (insert (shell-command-to-string "echo -n $(date +%d-%b-%Y)")))
+(defalias 'icd2 'insert-current-date2)
 ;;;###autoload
 (defun insert-signature-for-code ()
   (interactive)

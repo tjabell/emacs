@@ -6,6 +6,8 @@
 
 * Native compilation
 #+begin_src emacs-lisp
+  ;; Fix for undefined var error (hopefully temporary 2023-03-06)
+  (defvar native-comp-deferred-compilation-deny-list nil)
   ;; Silence compiler warnings as they can be pretty disruptive
   (setq native-comp-async-report-warnings-errors nil)
 #+end_src
@@ -442,6 +444,14 @@ https://github.com/jdormit/ob-graphql
 
 #+RESULTS:
 : ((conf-unix . conf-unix) (redis . redis) (php . php) (arduino . arduino) (conf-unix . conf-unix) (C . c) (C++ . c++) (asymptote . asy) (bash . sh) (beamer . latex) (calc . fundamental) (cpp . c++) (ditaa . artist) (dot . fundamental) (elisp . emacs-lisp) (ocaml . tuareg) (screen . shell-script) (shell . sh) (sqlite . sql))
+
+* PHP
+
+#+begin_src emacs-lisp
+  (use-package php-mode
+    :config
+    (add-to-list 'auto-mode-alist '("\\.ctp" . php-mode)))
+#+end_src
 
 * Completing Read Configuration: Vertico|Savehist|Marginalia|Consult|Orderless|Embark|Etc...
 
@@ -1440,7 +1450,6 @@ https://emacs.stackexchange.com/questions/17064/never-create-frame-in-ediff
            ("C-c b" . sgml-skip-tag-backward)))
 #+end_src
 
-
 * Beancount
 #+begin_src emacs-lisp
   (use-package beancount
@@ -1452,9 +1461,94 @@ https://emacs.stackexchange.com/questions/17064/never-create-frame-in-ediff
            ("C-c C-p" . #'outline-previous-visible-heading)))
 #+end_src
 
-* --------- Experimental FOR NOW ---------
+* OAuth2
+#+begin_src emacs-lisp
+  (use-package oauth2)
 
-** MCT mode
+  ;; (setq oauth2-authentication-uri "<Authorization endpoint URL>"
+  ;;       oauth2-token-uri "<Token endpoint URL>"
+  ;;       oauth2-client-id "<Client ID>"
+  ;;       oauth2-client-secret "<Client Secret>")
+
+  (defun tja-azure-active-directory-auth ()
+    "Authenticate with Azure Active Directory and return an access token."
+    (oauth2-auth-and-store
+     "https://graph.windows.net"
+     "https://graph.windows.net/.default"
+     '("https://graph.windows.net/.default")))
+
+  (defun tja-azure-active-directory-get-token ()
+    "Get an Azure Active Directory OAuth token."
+    (oauth2-auth-and-store
+     "https://graph.windows.net"
+     "https://graph.windows.net/.default"
+     '("https://graph.windows.net/.default"))
+    (oauth2-get-token oauth2-auth-mode nil))
+#+end_src
+
+* Jira [Obsoleted 2023-04-13]
+** Jira package didn't work well 2023-04-13
+#+begin_src emacs-lisp
+  ;; (use-package xml-rpc)
+  ;; (use-package jira)
+#+end_src
+
+* EJira
+#+begin_src emacs-lisp
+      (use-package jiralib2
+        :init (setq jiralib2-auth            'basic             ;; 'cookie, 'token or 'basic
+                    ))
+
+  ;; Configuration loaded here
+  (load "~/.jira-secrets")
+#+end_src
+
+* To setup after playing with jiralib2
+#+begin_src emacs-lisp
+    ;; for token auth with JIRA Cloud
+      ;; (use-package ejira
+      ;;   :init
+      ;;   (setq jiralib2-url              "TODO"
+      ;;         jiralib2-auth             'basic
+      ;;         jiralib2-user-login-name  "TODO"
+      ;;         jiralib2-token            "TODO"
+      ;;         ;jiralib2-token            
+
+      ;;         ;; NOTE, this directory needs to be in `org-agenda-files'`
+      ;;         ejira-org-directory       "~/jira"
+      ;;         ejira-projects            '("ECOMM")
+
+      ;;         ejira-priorities-alist    '(("Highest" . ?A)
+      ;;                                     ("High"    . ?B)
+      ;;                                     ("Medium"  . ?C)
+      ;;                                     ("Low"     . ?D)
+      ;;                                     ("Lowest"  . ?E))
+      ;;         ejira-todo-states-alist   '(("To Do"       . 1)
+      ;;                                     ("In Progress" . 2)
+      ;;                                     ("Done"        . 3)))
+      ;;   :config
+      ;;   ;; Tries to auto-set custom fields by looking into /editmeta
+      ;;   ;; of an issue and an epic.
+      ;;   (add-hook 'jiralib2-post-login-hook #'ejira-guess-epic-sprint-fields)
+
+      ;;   ;; They can also be set manually if autoconfigure is not used.
+      ;;   ;; (setq ejira-sprint-field       'customfield_10001
+      ;;   ;;       ejira-epic-field         'customfield_10002
+      ;;   ;;       ejira-epic-summary-field 'customfield_10004)
+
+      ;;   (require 'ejira-agenda)
+
+      ;;   ;; Make the issues visisble in your agenda by adding `ejira-org-directory'
+      ;;   ;; into your `org-agenda-files'.
+      ;;   (add-to-list 'org-agenda-files ejira-org-directory)
+
+      ;;   ;; Add an agenda view to browse the issues that
+      ;;   (org-add-agenda-custom-command
+      ;;    '("j" "My JIRA issues"
+      ;;      ((ejira-jql "resolution = unresolved and assignee = currentUser()"
+      ;;                  ((org-agenda-overriding-header "Assigned to me")))))))
+#+end_src
+* MCT mode
 #+begin_src emacs-lisp :tangle no
 (straight-use-package '(mct :repo "protesilaos/mct"
 			    :host gitlab))
@@ -1473,7 +1567,7 @@ https://emacs.stackexchange.com/questions/17064/never-create-frame-in-ediff
 #+RESULTS:
 : 0.0
 
-** Consult
+* Consult
 Consult is a large package the looks like it replaces swiper
 
 Here is a sample configuration I'm going through from the website
@@ -1604,7 +1698,7 @@ https://github.com/minad/consult
 #+RESULTS:
 : consult-theme
 
-** Consult-dir
+* Consult-dir
 
 #+begin_src emacs-lisp :tangle no
 (use-package consult-dir
