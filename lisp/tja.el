@@ -235,6 +235,13 @@
     (vterm-send-string ". ./local-startup-node.sh")
     (vterm-send-return)))
 
+(defun tja-vterm-mtsinai-run-prepc ()
+  (interactive)
+  (with-current-buffer (vterm (concat "*vterm* *PREPC*"))
+    (vterm-send-string "cd /home/trevor/projects/mtsinai/src/parsus-internal.mountsinai-prepc")
+    (vterm-send-return)
+    (vterm-send-string ". ./local-startup.sh")
+    (vterm-send-return)))
 (provide 'tja-vterm)
 
 ;;;###autoload
@@ -476,7 +483,7 @@ same directory as the org-buffer and insert a link to this file."
       (message (concat path-with-line-number " copied to clipboard")))))
 
 ;;; ESA Functions to swap environments in URLs
-(defun my-esa:replace-url-with-local ()
+(defun my/esa:replace-url-with-local ()
   (interactive)
   (let ((regex "http\[s\]*://.*?/")
         (replacement "http://localhost:8080/"))
@@ -485,6 +492,6 @@ same directory as the org-buffer and insert a link to this file."
 
 
 ;;; Run in Vterm
-(defun my:insert-shrug ()
+(defun my/insert-shrug ()
   (interactive)
   (insert "¯\_(ツ)_/¯"))
