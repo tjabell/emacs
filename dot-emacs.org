@@ -1495,12 +1495,10 @@ https://emacs.stackexchange.com/questions/17064/never-create-frame-in-ediff
 
 * EJira
 #+begin_src emacs-lisp
-      (use-package jiralib2
-        :init (setq jiralib2-auth            'basic             ;; 'cookie, 'token or 'basic
-                    ))
-
-  ;; Configuration loaded here
-  (load "~/.jira-secrets")
+  (use-package jiralib2
+    :init (setq jiralib2-auth  'basic ;; 'cookie, 'token or 'basic
+                ))
+  (load "~/.jira-secrets") ;; Configuration loaded here
 #+end_src
 
 * To setup after playing with jiralib2
