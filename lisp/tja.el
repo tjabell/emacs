@@ -350,6 +350,55 @@ same directory as the org-buffer and insert a link to this file."
 
 (provide 'tja-org)
 
+(defun my:org-clock/get-clock-time ()
+  (interactive)
+  (let ((re (concat "[ \t]*" org-clock-string
+                    " *[[<]\\([^]>]+\\)[]>]\\(-+[[<]\\([^]>]+\\)[]>]"
+                    "\\([ \t]*=>.*\\)?\\)?"))
+        ts te h m s neg)
+    (cond
+     ((not (looking-at re))
+      nil)
+     ((not (match-end 2))
+      (when (and (equal (marker-buffer org-clock-marker) (current-buffer))
+                 (> org-clock-marker (point))
+                 (<= org-clock-marker (line-end-position)))
+        ;; The clock is running here
+        (setq org-clock-start-time
+              (org-time-string-to-time (match-string 1)))
+        (org-clock-update-mode-line)))
+     (t
+      ;; Prevent recursive call from `org-timestamp-change'.
+      (cl-letf (((symbol-function 'org-clock-update-time-maybe) #'ignore))
+        ;; Update timestamps.
+        (save-excursion
+          (goto-char (match-beginning 1)) ; opening timestamp
+          (save-match-data (org-timestamp-change 0 'day)))
+        ;; Refresh match data.
+        (looking-at re)
+        (save-excursion
+          (goto-char (match-beginning 3)) ; closing timestamp
+          (save-match-data (org-timestamp-change 0 'day))))
+      ;; Refresh match data.
+      (looking-at re)
+      (end-of-line 1)
+      (setq ts (match-string 1)
+            te (match-string 3))
+      (setq s (- (org-time-string-to-seconds te)
+                 (org-time-string-to-seconds ts))
+            neg (< s 0)
+            s (abs s)
+            h (floor (/ s 3600))
+            s (- s (* 3600 h))
+            m (floor (/ s 60))
+            s (- s (* 60 s)))
+      (message (concat (format-time-string "%Y-%m-%dT%H:%M:%S.000"
+                                   (org-time-string-to-time ts))
+                       " "
+                       (format-time-string "%Y-%m-%dT%H:%M:%S.000"
+                                   (org-time-string-to-time te))))
+      t))))
+
 ;;;###autoload
 (defun tja-ocr-screenshot ()
   "Take a screenshot into a time stamped unique-named file in the
@@ -495,3 +544,19 @@ same directory as the org-buffer and insert a link to this file."
 (defun my/insert-shrug ()
   (interactive)
   (insert "¯\_(ツ)_/¯"))
+
+(defun openai/generate-amortization-calendar (principal rate years)
+  "Generate an amortization calendar given the loan PRINCIPAL, annual interest RATE, and total YEARS of the loan."
+  (let* ((monthly-rate (/ rate 1200.0))
+         (total-months (* years 12))
+         (payment (/ (* principal monthly-rate) (- 1 (expt (+ 1 monthly-rate) (- total-months))))))
+    (with-output-to-string
+      (progn
+        (princ (format "%-10s %-10s %-10s %-10s\n" "Month" "Payment" "Interest" "Principal"))
+        (princ (make-string 50 ?-))
+        (princ "\n")
+        (cl-loop for month from 1 to total-months
+                 for balance = principal then (- balance principal-paid)
+                 for interest-paid = (* balance monthly-rate)
+                 for principal-paid = (- payment interest-paid)
+                 do (princ (format "%-10d %-10.2f %-10.2f %-10.2f\n" month payment interest-paid principal-paid)))))))
