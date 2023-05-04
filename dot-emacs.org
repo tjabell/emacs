@@ -103,18 +103,18 @@ otherwide ⤵ would get converted to bytes when opening this file
 ** Font
 
 #+begin_src emacs-lisp
-;; Set the fixed pitch face
+  ;; Set the fixed pitch face
 (set-face-attribute 'fixed-pitch nil
                     :font "JetBrains Mono"
                     :weight 'light
-                    :height 80)
-; Set the variable pitch face
+                    :height 0.8)
+                                       ; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil
                     ;;:font "Cantarell"
                     :font "DejaVu Sans"
                     ;;:font "Iosevka Aile"
                     :weight 'light
-                    :height 80)
+                    :height 1.0)
 #+end_src
 
 ** Backup settings
@@ -399,8 +399,8 @@ Org ellipsis has been bugging out tangle a little bit.
    '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
    '(org-property-value ((t (:inherit fixed-pitch))) t)
    '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-   '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
-   '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+   '(org-table ((t (:inherit fixed-pitch))) t)
+   '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold))))
    '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
 #+end_src
 
@@ -1546,6 +1546,7 @@ https://emacs.stackexchange.com/questions/17064/never-create-frame-in-ediff
       ;;      ((ejira-jql "resolution = unresolved and assignee = currentUser()"
       ;;                  ((org-agenda-overriding-header "Assigned to me")))))))
 #+end_src
+
 * MCT mode
 #+begin_src emacs-lisp :tangle no
 (straight-use-package '(mct :repo "protesilaos/mct"
@@ -1722,6 +1723,16 @@ Swap vertico-map with  minibuffer-local-completion-map if not using vertico
 ** Then open this file on startup
 #+begin_src emacs-lisp
   (find-file "~/emacs/dot-emacs.org")
+#+end_src
+
+* Clockify
+
+#+begin_src emacs-lisp
+        (use-package clockify
+          :straight '(clockify :host github :repo "mdallastella/clockify.el")
+          :config
+          (load-file "~/.clockify-secrets.el")
+          (setq my:clockify/userid  (clockify--user-info)))
 #+end_src
 
 * Local Variables - sets the after save hook to tangle this org file on save
