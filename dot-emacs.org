@@ -1720,11 +1720,6 @@ Swap vertico-map with  minibuffer-local-completion-map if not using vertico
 (push '(add-hook 'after-save-hook 'org-babel-tangle nil t) safe-local-eval-forms)
 #+end_src
 
-** Then open this file on startup
-#+begin_src emacs-lisp
-  (find-file "~/emacs/dot-emacs.org")
-#+end_src
-
 * Clockify
 
 #+begin_src emacs-lisp
@@ -1733,6 +1728,12 @@ Swap vertico-map with  minibuffer-local-completion-map if not using vertico
           :config
           (load-file "~/.clockify-secrets.el")
           (setq my:clockify/userid  (clockify--user-info)))
+#+end_src
+
+* Open this file and personal lisp on startup
+#+begin_src emacs-lisp
+  (find-file "~/emacs/tja.org")
+  (find-file "~/emacs/dot-emacs.org")
 #+end_src
 
 * Local Variables - sets the after save hook to tangle this org file on save
