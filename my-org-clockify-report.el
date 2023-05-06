@@ -163,7 +163,7 @@
 (defun format--clockify-fn (start-time duration-minutes description project-id)
   (let* ((decoded-start-time (decode-time (org-read-date nil t start-time)))
          (end-time (format--decoded-time-to-clockify (increment--dt-minutes decoded-start-time duration-minutes))))
-    (format "(my:clockify/add-entry \"%s\"  \"%s\" \"%s\" \"%s\"" start-time end-time description project-id)))
+    (format "(my:clockify/add-entry \"%s\"  \"%s\" \"%s\" \"%s\")" start-time end-time description project-id)))
 
 (defun my:org-clock/clockify-simple-fn-formatter (ipos tables params)
   (let* ((day-start (make-decoded-time  :second 0 :minute 0 :hour 06 :month 5 :day 6 :year 2023 :dst t :zone (car (current-time-zone))))
