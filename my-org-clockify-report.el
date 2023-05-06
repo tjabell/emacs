@@ -2,9 +2,9 @@
   "Retrieves the arguments from the Agenda buffer and passes them through to the clockify table builder"
   (interactive)
   (setq args (get-text-property (min (1- (point-max)) (point)) 'org-last-args)
+        start-day (nth 1 args)
         span (nth 2 args)
-        today nil
-        start-day nil)
+        today nil)
   (let* ((span (org-agenda-ndays-to-span (or span org-agenda-span)))
          (today (org-today))
          (sd (or start-day today))
@@ -17,7 +17,7 @@
                          (n1 org-agenda-start-on-weekday)
                          (d (- nt n1)))
                     (- sd (+ (if (< d 0) 7 0) d)))))
-         (day-numbers (list start)))    
+         (day-numbers (list start)))
     (dotimes (_ (1- ndays))
       (push (1+ (car day-numbers)) day-numbers))
     (setq day-numbers (nreverse day-numbers))
@@ -31,8 +31,15 @@
       (setq p (plist-put p :tstart clocktable-start))
       (setq p (plist-put p :tend clocktable-end))
       (setq p (plist-put p :scope 'agenda))
+      (setq p (plist-put p :link nil))
+      (setq p (plist-put p :properties '("clockify-project-id")))
       (setq tbl (apply #'my:org/org-clockify-get-clockify-table p))
-      (message tbl))))
+      (with-current-buffer (get-buffer-create "*clockify-fns*")
+        (erase-buffer)
+        (insert tbl)
+        (emacs-lisp-mode)
+        (switch-to-buffer-other-window "*clockify-fns*")
+        ))))
 
 (defun my:org/org-clockify-get-clockify-table (&rest props)
   "Takes props from the input agenda fn, passes them through to an org dblock"
@@ -53,7 +60,7 @@
 
 (defun org-dblock-write:clockify-table (params)
   "Writes the org dblock for a clockify table.  Gathers all of the org agenda files and converts them into a structured format to pass to the formatter function.  Which should write all of this out in a table."
-  (setq params (org-combine-plists org-clocktable-defaults params))
+  ;(setq params (org-combine-plists org-clocktable-defaults params))
   (catch 'exit
     (let* ((scope (plist-get params :scope))
            (base-buffer (org-base-buffer (current-buffer)))
@@ -82,7 +89,7 @@
            (step (plist-get params :step))
            (hide-files (plist-get params :hidefiles))
            (formatter (or (plist-get params :formatter)
-                          'my:org-clock/clockify-fn-formatter))
+                          'my:org-clock/clockify-simple-fn-formatter))
            cc)
       ;; Check if we need to do steps
       (when block
@@ -144,11 +151,95 @@
                  (org-combine-plists params `(:multifile ,multifile)))))))
 
 (defun format--decoded-time-to-clockify (time)
-  (format-time-string "%F%r%z %Z" (encode-time time)))
+  (format-time-string "%FT%R:00.000-07:00" (encode-time time)))
 
 (defun increment--dt-minutes (time minutes)
   (let ((delta (make-decoded-time :minute minutes)))
     (decoded-time-add time delta)))
+
+(defun round--to-nearest-five-minutes (num)
+  (* 5 (ceiling (/ num 5.0))))
+
+(defun format--clockify-fn (start-time duration-minutes description project-id)
+  (let* ((decoded-start-time (decode-time (org-read-date nil t start-time)))
+         (end-time (format--decoded-time-to-clockify (increment--dt-minutes decoded-start-time duration-minutes))))
+    (format "(my:clockify/add-entry \"%s\"  \"%s\" \"%s\" \"%s\"" start-time end-time description project-id)))
+
+(defun my:org-clock/clockify-simple-fn-formatter (ipos tables params)
+  (let* ((day-start (make-decoded-time  :second 0 :minute 0 :hour 06 :month 5 :day 6 :year 2023 :dst t :zone (car (current-time-zone))))
+         (current-time-block-start-time day-start)
+         (lang (or (plist-get params :lang) "en"))
+         (multifile (plist-get params :multifile))
+         (block (plist-get params :block))
+         (sort (plist-get params :sort))
+         (header (plist-get params :header))
+         (link (plist-get params :link))
+         (maxlevel (or (plist-get params :maxlevel) 3))
+         (emph (plist-get params :emphasize))
+         (compact? (plist-get params :compact))
+         (narrow (or (plist-get params :narrow) (and compact? '40!)))
+         (filetitle (plist-get params :filetitle))
+         (level? (and (not compact?) (plist-get params :level)))
+         (timestamp (plist-get params :timestamp))
+         (tags (plist-get params :tags))
+         (properties (plist-get params :properties))
+         (time-columns
+          (if (or compact? (< maxlevel 2)) 1
+            ;; Deepest headline level is a hard limit for the number
+            ;; of time columns.
+            (let ((levels
+                   (cl-mapcan
+                    (lambda (table)
+                      (pcase table
+                        (`(,_ ,(and (pred wholenump) (pred (/= 0))) ,entries)
+                         (mapcar #'car entries))))
+                    tables)))
+              (min maxlevel
+                   (or (plist-get params :tcolumns) 100)
+                   (if (null levels) 1 (apply #'max levels))))))
+         (indent (or compact? (plist-get params :indent)))
+         (formula (plist-get params :formula))
+         (case-fold-search t)
+         (total-time (apply #'+ (mapcar #'cadr tables)))
+         recalc narrow-cut-p)
+
+    ;; Now we need to output this table stuff.
+    (goto-char ipos)
+
+    ;; Now iterate over the tables and insert the data but only if any
+    ;; time has been collected.
+    (insert-before-markers "\n") ; buffer gets formatted and loses the top line, which would be a time entry in this case
+    (when (and total-time (> total-time 0))
+      (pcase-dolist (`(,file-name ,file-time ,entries) tables)
+        (when (or (and file-time (> file-time 0))
+                  (not (plist-get params :fileskip0)))
+          ;; First the file time, if we have multiple files.
+          (when multifile
+            ;; Summarize the time collected from this file.
+            )
+
+          ;; Get the list of node entries and iterate over it
+          (when (> maxlevel 0)
+            (setq project-id "no id found")
+            (pcase-dolist (`(,level ,headline ,tgs ,ts ,time ,props) entries)
+              (when (= level 1)
+                (setq project-id (cdr (assoc "clockify-project-id" props))))
+              (when (>= level 2)
+                (insert-before-markers
+                 (concat (format--clockify-fn (format--decoded-time-to-clockify current-time-block-start-time) (round--to-nearest-five-minutes time) headline project-id)) "\n"))
+              (when (>= level 2)
+                (setq current-time-block-start-time
+                      (increment--dt-minutes current-time-block-start-time (round--to-nearest-five-minutes time)))))))))
+    (delete-char -1)
+    ;; Back to beginning, align the table, recalculate if necessary.
+    (goto-char ipos)
+    (when sort
+      (save-excursion
+        (org-table-goto-line 3)
+        (org-table-goto-column (car sort))
+        (org-table-sort-lines nil (cdr sort))))
+    (when recalc (org-table-recalculate 'all))
+    total-time))
 
 (defun my:org-clock/clockify-fn-formatter (ipos tables params)
   "Takes all of the structured data from the Agenda view and files, and formats it into a table structure"
@@ -342,12 +433,16 @@
                                                         ((= level 1) "*%s* |")
                                                         ((= level 2) "/%s/ |")
                                                         (t "%s |"))
-                                                  f)))                
+                                                  f)))
+                (setq short-headline (with-temp-buffer
+                                       (insert (substring-no-properties headline))
+                                       (search-backward "[")
+                                       (buffer-substring (+ (point) 1) (- (buffer-end 1) 2))))
                 (insert-before-markers
                  "|"		       ;start the table line
                  "|"
-                 (concat "|" "(clockify-fn " (format--decoded-time-to-clockify current-time-block-start-time) (org-duration-from-minutes time) ")")
-                 (setq current-time-block-start-time (increment--dt-minutes current-time-block-start-time time))
+
+                 (concat "|" (format--clockify-fn (format--decoded-time-to-clockify current-time-block-start-time) (round--to-nearest-five-minutes time) short-headline))
                  (if multifile "|" "") ;free space for file name column?
                  (if level? (format "%d|" level) "") ;level, maybe
                  (if timestamp (concat ts "|") "")   ;timestamp, maybe
@@ -369,7 +464,10 @@
                  (if (eq formula '%)
                      (format "%.1f |" (* 100 (/ time (float total-time))))
                    "")
-                 "\n")))))))
+                 "\n")
+                (when (= level 2)
+                  (setq current-time-block-start-time
+                        (increment--dt-minutes current-time-block-start-time (round--to-nearest-five-minutes time))))))))))
     (delete-char -1)
     (cond
      ;; Possibly rescue old formula?
@@ -466,5 +564,5 @@
       t))))
 
 
-(defun my:org-clock/make-clockify-string (total-time)  
+(defun my:org-clock/make-clockify-string (total-time)
   (concat (format "(my:clockify/esa-add-entry \"2023-05-01\" \"06:55\" \"%d\" \"Test\")" (* 10.0 (fround (/ total-time 10.0))))))
