@@ -2,7 +2,7 @@
 
 #+title: Emacs: New Config in an Org file
 #+STARTUP: show3levels
-#+property: header-args:emacs-lisp  :tangle ~/emacs/lisp/tja.el
+#+property: header-args:emacs-lisp  :tangle ~/emacs/tja.el
 * Org file for my private extensions to emacs packages
 Installing, creating these
 
@@ -365,7 +365,7 @@ Installing, creating these
 
 * Org
 
-** org screenshot
+** Org screenshot
 #+begin_src emacs-lisp
   (defun tja-org-insert-image-from-wayland-clipboard ()
     "Take a screenshot into a time stamped unique-named file in the
@@ -386,55 +386,12 @@ Installing, creating these
 
 ** Org Clock
 #+begin_src emacs-lisp
-  (defun my:org-clock/get-clock-time ()
-    (interactive)
-    (let ((re (concat "[ \t]*" org-clock-string
-                      " *[[<]\\([^]>]+\\)[]>]\\(-+[[<]\\([^]>]+\\)[]>]"
-                      "\\([ \t]*=>.*\\)?\\)?"))
-          ts te h m s neg)
-      (cond
-       ((not (looking-at re))
-        nil)
-       ((not (match-end 2))
-        (when (and (equal (marker-buffer org-clock-marker) (current-buffer))
-                   (> org-clock-marker (point))
-                   (<= org-clock-marker (line-end-position)))
-          ;; The clock is running here
-          (setq org-clock-start-time
-                (org-time-string-to-time (match-string 1)))
-          (org-clock-update-mode-line)))
-       (t
-        ;; Prevent recursive call from `org-timestamp-change'.
-        (cl-letf (((symbol-function 'org-clock-update-time-maybe) #'ignore))
-          ;; Update timestamps.
-          (save-excursion
-            (goto-char (match-beginning 1)) ; opening timestamp
-            (save-match-data (org-timestamp-change 0 'day)))
-          ;; Refresh match data.
-          (looking-at re)
-          (save-excursion
-            (goto-char (match-beginning 3)) ; closing timestamp
-            (save-match-data (org-timestamp-change 0 'day))))
-        ;; Refresh match data.
-        (looking-at re)
-        (end-of-line 1)
-        (setq ts (match-string 1)
-              te (match-string 3))
-        (setq s (- (org-time-string-to-seconds te)
-                   (org-time-string-to-seconds ts))
-              neg (< s 0)
-              s (abs s)
-              h (floor (/ s 3600))
-              s (- s (* 3600 h))
-              m (floor (/ s 60))
-              s (- s (* 60 s)))
-        (message (concat (format-time-string "%Y-%m-%dT%H:%M:%S.000"
-                                     (org-time-string-to-time ts))
-                         " "
-                         (format-time-string "%Y-%m-%dT%H:%M:%S.000"
-                                     (org-time-string-to-time te))))
-        t))))
+  (load-file "~/emacs/my-org-clockify-report.el")
 #+end_src
+
+#+RESULTS:
+: my:org-clock/make-clockify-string
+
 * OCR
 #+begin_src emacs-lisp
   ;;;###autoload
@@ -641,6 +598,36 @@ Print amortization calendar
 #+RESULTS:
 : openai/generate-amortization-calendar
 
+* tmp
+| File                         | Headline | Clockify-Fn | Time                                         |      |      |
+|------------------------------+----------+-------------+----------------------------------------------+------+------|
+|                              | ALL      | *Total time*  | *9:32*                                         |      |      |
+|------------------------------+----------+-------------+----------------------------------------------+------+------|
+| todo_me.org                  |          | *File time*   | **                                           |      |      |
+|------------------------------+----------+-------------+----------------------------------------------+------+------|
+| todo_goddard.org             |          | *File time*   | **                                           |      |      |
+|                              |          | clockify-fn | [[file:/home/trevor/projects/goddard/todo_goddard.org::*Inbox][Inbox]]                                        | 0:16 |      |
+|                              |          | clockify-fn | \_  [[file:/home/trevor/projects/goddard/todo_goddard.org::*19563:][19563:]]                                   |      | 0:16 |
+|------------------------------+----------+-------------+----------------------------------------------+------+------|
+| todo_esa.org                 |          | *File time*   | **                                           |      |      |
+|                              |          | clockify-fn | [[file:/home/trevor/projects/extended_stay/todo_esa.org::*Inbox][Inbox]]                                        | 9:16 |      |
+|                              |          | clockify-fn | \_  [[file:/home/trevor/projects/extended_stay/todo_esa.org::*UAT Build][UAT Build]]                                |      | 1:16 |
+|                              |          | clockify-fn | \_  [[file:/home/trevor/projects/extended_stay/todo_esa.org::*ECOMM-4271: Blog - Category Promo Banner][ECOMM-4271: Blog - Category Promo Banner]] |      | 2:25 |
+|                              |          | clockify-fn | \_  [[file:/home/trevor/projects/extended_stay/todo_esa.org::*ATT-55: AB Test: May the 4th Flash Sale Banner with Countdown Clock][ATT-55: AB Test: May the 4th Flash...]]    |      | 1:20 |
+|                              |          | clockify-fn | \_  [[file:/home/trevor/projects/extended_stay/todo_esa.org::*Release 04-May-2023][Release 04-May-2023]]                      |      | 3:15 |
+|                              |          | clockify-fn | \_  [[file:/home/trevor/projects/extended_stay/todo_esa.org::*Standup][Standup]]                                  |      | 1:00 |
+|------------------------------+----------+-------------+----------------------------------------------+------+------|
+| parsus_misc.org              |          | *File time*   | **                                           |      |      |
+|------------------------------+----------+-------------+----------------------------------------------+------+------|
+| meeting_updates.org          |          | *File time*   | **                                           |      |      |
+|------------------------------+----------+-------------+----------------------------------------------+------+------|
+| todo_acdhh-cdbms.org         |          | *File time*   | **                                           |      |      |
+|------------------------------+----------+-------------+----------------------------------------------+------+------|
+| todo_acdhh-www.org           |          | *File time*   | **                                           |      |      |
+|------------------------------+----------+-------------+----------------------------------------------+------+------|
+| todo_mtsinai.org             |          | *File time*   | **                                           |      |      |
+|------------------------------+----------+-------------+----------------------------------------------+------+------|
+| 20220103111344-birthdays.org |          | *File time*   | **                                           |      |      |
 * Local Variables - sets the after save hook to tangle this org file on save
 # Local Variables:
 # eval: (add-hook 'after-save-hook 'org-babel-tangle nil t)

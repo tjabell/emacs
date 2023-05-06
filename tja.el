@@ -350,54 +350,7 @@ same directory as the org-buffer and insert a link to this file."
 
 (provide 'tja-org)
 
-(defun my:org-clock/get-clock-time ()
-  (interactive)
-  (let ((re (concat "[ \t]*" org-clock-string
-                    " *[[<]\\([^]>]+\\)[]>]\\(-+[[<]\\([^]>]+\\)[]>]"
-                    "\\([ \t]*=>.*\\)?\\)?"))
-        ts te h m s neg)
-    (cond
-     ((not (looking-at re))
-      nil)
-     ((not (match-end 2))
-      (when (and (equal (marker-buffer org-clock-marker) (current-buffer))
-                 (> org-clock-marker (point))
-                 (<= org-clock-marker (line-end-position)))
-        ;; The clock is running here
-        (setq org-clock-start-time
-              (org-time-string-to-time (match-string 1)))
-        (org-clock-update-mode-line)))
-     (t
-      ;; Prevent recursive call from `org-timestamp-change'.
-      (cl-letf (((symbol-function 'org-clock-update-time-maybe) #'ignore))
-        ;; Update timestamps.
-        (save-excursion
-          (goto-char (match-beginning 1)) ; opening timestamp
-          (save-match-data (org-timestamp-change 0 'day)))
-        ;; Refresh match data.
-        (looking-at re)
-        (save-excursion
-          (goto-char (match-beginning 3)) ; closing timestamp
-          (save-match-data (org-timestamp-change 0 'day))))
-      ;; Refresh match data.
-      (looking-at re)
-      (end-of-line 1)
-      (setq ts (match-string 1)
-            te (match-string 3))
-      (setq s (- (org-time-string-to-seconds te)
-                 (org-time-string-to-seconds ts))
-            neg (< s 0)
-            s (abs s)
-            h (floor (/ s 3600))
-            s (- s (* 3600 h))
-            m (floor (/ s 60))
-            s (- s (* 60 s)))
-      (message (concat (format-time-string "%Y-%m-%dT%H:%M:%S.000"
-                                   (org-time-string-to-time ts))
-                       " "
-                       (format-time-string "%Y-%m-%dT%H:%M:%S.000"
-                                   (org-time-string-to-time te))))
-      t))))
+(load-file "~/emacs/my-org-clockify-report.el")
 
 ;;;###autoload
 (defun tja-ocr-screenshot ()
