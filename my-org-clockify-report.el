@@ -157,6 +157,15 @@
   (let ((delta (make-decoded-time :minute minutes)))
     (decoded-time-add time delta)))
 
+(defun convert--org-time-thing-to-decoded-date (org-date)
+  "Converts an org date things like 738644 to a decoded time (current timezone)"
+  (let* ((date (calendar-gregorian-from-absolute org-date))
+       (year (calendar-extract-year date))
+       (month (calendar-extract-month date))
+       (day (calendar-extract-day date))
+       (time (make-decoded-time :second 0 :minute 0 :hour 0 :day day :month month :year year :dst nil :zone (car (current-time-zone)))))
+  time))
+
 (defun round--to-nearest-five-minutes (num)
   (* 5 (ceiling (/ num 5.0))))
 
@@ -166,7 +175,9 @@
     (format "(my:clockify/add-entry \"%s\"  \"%s\" \"%s\" \"%s\")" start-time end-time description project-id)))
 
 (defun my:org-clock/clockify-simple-fn-formatter (ipos tables params)
-  (let* ((day-start (make-decoded-time  :second 0 :minute 0 :hour 06 :month 5 :day 6 :year 2023 :dst t :zone (car (current-time-zone))))
+  (let* ((tstart (plist-get params :tstart))
+         (gcal-tstart (calendar-gregorian-from-absolute tstart))
+         (day-start (make-decoded-time  :second 0 :minute 0 :hour 06 :month (calendar-extract-month gcal-tstart) :day (calendar-extract-day gcal-tstart) :year (calendar-extract-year gcal-tstart) :dst t :zone (car (current-time-zone))))
          (current-time-block-start-time day-start)
          (lang (or (plist-get params :lang) "en"))
          (multifile (plist-get params :multifile))
