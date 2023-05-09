@@ -220,6 +220,7 @@
     ;; Now iterate over the tables and insert the data but only if any
     ;; time has been collected.
     (insert-before-markers "\n") ; buffer gets formatted and loses the top line, which would be a time entry in this case
+    (insert-before-markers ";; WARNING - GSI will only work for tours tasks right now, update the project id for maintenance tasks") ; buffer gets formatted and loses the top line, which would be a time entry in this case
     (when (and total-time (> total-time 0))
       (pcase-dolist (`(,file-name ,file-time ,entries) tables)
         (when (or (and file-time (> file-time 0))
@@ -229,7 +230,7 @@
             ;; Summarize the time collected from this file.
             )
 
-          ;; Get the list of node entries and iterate over it
+          ;; Insert the clockify function data
           (when (> maxlevel 0)
             (setq project-id "no id found")
             (pcase-dolist (`(,level ,headline ,tgs ,ts ,time ,props) entries)
