@@ -1730,6 +1730,10 @@ Swap vertico-map with  minibuffer-local-completion-map if not using vertico
           (setq my:clockify/userid  (clockify--user-info)))
 #+end_src
 
+* CSV Mode
+#+begin_src emacs-lisp :results raw
+(use-package csv-mode)
+#+end_src
 * Open this file and personal lisp on startup
 #+begin_src emacs-lisp
   (find-file "~/emacs/tja.org")

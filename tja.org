@@ -172,12 +172,12 @@ Installing, creating these
       (vterm-send-string ". ./local-startup.sh")
       (vterm-send-return)))
   ;;;###autoload
-  (defun tja-vterm-run-fbp-test ()
+  (defun tja-vterm-run-fbp-web-test ()
     (interactive)
-    (with-current-buffer (vterm (concat "*vterm* *FBP Tests*"))
+    (with-current-buffer (vterm (concat "*vterm* *FBP Web Tests*"))
       (vterm-send-string "cd /home/trevor/projects/goddard/src/FranchiseePortal-Website/")
       (vterm-send-return)
-      (vterm-send-string "npm run test")
+      (vterm-send-string ". ./local-startup-test.sh")
       (vterm-send-return)))
 
   ;;;###autoload
@@ -414,35 +414,53 @@ Installing, creating these
 * Azure
 
 #+begin_src emacs-lisp
-  (defun tja-insert-azure-title-text (ticket-number)
-    (interactive "sTicket Number ")
-    (insert (get-azure-title-text ticket-number)))
+  (load-file "~/.azure-secrets.el")
 
-  (defun tja-get-azure-title-text (ticket-number)
-    (interactive)
-    (with-current-buffer
-        (get-buffer-create
-         (let* ((username "parsus-ta@goddardsystems.com")
-                (password "")
-                (ticket-url (format "https://dev.azure.com/GoddardSystemsIT/_apis/wit/workitems?ids=%s&api-version=6.1-preview.3" ticket-number))
-                (url-request-extra-headers
-                 `(("Authorization" . ,(concat "Basic "
-                                               (base64-encode-string
-                                                (concat username ":" password) t))))))
-           (url-retrieve-synchronously ticket-url)))
-      (goto-char (point-min))
-      (re-search-forward "^$")
-      (delete-region (point) (point-min))
-      (let ((my-obj (json-parse-string (buffer-string))))
-        (gethash "System.Title"
-                 (gethash "fields"
-                          (aref
-                           (gethash "value" my-obj)
-                           0))))))
+  (defun my:gsi/print-azure-ticket-title (ticket-number)
+    (interactive "sTicket-number: ")
+    (let* ((obj (my:gsi/get-azure-ticket ticket-number))
+           (info (my:gsi/get-azure-ticket-title-and-id obj)))
+      (insert (format "%s: %s" (car info) (cadr info)))))
+
+  (defun my:gsi/get-azure-ticket-title-and-id (obj)
+    (let* ((props (aref (cdr (cadr obj)) 0))
+           (id (cdar props))
+           (title (cdr (assoc 'System.Title (assoc 'fields props)))))
+      (list id title)))
+
+  (defun my:gsi/get-azure-ticket (ticket-number)    
+    (with-temp-buffer ; temp buffer to hold json data
+      (let* ((username my/azure-un)
+             (password my/azure-password)
+             (api-version "7.0")
+             (ticket-url (format "https://dev.azure.com/GoddardSystemsIT/_apis/wit/workitems?ids=%s&api-version=%s" ticket-number api-version))
+             (url-request-extra-headers
+              `(("Authorization" . ,(concat "Basic "
+                                            (base64-encode-string
+                                             (concat username ":" password) t))))))
+        (url-insert-file-contents ticket-url))
+      (json-read)))
 #+end_src
 
 #+RESULTS:
-: tja-get-azure-title-text
+: my:gsi/get-azure-ticket
+
+* Azure Devops
+
+#+begin_src emacs-lisp :results raw :wrap
+  (load-file "~/.azure-secrets.el")
+  (defun azure--session-call (path credentials)
+     "Do a call to PATH with ARGS using current session. Does not check for session validity."
+     (let ((azure-devops-v6-url "https://dev.azure.com/GoddardSystemsIT/_apis/wit/workitems?ids=12697&api-version=6.1-preview.3"))
+       (apply #'request (concat azure-devops-v6-url path)
+              :headers `(("Content-Type" . "application/json")
+                         ("Authorization" . ,(format "Basic %s" credentials)))
+              :sync t
+              :parser 'json-read)))
+   ;(azure--session-call "" (format "%s:%s" my/azure-un my/azure-password))
+#+end_src
+
+#+RESULTS:
 
 * SQL
 
@@ -579,11 +597,12 @@ Installing, creating these
 Print amortization calendar
 #+begin_src emacs-lisp
   (defun openai/generate-amortization-calendar (principal rate years)
+    (interactive "nPrincipal: \nnRate: \nnYears: ")
     "Generate an amortization calendar given the loan PRINCIPAL, annual interest RATE, and total YEARS of the loan."
     (let* ((monthly-rate (/ rate 1200.0))
            (total-months (* years 12))
            (payment (/ (* principal monthly-rate) (- 1 (expt (+ 1 monthly-rate) (- total-months))))))
-      (with-output-to-string
+      (insert (with-output-to-string
         (progn
           (princ (format "%-10s %-10s %-10s %-10s\n" "Month" "Payment" "Interest" "Principal"))
           (princ (make-string 50 ?-))
@@ -592,42 +611,13 @@ Print amortization calendar
                    for balance = principal then (- balance principal-paid)
                    for interest-paid = (* balance monthly-rate)
                    for principal-paid = (- payment interest-paid)
-                   do (princ (format "%-10d %-10.2f %-10.2f %-10.2f\n" month payment interest-paid principal-paid)))))))
+                   do (princ (format "%-10d %-10.2f %-10.2f %-10.2f\n" month payment interest-paid principal-paid))))))))
 #+end_src
 
 #+RESULTS:
 : openai/generate-amortization-calendar
 
-* tmp
-| File                         | Headline | Clockify-Fn | Time                                         |      |      |
-|------------------------------+----------+-------------+----------------------------------------------+------+------|
-|                              | ALL      | *Total time*  | *9:32*                                         |      |      |
-|------------------------------+----------+-------------+----------------------------------------------+------+------|
-| todo_me.org                  |          | *File time*   | **                                           |      |      |
-|------------------------------+----------+-------------+----------------------------------------------+------+------|
-| todo_goddard.org             |          | *File time*   | **                                           |      |      |
-|                              |          | clockify-fn | [[file:/home/trevor/projects/goddard/todo_goddard.org::*Inbox][Inbox]]                                        | 0:16 |      |
-|                              |          | clockify-fn | \_  [[file:/home/trevor/projects/goddard/todo_goddard.org::*19563:][19563:]]                                   |      | 0:16 |
-|------------------------------+----------+-------------+----------------------------------------------+------+------|
-| todo_esa.org                 |          | *File time*   | **                                           |      |      |
-|                              |          | clockify-fn | [[file:/home/trevor/projects/extended_stay/todo_esa.org::*Inbox][Inbox]]                                        | 9:16 |      |
-|                              |          | clockify-fn | \_  [[file:/home/trevor/projects/extended_stay/todo_esa.org::*UAT Build][UAT Build]]                                |      | 1:16 |
-|                              |          | clockify-fn | \_  [[file:/home/trevor/projects/extended_stay/todo_esa.org::*ECOMM-4271: Blog - Category Promo Banner][ECOMM-4271: Blog - Category Promo Banner]] |      | 2:25 |
-|                              |          | clockify-fn | \_  [[file:/home/trevor/projects/extended_stay/todo_esa.org::*ATT-55: AB Test: May the 4th Flash Sale Banner with Countdown Clock][ATT-55: AB Test: May the 4th Flash...]]    |      | 1:20 |
-|                              |          | clockify-fn | \_  [[file:/home/trevor/projects/extended_stay/todo_esa.org::*Release 04-May-2023][Release 04-May-2023]]                      |      | 3:15 |
-|                              |          | clockify-fn | \_  [[file:/home/trevor/projects/extended_stay/todo_esa.org::*Standup][Standup]]                                  |      | 1:00 |
-|------------------------------+----------+-------------+----------------------------------------------+------+------|
-| parsus_misc.org              |          | *File time*   | **                                           |      |      |
-|------------------------------+----------+-------------+----------------------------------------------+------+------|
-| meeting_updates.org          |          | *File time*   | **                                           |      |      |
-|------------------------------+----------+-------------+----------------------------------------------+------+------|
-| todo_acdhh-cdbms.org         |          | *File time*   | **                                           |      |      |
-|------------------------------+----------+-------------+----------------------------------------------+------+------|
-| todo_acdhh-www.org           |          | *File time*   | **                                           |      |      |
-|------------------------------+----------+-------------+----------------------------------------------+------+------|
-| todo_mtsinai.org             |          | *File time*   | **                                           |      |      |
-|------------------------------+----------+-------------+----------------------------------------------+------+------|
-| 20220103111344-birthdays.org |          | *File time*   | **                                           |      |      |
+
 * Local Variables - sets the after save hook to tangle this org file on save
 # Local Variables:
 # eval: (add-hook 'after-save-hook 'org-babel-tangle nil t)

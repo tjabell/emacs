@@ -154,12 +154,12 @@
     (vterm-send-string ". ./local-startup.sh")
     (vterm-send-return)))
 ;;;###autoload
-(defun tja-vterm-run-fbp-test ()
+(defun tja-vterm-run-fbp-web-test ()
   (interactive)
-  (with-current-buffer (vterm (concat "*vterm* *FBP Tests*"))
+  (with-current-buffer (vterm (concat "*vterm* *FBP Web Tests*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/FranchiseePortal-Website/")
     (vterm-send-return)
-    (vterm-send-string "npm run test")
+    (vterm-send-string ". ./local-startup-test.sh")
     (vterm-send-return)))
 
 ;;;###autoload
@@ -368,31 +368,43 @@ same directory as the org-buffer and insert a link to this file."
 
 (provide 'tja-ocr)
 
-(defun tja-insert-azure-title-text (ticket-number)
-  (interactive "sTicket Number ")
-  (insert (get-azure-title-text ticket-number)))
+(load-file "~/.azure-secrets.el")
 
-(defun tja-get-azure-title-text (ticket-number)
-  (interactive)
-  (with-current-buffer
-      (get-buffer-create
-       (let* ((username "parsus-ta@goddardsystems.com")
-              (password "")
-              (ticket-url (format "https://dev.azure.com/GoddardSystemsIT/_apis/wit/workitems?ids=%s&api-version=6.1-preview.3" ticket-number))
-              (url-request-extra-headers
-               `(("Authorization" . ,(concat "Basic "
-                                             (base64-encode-string
-                                              (concat username ":" password) t))))))
-         (url-retrieve-synchronously ticket-url)))
-    (goto-char (point-min))
-    (re-search-forward "^$")
-    (delete-region (point) (point-min))
-    (let ((my-obj (json-parse-string (buffer-string))))
-      (gethash "System.Title"
-               (gethash "fields"
-                        (aref
-                         (gethash "value" my-obj)
-                         0))))))
+(defun my:gsi/print-azure-ticket-title (ticket-number)
+  (interactive "sTicket-number: ")
+  (let* ((obj (my:gsi/get-azure-ticket ticket-number))
+         (info (my:gsi/get-azure-ticket-title-and-id obj)))
+    (insert (format "%s: %s" (car info) (cadr info)))))
+
+(defun my:gsi/get-azure-ticket-title-and-id (obj)
+  (let* ((props (aref (cdr (cadr obj)) 0))
+         (id (cdar props))
+         (title (cdr (assoc 'System.Title (assoc 'fields props)))))
+    (list id title)))
+
+(defun my:gsi/get-azure-ticket (ticket-number)    
+  (with-temp-buffer ; temp buffer to hold json data
+    (let* ((username my/azure-un)
+           (password my/azure-password)
+           (api-version "7.0")
+           (ticket-url (format "https://dev.azure.com/GoddardSystemsIT/_apis/wit/workitems?ids=%s&api-version=%s" ticket-number api-version))
+           (url-request-extra-headers
+            `(("Authorization" . ,(concat "Basic "
+                                          (base64-encode-string
+                                           (concat username ":" password) t))))))
+      (url-insert-file-contents ticket-url))
+    (json-read)))
+
+(load-file "~/.azure-secrets.el")
+(defun azure--session-call (path credentials)
+   "Do a call to PATH with ARGS using current session. Does not check for session validity."
+   (let ((azure-devops-v6-url "https://dev.azure.com/GoddardSystemsIT/_apis/wit/workitems?ids=12697&api-version=6.1-preview.3"))
+     (apply #'request (concat azure-devops-v6-url path)
+            :headers `(("Content-Type" . "application/json")
+                       ("Authorization" . ,(format "Basic %s" credentials)))
+            :sync t
+            :parser 'json-read)))
+ ;(azure--session-call "" (format "%s:%s" my/azure-un my/azure-password))
 
 (defun point-in-comment ()
 (let ((syn (syntax-ppss)))
@@ -499,11 +511,12 @@ same directory as the org-buffer and insert a link to this file."
   (insert "¯\_(ツ)_/¯"))
 
 (defun openai/generate-amortization-calendar (principal rate years)
+  (interactive "nPrincipal: \nnRate: \nnYears: ")
   "Generate an amortization calendar given the loan PRINCIPAL, annual interest RATE, and total YEARS of the loan."
   (let* ((monthly-rate (/ rate 1200.0))
          (total-months (* years 12))
          (payment (/ (* principal monthly-rate) (- 1 (expt (+ 1 monthly-rate) (- total-months))))))
-    (with-output-to-string
+    (insert (with-output-to-string
       (progn
         (princ (format "%-10s %-10s %-10s %-10s\n" "Month" "Payment" "Interest" "Principal"))
         (princ (make-string 50 ?-))
@@ -512,4 +525,4 @@ same directory as the org-buffer and insert a link to this file."
                  for balance = principal then (- balance principal-paid)
                  for interest-paid = (* balance monthly-rate)
                  for principal-paid = (- payment interest-paid)
-                 do (princ (format "%-10d %-10.2f %-10.2f %-10.2f\n" month payment interest-paid principal-paid)))))))
+                 do (princ (format "%-10d %-10.2f %-10.2f %-10.2f\n" month payment interest-paid principal-paid))))))))
