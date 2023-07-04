@@ -40,3 +40,4 @@
 (defvar thestring (rx  (group (or "TODO" "DONE" "IN_PROGRESS"))))
 (print thestring (current-buffer) )
 #+end_src
+

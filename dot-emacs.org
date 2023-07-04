@@ -10,6 +10,8 @@
   (defvar native-comp-deferred-compilation-deny-list nil)
   ;; Silence compiler warnings as they can be pretty disruptive
   (setq native-comp-async-report-warnings-errors nil)
+
+  (setq native-compile-prune-cache t)
 #+end_src
 
 * [Fix] For using multibyte characters
@@ -21,7 +23,8 @@ otherwide ⤵ would get converted to bytes when opening this file
 ** Auto mode alist config (dot files)
 
 #+begin_src emacs-lisp
-(add-to-list 'auto-mode-alist '("\\zshrc$" . sh-mode))
+  (add-to-list 'auto-mode-alist '("\\zshrc$" . sh-mode))
+  (add-to-list 'auto-mode-alist '("\\beancount$" . beancount-mode))
 #+end_src
 
 ** [Optional] If debugging this may help
@@ -156,14 +159,14 @@ https://www.gnu.org/software/emacs/manual/html_node/tramp/Auto_002dsave-File-Loc
   (setq visible-bell t)
 #+end_src
 
-** Other window as M-o is nice
+** Other window as M-o is nice, and previous as M-O
 #+begin_src emacs-lisp
   (global-set-key (kbd "M-o") 'other-window)
+  (global-set-key (kbd "M-O") (lambda () (interactive) (select-window (previous-window))))
 #+end_src
 
 #+RESULTS:
 : other-window
-
 ** Key chord mode
 #+begin_src emacs-lisp
   (use-package key-chord
@@ -252,6 +255,7 @@ https://www.emacswiki.org/emacs/TransposeWindows#:~:text=To%20swap%20the%20top%2
 #+end_src
 
 Swaps windows and lets you choose which to swap
+
 #+begin_src emacs-lisp
   (setq swapping-buffer nil)
   (setq swapping-window nil)
@@ -278,6 +282,13 @@ Swaps windows and lets you choose which to swap
           (message "Buffer and window marked for swapping."))))
 #+end_src
 
+*** Custom shortcuts with C-c C-s (screen)
+
+Couldn't find a good shortcut 16-Jun-2023
+#+begin_src emacs-lisp :results raw
+  ;(global-set-key (kbd "C-c C-s l") #'split-window-right)
+  ;(global-set-key (kbd "C-c C-s j") #'split-window-below)
+#+end_src
 ** Long lined files
 #+begin_src emacs-lisp
 (if (version<= "27.1" emacs-version)
@@ -313,7 +324,10 @@ Org ellipsis has been bugging out tangle a little bit.
                     ("a" "ACDHH CDBMS Todo" entry
                      (file+headline "~/projects/acdhh/todo_acdhh-cdbms.org" "Inbox")
                      "* TODO %?\n %i\n %a\n %i" :empty-lines 1)))
-            (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
+            (setq org-refile-targets
+                  '((nil :maxlevel . 9)
+                    (org-agenda-files . (:maxlevel . 6))
+                    (org-buffer-list :maxlevel . 2)))
             (setq org-agenda-file-regexp "\\`[^.].*\\.org'\\|[0-9]+")
             (setq org-hide-emphasis-markers t)
             (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
@@ -342,6 +356,7 @@ Org ellipsis has been bugging out tangle a little bit.
      (cons '(:tangle . "yes")
            (assq-delete-all :tangle org-babel-default-header-args)))
     (org-agenda-files '("~/projects/me/todo_me.org"
+                        "~/projects/equinox/todo_equinox.org"
                         "~/projects/goddard/todo_goddard.org"
                         "~/projects/extended_stay/todo_esa.org"
                         "~/projects/parsus/parsus_misc.org"
@@ -562,6 +577,8 @@ https://github.com/minad/marginalia#disabling-annotators-builtin-or-lightweight-
 
 ** Consult
    My configuration for consult
+
+Using configuration under the vertico section.  Might revisit this...
 #+begin_src emacs-lisp
     (use-package consult
       :bind (;; C-c bindings (mode-specific-map)
@@ -907,16 +924,43 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 #+end_src
 
 ** Tree sitter (experimental)
-#+begin_src emacs-lisp
-  (use-package tree-sitter
+Builtin after emacs 29
+#+begin_src emacs-lisp :results raw
+  (use-package treesit 
+    :straight nil
     :config
-    (global-tree-sitter-mode)
-    (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+    (setq treesit-language-source-alist
+          '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+            (cmake "https://github.com/uyha/tree-sitter-cmake")
+            (css "https://github.com/tree-sitter/tree-sitter-css")
+            (c-sharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
+            (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+            (go "https://github.com/tree-sitter/tree-sitter-go")
+            (html "https://github.com/tree-sitter/tree-sitter-html")
+            (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+            (json "https://github.com/tree-sitter/tree-sitter-json")
+            (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+            (python "https://github.com/tree-sitter/py-tree-sitter")
+            (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))))
 
-  (use-package tree-sitter-langs)
-  (use-package tree-sitter-indent)
+  (use-package treesit-auto
+    :config
+    (customize-set-value 'treesit-font-lock-level 4)
+    (setq treesit-auto-install 'prompt)
+    (global-treesit-auto-mode))
+
+
+  ;; Remove annoying new fwd sexp behavior
+  (defun mp-remove-treesit-sexp-changes ()
+    (when (eq forward-sexp-function #'treesit-forward-sexp)
+      (setq forward-sexp-function nil))
+    (when (eq transpose-sexps-function #'treesit-transpose-sexps)
+      (setq transpose-sexps-function #'transpose-sexps-default-function))
+    (when (eq forward-sentence-function #'treesit-forward-sentence)
+      (setq forward-sentence-function #'forward-sentence-default-function)))
+
+  (add-hook 'prog-mode-hook #'mp-remove-treesit-sexp-changes)
 #+end_src
-
 ** LSP/Eglot
 #+begin_src emacs-lisp
   ;;(setq my:csharp-lsp-server "/usr/bin/omnisharp")
@@ -1237,25 +1281,6 @@ Add init file as lisp file
 (add-to-list 'auto-mode-alist '("\\.sbclrc$" . lisp-mode))
 #+end_src
 
-* TJA.el Add my Emacs lisp extensions
-[[file:lisp/tja.org::*Org file for my private extensions to emacs packages][TJA.org file]]
-#+begin_src emacs-lisp
-(push "~/emacs/lisp/" load-path)
-#+end_src
-
-#+RESULTS:
-| ~/emacs/lisp/ | /home/trevor/.emacs.d/straight/build/perspective | /home/trevor/.emacs.d/straight/build/tree-sitter-indent | /home/trevor/.emacs.d/straight/build/tree-sitter-langs | /home/trevor/.emacs.d/straight/build/tsc | /home/trevor/.emacs.d/straight/build/tree-sitter | /home/trevor/.emacs.d/straight/build/csharp-mode | /home/trevor/.emacs.d/straight/build/treemacs-projectile | /home/trevor/.emacs.d/straight/build/lsp-treemacs | /home/trevor/.emacs.d/straight/build/posframe | /home/trevor/.emacs.d/straight/build/cfrs | /home/trevor/.emacs.d/straight/build/hydra | /home/trevor/.emacs.d/straight/build/pfuture | /home/trevor/.emacs.d/straight/build/avy | /home/trevor/.emacs.d/straight/build/ace-window | /home/trevor/.emacs.d/straight/build/treemacs | /home/trevor/.emacs.d/straight/build/eldoc | /home/trevor/.emacs.d/straight/build/flymake | /home/trevor/.emacs.d/straight/build/lsp-ui | /home/trevor/.emacs.d/straight/build/lv | /home/trevor/.emacs.d/straight/build/spinner | /home/trevor/.emacs.d/straight/build/ht | /home/trevor/.emacs.d/straight/build/lsp-mode | /home/trevor/.emacs.d/straight/build/shrink-path | /home/trevor/.emacs.d/straight/build/all-the-icons | /home/trevor/.emacs.d/straight/build/doom-modeline | /home/trevor/.emacs.d/straight/build/vterm-toggle | /home/trevor/.emacs.d/straight/build/vterm | /home/trevor/.emacs.d/straight/build/yaml | /home/trevor/.emacs.d/straight/build/markdown-mode | /home/trevor/.emacs.d/straight/build/treepy | /home/trevor/.emacs.d/straight/build/let-alist | /home/trevor/.emacs.d/straight/build/ghub | /home/trevor/.emacs.d/straight/build/closql | /home/trevor/.emacs.d/straight/build/forge | /home/trevor/.emacs.d/straight/build/with-editor | /home/trevor/.emacs.d/straight/build/transient | /home/trevor/.emacs.d/straight/build/git-commit | /home/trevor/.emacs.d/straight/build/magit | /home/trevor/.emacs.d/straight/build/company | /home/trevor/.emacs.d/straight/build/consult-projectile | /home/trevor/.emacs.d/straight/build/projectile | /home/trevor/.emacs.d/straight/build/xref | /home/trevor/.emacs.d/straight/build/project | /home/trevor/.emacs.d/straight/build/which-key | /home/trevor/.emacs.d/straight/build/app-launcher | /home/trevor/.emacs.d/straight/build/embark-consult | /home/trevor/.emacs.d/straight/build/embark | /home/trevor/.emacs.d/straight/build/orderless | /home/trevor/.emacs.d/straight/build/consult | /home/trevor/.emacs.d/straight/build/marginalia | /home/trevor/.emacs.d/straight/build/vertico | /home/trevor/.emacs.d/straight/build/magit-section | /home/trevor/.emacs.d/straight/build/emacsql-sqlite | /home/trevor/.emacs.d/straight/build/emacsql | /home/trevor/.emacs.d/straight/build/s | /home/trevor/.emacs.d/straight/build/f | /home/trevor/.emacs.d/straight/build/dash | /home/trevor/.emacs.d/straight/build/org-roam | /home/trevor/.emacs.d/straight/build/org-contrib | /home/trevor/.emacs.d/straight/build/org-bullets | /home/trevor/.emacs.d/straight/build/org | /home/trevor/.emacs.d/straight/build/rainbow-delimiters | /home/trevor/.emacs.d/straight/build/key-chord | /home/trevor/.emacs.d/straight/build/spacemacs-theme | /home/trevor/.emacs.d/straight/build/bind-key | /home/trevor/.emacs.d/straight/build/use-package | /home/trevor/.emacs.d/straight/build/straight | /usr/share/emacs/28.0.60/site-lisp | /usr/share/emacs/site-lisp | /usr/share/emacs/28.0.60/lisp | /usr/share/emacs/28.0.60/lisp/vc | /usr/share/emacs/28.0.60/lisp/url | /usr/share/emacs/28.0.60/lisp/textmodes | /usr/share/emacs/28.0.60/lisp/progmodes | /usr/share/emacs/28.0.60/lisp/play | /usr/share/emacs/28.0.60/lisp/org | /usr/share/emacs/28.0.60/lisp/nxml | /usr/share/emacs/28.0.60/lisp/net | /usr/share/emacs/28.0.60/lisp/mh-e | /usr/share/emacs/28.0.60/lisp/mail | /usr/share/emacs/28.0.60/lisp/leim | /usr/share/emacs/28.0.60/lisp/language | /usr/share/emacs/28.0.60/lisp/international | /usr/share/emacs/28.0.60/lisp/image | /usr/share/emacs/28.0.60/lisp/gnus | /usr/share/emacs/28.0.60/lisp/eshell | /usr/share/emacs/28.0.60/lisp/erc | /usr/share/emacs/28.0.60/lisp/emulation | /usr/share/emacs/28.0.60/lisp/emacs-lisp | /usr/share/emacs/28.0.60/lisp/cedet | /usr/share/emacs/28.0.60/lisp/calendar | /usr/share/emacs/28.0.60/lisp/calc | /usr/share/emacs/28.0.60/lisp/obsolete |
-
-#+begin_src emacs-lisp
-  (org-babel-load-file "~/emacs/tja.org")
-
-  (require 'tja-vterm)
-  (require 'tja-magit)
-  (require 'tja-misc)
-  (require 'tja-org)
-  (require 'tja-ocr)
-#+end_src
-
 * SQL
 
 #+begin_src emacs-lisp
@@ -1572,130 +1597,7 @@ Consult is a large package the looks like it replaces swiper
 Here is a sample configuration I'm going through from the website
 https://github.com/minad/consult
 
-#+begin_src emacs-lisp :tangle no
-  ;; Example configuration for Consult from minad/consult
-  (use-package consult
-    ;; Replace bindings. Lazily loaded due by `use-package'.
-    :bind (("M-s l" . isearch-forward)
-	   ("C-s" . consult-line)
-	   ;; C-c bindings (mode-specific-map)
-	   ("C-c h" . consult-history)
-	   ("C-c m" . consult-mode-command)
-	   ("C-c b" . consult-bookmark)
-	   ("C-c k" . consult-kmacro)
-	   ;; C-x bindings (ctl-x-map)
-	   ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
-	   ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-	   ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-	   ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-	   ;; Custom M-# bindings for fast register access
-	   ("M-#" . consult-register-load)
-	   ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
-	   ("C-M-#" . consult-register)
-	   ;; Other custom bindings
-	   ("M-y" . consult-yank-pop)                ;; orig. yank-pop
-	   ("<help> a" . consult-apropos)            ;; orig. apropos-command
-	   ;; M-g bindings (goto-map)
-	   ("M-g e" . consult-compile-error)
-	   ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
-	   ("M-g g" . consult-goto-line)             ;; orig. goto-line
-	   ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
-	   ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
-	   ("M-g m" . consult-mark)
-	   ("M-g k" . consult-global-mark)
-	   ("M-g i" . consult-imenu)
-	   ("M-g I" . consult-imenu-multi)
-	   ;; M-s bindings (search-map)
-	   ("M-s f" . consult-find)
-	   ("M-s F" . consult-locate)
-	   ("M-s g" . consult-grep)
-	   ("M-s G" . consult-git-grep)
-	   ("M-s r" . consult-ripgrep)
-	   ("M-s l" . consult-line)
-	   ("M-s L" . consult-line-multi)
-	   ("M-s m" . consult-multi-occur)
-	   ("M-s k" . consult-keep-lines)
-	   ("M-s u" . consult-focus-lines)
-	   ;; Isearch integration
-	   ("M-s e" . consult-isearch-history)
-	   :map isearch-mode-map
-	   ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
-	   ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
-	   ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
-	   ("M-s L" . consult-line-multi)
-	   ("M-s t" . consult-theme))           ;; needed by consult-line to detect isearch
-
-    ;; Enable automatic preview at point in the *Completions* buffer.
-    ;; This is relevant when you use the default completion UI,
-    ;; and not necessary for Vertico, Selectrum, etc.
-    :hook (completion-list-mode . consult-preview-at-point-mode)
-
-    ;; The :init configuration is always executed (Not lazy)
-    :init
-
-    ;; Optionally configure the register formatting. This improves the register
-    ;; preview for `consult-register', `consult-register-load',
-    ;; `consult-register-store' and the Emacs built-ins.
-    (setq register-preview-delay 0
-	  register-preview-function #'consult-register-format)
-
-    ;; Optionally tweak the register preview window.
-    ;; This adds thin lines, sorting and hides the mode line of the window.
-    (advice-add #'register-preview :override #'consult-register-window)
-
-    ;; Optionally replace `completing-read-multiple' with an enhanced version.
-    (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
-
-    ;; Use Consult to select xref locations with preview
-    (setq xref-show-xrefs-function #'consult-xref
-	  xref-show-definitions-function #'consult-xref)
-
-    ;; Configure other variables and modes in the :config section,
-    ;; after lazily loading the package.
-    :config
-
-    ;; Optionally configure preview. The default value
-    ;; is 'any, such that any key triggers the preview.
-    ;; (setq consult-preview-key 'any)
-    ;; (setq consult-preview-key (kbd "M-."))
-    ;; (setq consult-preview-key (list (kbd "<S-down>") (kbd "<S-up>")))
-    ;; For some commands and buffer sources it is useful to configure the
-    ;; :preview-key on a per-command basis using the `consult-customize' macro.
-    (consult-customize
-     consult-theme
-     :preview-key '(:debounce 0.2 any)
-     consult-ripgrep consult-git-grep consult-grep
-     consult-bookmark consult-recent-file consult-xref
-     consult--source-file consult--source-project-file consult--source-bookmark
-     :preview-key (kbd "M-."))
-
-    ;; Optionally configure the narrowing key.
-    ;; Both < and C-+ work reasonably well.
-    (setq consult-narrow-key "<") ;; (kbd "C-+")
-
-    ;; Optionally make narrowing help available in the minibuffer.
-    ;; You may want to use `embark-prefix-help-command' or which-key instead.
-    ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
-
-    ;; Optionally configure a function which returns the project root directory.
-    ;; There are multiple reasonable alternatives to chose from.
-    ;;;; 1. project.el (project-roots)
-    (setq consult-project-root-function
-	  (lambda ()
-	    (when-let (project (project-current))
-	      (car (project-roots project)))))
-    ;;;; 2. projectile.el (projectile-project-root)
-    ;; (autoload 'projectile-project-root "projectile")
-    ;; (setq consult-project-root-function #'projectile-project-root)
-    ;;;; 3. vc.el (vc-root-dir)
-    ;; (setq consult-project-root-function #'vc-root-dir)
-    ;;;; 4. locate-dominating-file
-    ;; (setq consult-project-root-function (lambda () (locate-dominating-file "." ".git")))
-  )
-#+end_src
-
-#+RESULTS:
-: consult-theme
+Using the consult configuration under the vertico heading - tja 26-May-2023
 
 * Consult-dir
 
@@ -1734,6 +1636,28 @@ Swap vertico-map with  minibuffer-local-completion-map if not using vertico
 #+begin_src emacs-lisp :results raw
 (use-package csv-mode)
 #+end_src
+
+* TJA.el Add my Emacs lisp extensions
+This file may have dependencies on libraries above
+
+[[file:lisp/tja.org::*Org file for my private extensions to emacs packages][TJA.org file]]
+#+begin_src emacs-lisp
+(push "~/emacs/lisp/" load-path)
+#+end_src
+
+#+RESULTS:
+| ~/emacs/lisp/ | /home/trevor/.emacs.d/straight/build/perspective | /home/trevor/.emacs.d/straight/build/tree-sitter-indent | /home/trevor/.emacs.d/straight/build/tree-sitter-langs | /home/trevor/.emacs.d/straight/build/tsc | /home/trevor/.emacs.d/straight/build/tree-sitter | /home/trevor/.emacs.d/straight/build/csharp-mode | /home/trevor/.emacs.d/straight/build/treemacs-projectile | /home/trevor/.emacs.d/straight/build/lsp-treemacs | /home/trevor/.emacs.d/straight/build/posframe | /home/trevor/.emacs.d/straight/build/cfrs | /home/trevor/.emacs.d/straight/build/hydra | /home/trevor/.emacs.d/straight/build/pfuture | /home/trevor/.emacs.d/straight/build/avy | /home/trevor/.emacs.d/straight/build/ace-window | /home/trevor/.emacs.d/straight/build/treemacs | /home/trevor/.emacs.d/straight/build/eldoc | /home/trevor/.emacs.d/straight/build/flymake | /home/trevor/.emacs.d/straight/build/lsp-ui | /home/trevor/.emacs.d/straight/build/lv | /home/trevor/.emacs.d/straight/build/spinner | /home/trevor/.emacs.d/straight/build/ht | /home/trevor/.emacs.d/straight/build/lsp-mode | /home/trevor/.emacs.d/straight/build/shrink-path | /home/trevor/.emacs.d/straight/build/all-the-icons | /home/trevor/.emacs.d/straight/build/doom-modeline | /home/trevor/.emacs.d/straight/build/vterm-toggle | /home/trevor/.emacs.d/straight/build/vterm | /home/trevor/.emacs.d/straight/build/yaml | /home/trevor/.emacs.d/straight/build/markdown-mode | /home/trevor/.emacs.d/straight/build/treepy | /home/trevor/.emacs.d/straight/build/let-alist | /home/trevor/.emacs.d/straight/build/ghub | /home/trevor/.emacs.d/straight/build/closql | /home/trevor/.emacs.d/straight/build/forge | /home/trevor/.emacs.d/straight/build/with-editor | /home/trevor/.emacs.d/straight/build/transient | /home/trevor/.emacs.d/straight/build/git-commit | /home/trevor/.emacs.d/straight/build/magit | /home/trevor/.emacs.d/straight/build/company | /home/trevor/.emacs.d/straight/build/consult-projectile | /home/trevor/.emacs.d/straight/build/projectile | /home/trevor/.emacs.d/straight/build/xref | /home/trevor/.emacs.d/straight/build/project | /home/trevor/.emacs.d/straight/build/which-key | /home/trevor/.emacs.d/straight/build/app-launcher | /home/trevor/.emacs.d/straight/build/embark-consult | /home/trevor/.emacs.d/straight/build/embark | /home/trevor/.emacs.d/straight/build/orderless | /home/trevor/.emacs.d/straight/build/consult | /home/trevor/.emacs.d/straight/build/marginalia | /home/trevor/.emacs.d/straight/build/vertico | /home/trevor/.emacs.d/straight/build/magit-section | /home/trevor/.emacs.d/straight/build/emacsql-sqlite | /home/trevor/.emacs.d/straight/build/emacsql | /home/trevor/.emacs.d/straight/build/s | /home/trevor/.emacs.d/straight/build/f | /home/trevor/.emacs.d/straight/build/dash | /home/trevor/.emacs.d/straight/build/org-roam | /home/trevor/.emacs.d/straight/build/org-contrib | /home/trevor/.emacs.d/straight/build/org-bullets | /home/trevor/.emacs.d/straight/build/org | /home/trevor/.emacs.d/straight/build/rainbow-delimiters | /home/trevor/.emacs.d/straight/build/key-chord | /home/trevor/.emacs.d/straight/build/spacemacs-theme | /home/trevor/.emacs.d/straight/build/bind-key | /home/trevor/.emacs.d/straight/build/use-package | /home/trevor/.emacs.d/straight/build/straight | /usr/share/emacs/28.0.60/site-lisp | /usr/share/emacs/site-lisp | /usr/share/emacs/28.0.60/lisp | /usr/share/emacs/28.0.60/lisp/vc | /usr/share/emacs/28.0.60/lisp/url | /usr/share/emacs/28.0.60/lisp/textmodes | /usr/share/emacs/28.0.60/lisp/progmodes | /usr/share/emacs/28.0.60/lisp/play | /usr/share/emacs/28.0.60/lisp/org | /usr/share/emacs/28.0.60/lisp/nxml | /usr/share/emacs/28.0.60/lisp/net | /usr/share/emacs/28.0.60/lisp/mh-e | /usr/share/emacs/28.0.60/lisp/mail | /usr/share/emacs/28.0.60/lisp/leim | /usr/share/emacs/28.0.60/lisp/language | /usr/share/emacs/28.0.60/lisp/international | /usr/share/emacs/28.0.60/lisp/image | /usr/share/emacs/28.0.60/lisp/gnus | /usr/share/emacs/28.0.60/lisp/eshell | /usr/share/emacs/28.0.60/lisp/erc | /usr/share/emacs/28.0.60/lisp/emulation | /usr/share/emacs/28.0.60/lisp/emacs-lisp | /usr/share/emacs/28.0.60/lisp/cedet | /usr/share/emacs/28.0.60/lisp/calendar | /usr/share/emacs/28.0.60/lisp/calc | /usr/share/emacs/28.0.60/lisp/obsolete |
+
+#+begin_src emacs-lisp
+  (org-babel-load-file "~/emacs/tja.org")
+
+  (require 'tja-vterm)
+  (require 'tja-magit)
+  (require 'tja-misc)
+  (require 'tja-org)
+  (require 'tja-ocr)
+#+end_src
+
 * Open this file and personal lisp on startup
 #+begin_src emacs-lisp
   (find-file "~/emacs/tja.org")

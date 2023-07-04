@@ -1,5 +1,20 @@
 (require 'clockify)
 
+(defun my:clockify/add-entry (st et desc project-id)
+    (let* ((workspace-id "5d6de2a927f8c341bd8fc10d")
+           (endpoint (concat (clockify--workspaces-endpoint) "/" workspace-id "/time-entries"))
+           (data (json-encode-alist
+                  `(
+                    ("start" . ,st)
+                    ("end". ,et)
+                    ("billable" . "true")
+                    ("description". ,desc)
+                    ("projectId". ,project-id)                               
+                    ))))
+      (clockify--post endpoint data)
+      )
+    )
+
 (defun my:clockify-init ()
   (interactive)
 ;;; Need this to initialize clockify api I guess

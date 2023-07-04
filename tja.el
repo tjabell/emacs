@@ -119,6 +119,24 @@
     (vterm-send-return)))
 
 ;;;###autoload
+(defun tja-vterm-run-fbp-api-test ()
+  (interactive)
+  (with-current-buffer (vterm (concat "*vterm* *FBP API Tests*"))
+    (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/")
+    (vterm-send-return)
+    (vterm-send-string "./local-startup-tests.sh")
+    (vterm-send-return)))
+
+;;;###autoload
+(defun tja-vterm-run-schools-api-test ()
+  (interactive)
+  (with-current-buffer (vterm (concat "*vterm* *FBP Schools API Tests*"))
+    (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-schools-api/")
+    (vterm-send-return)
+    (vterm-send-string "./local-startup-tests.sh")
+    (vterm-send-return)))
+
+;;;###autoload
 (defun tja-vterm-run-faculty-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FACULTY API*"))
@@ -148,11 +166,12 @@
 ;;;###autoload
 (defun tja-vterm-run-fbp-web ()
   (interactive)
-  (with-current-buffer (vterm (concat "*vterm* *FBP WEB*"))
+  (with-current-buffer (vterm (concat "*vterm* *FBP Web*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/FranchiseePortal-Website/")
     (vterm-send-return)
     (vterm-send-string ". ./local-startup.sh")
     (vterm-send-return)))
+
 ;;;###autoload
 (defun tja-vterm-run-fbp-web-test ()
   (interactive)
@@ -243,6 +262,41 @@
     (vterm-send-string ". ./local-startup.sh")
     (vterm-send-return)))
 (provide 'tja-vterm)
+
+;;;###autoload
+(defun straight-open-repository-directory ()
+"Open the Straight.el repository directory."
+(interactive)
+(let ((repository-dir (straight--repos-dir)))
+  (when repository-dir
+    (find-file repository-dir))))
+
+;;;###autoload
+(defun convert-spaces-to-underscores (start end)
+  "Converts dashes to underscores in the region between START and END."
+  (interactive "r")
+  (save-excursion
+    (goto-char start)
+    (while (search-forward " " end t)
+      (replace-match "_" nil t))))
+
+;;;###autoload
+(defun convert-dashes-to-underscores (start end)
+  "Converts dashes to underscores in the region between START and END."
+  (interactive "r")
+  (save-excursion
+    (goto-char start)
+    (while (search-forward "-" end t)
+      (replace-match "_" nil t))))
+
+
+;;;###autoload
+(defun copy-buffer-filename-to-kill-ring ()
+  "Copy the filename of the current buffer to the kill ring."
+  (interactive)
+  (when buffer-file-name
+    (kill-new buffer-file-name)
+    (message "Filename copied to kill ring: %s" buffer-file-name)))
 
 ;;;###autoload
 (defun insert-current-date ()
@@ -351,6 +405,52 @@ same directory as the org-buffer and insert a link to this file."
 (provide 'tja-org)
 
 (load-file "~/emacs/my-org-clockify-report.el")
+
+(defun my:org-meta-move-to-top (&optional _arg)
+  "Move the item at point up to the top of the org file just after the first header"
+  (interactive "P")
+  (cond
+   ((run-hook-with-args-until-success 'org-metaup-hook))
+   ((org-region-active-p)
+    (let* ((a (save-excursion
+                (goto-char (region-beginning))
+                (line-beginning-position)))
+           (b (save-excursion
+                (goto-char (region-end))
+                (if (bolp) (1- (point)) (line-end-position))))
+           (c (save-excursion
+                (goto-char a)
+                (move-beginning-of-line 0)
+                (point)))
+           (d (save-excursion
+                (goto-char a)
+                (move-end-of-line 0)
+                (point))))
+      (transpose-regions a b c d)
+      (goto-char c)))
+   ((org-at-table-p) (org-call-with-arg 'org-table-move-row 'up))
+   ((and (featurep 'org-inlinetask)
+         (org-inlinetask-in-task-p))
+    (org-drag-element-backward))
+   ((org-at-heading-p) (call-interactively 'org-move-subtree-up))
+   ((org-at-item-p) (call-interactively 'org-move-item-up))
+   (t (org-drag-element-backward))))
+  (defun my:org-move-item-to-top ()
+    "Move the item at point up to the top of the org file just after the first header"
+    (interactive)
+    (unless (org-at-item-p) (error "Not at an item"))
+    (let* ((col (current-column))
+           (item (line-beginning-position))
+           (struct (org-list-struct))
+           (prevs (org-list-prevs-alist struct))
+           (prev-item (org-list-get-prev-item (line-beginning-position) struct prevs)))
+      (unless (or prev-item org-list-use-circular-motion)
+        (user-error "Cannot move this item further up"))
+      (if (not prev-item)
+          (setq struct (org-list-send-item item 'end struct))
+        (setq struct (org-list-swap-items prev-item item struct)))
+      (org-list-write-struct struct (org-list-parents-alist struct))
+      (org-move-to-column col)))
 
 ;;;###autoload
 (defun tja-ocr-screenshot ()
@@ -526,3 +626,31 @@ same directory as the org-buffer and insert a link to this file."
                  for interest-paid = (* balance monthly-rate)
                  for principal-paid = (- payment interest-paid)
                  do (princ (format "%-10d %-10.2f %-10.2f %-10.2f\n" month payment interest-paid principal-paid))))))))
+
+(load-file "/home/trevor/emacs/lisp/my-clockify.el")
+
+(org-babel-load-file "~/projects/extended_stay/esa-elisp.org")
+
+;; From chatgpt 2023-06-01
+;;;###autoload 
+(defun my:escape-elisp-string (string)
+  "Escapes special characters in the given STRING for reading as an Emacs Lisp string."
+  (replace-regexp-in-string "[\"\\\\\a\b\f\n\r\t\v]"
+                            (lambda (match)
+                              (cond
+                               ((string-equal match "\"") "\\\"")
+                               ((string-equal match "\\") "\\\\")
+                               ((string-equal match "\a") "\\a")
+                               ((string-equal match "\b") "\\b")
+                               ((string-equal match "\f") "\\f")
+                               ((string-equal match "\n") "\\n")
+                               ((string-equal match "\r") "\\r")
+                               ((string-equal match "\t") "\\t")
+                               ((string-equal match "\v") "\\v")))
+                            string))
+
+;; From chatgpt 2023-06-01
+;;;###autoload 
+(defun my:escape-quotes (string)
+  "Escapes quotes in the given STRING."
+  (replace-regexp-in-string "\"" "\\\\\"" string))

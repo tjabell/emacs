@@ -1,3 +1,5 @@
+;; This is borrowed and modified from org-agenda-list and org-clock-get-clocktable in org-agenda.el
+;; Then modified to print out an org clock report for the day
 (defun my:org/org-clockify-report ()
   "Retrieves the arguments from the Agenda buffer and passes them through to the clockify table builder"
   (interactive)
@@ -172,7 +174,7 @@
 (defun format--clockify-fn (start-time duration-minutes description project-id)
   (let* ((decoded-start-time (decode-time (org-read-date nil t start-time)))
          (end-time (format--decoded-time-to-clockify (increment--dt-minutes decoded-start-time duration-minutes))))
-    (format "(my:clockify/add-entry \"%s\"  \"%s\" \"%s\" \"%s\")" start-time end-time description project-id)))
+    (format "(my:clockify/add-entry \"%s\"  \"%s\" \"%s\" \"%s\")" start-time end-time (my:escape-quotes description) project-id)))
 
 (defun my:org-clock/clockify-simple-fn-formatter (ipos tables params)
   (let* ((tstart (plist-get params :tstart))
@@ -220,7 +222,7 @@
     ;; Now iterate over the tables and insert the data but only if any
     ;; time has been collected.
     (insert-before-markers "\n") ; buffer gets formatted and loses the top line, which would be a time entry in this case
-    (insert-before-markers ";; WARNING - GSI will only work for tours tasks right now, update the project id for maintenance tasks.  FBP Task Id is 5fd10f1e29e3892afebb82dc\n") ; buffer gets formatted and loses the top line, which would be a time entry in this case
+    (insert-before-markers ";; WARNING - GSI will only work for tours tasks right now, update the project id for maintenance tasks.  FBP Task Id is 5fd10f1e29e3892afebb82dc\n;; WARNING - ESA will only work with FBP Maint. ESA App id is 642d934d2a9edb25fb32d316\n(progn\n") ; buffer gets formatted and loses the top line, which would be a time entry in this case
     (when (and total-time (> total-time 0))
       (pcase-dolist (`(,file-name ,file-time ,entries) tables)
         (when (or (and file-time (> file-time 0))
@@ -243,6 +245,7 @@
                 (setq current-time-block-start-time
                       (increment--dt-minutes current-time-block-start-time (round--to-nearest-five-minutes time)))))))))
     (delete-char -1)
+    (insert-before-markers "\n)") ;; Closing paren for progn
     ;; Back to beginning, align the table, recalculate if necessary.
     (goto-char ipos)
     (when sort
@@ -510,8 +513,9 @@
     (when recalc (org-table-recalculate 'all))
     total-time))
 
+;; Dont remember exactly what this was supposed to do.  Removing the interactive for now 01-Jun-2023
 (defun my:org/org-clockify-clock-report (&optional arg)
-  (interactive "P")
+  ;(interactive "P")
   (org-clock-remove-overlays)
   (when arg
     (org-find-dblock "clockify-table")
