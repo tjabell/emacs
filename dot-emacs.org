@@ -944,6 +944,7 @@ Builtin after emacs 29
             (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))))
 
   (use-package treesit-auto
+    :straight '(treesit-auto :host github :repo "renzmann/treesit-auto")
     :config
     (customize-set-value 'treesit-font-lock-level 4)
     (setq treesit-auto-install 'prompt)
