@@ -24,7 +24,6 @@ otherwide ⤵ would get converted to bytes when opening this file
 
 #+begin_src emacs-lisp
   (add-to-list 'auto-mode-alist '("\\zshrc$" . sh-mode))
-  (add-to-list 'auto-mode-alist '("\\beancount$" . beancount-mode))
 #+end_src
 
 ** [Optional] If debugging this may help
@@ -1235,6 +1234,8 @@ Using apache velocity template langage for ESA
   (use-package typescript-mode
     :mode "\\.ts\\'"
     :custom ((typescript-indent-level 4)))
+
+  (add-to-list 'auto-mode-alist '("\\.tsx$" . tsx-ts-mode))
 #+end_src
 
 ** Javascript
@@ -1483,8 +1484,7 @@ https://emacs.stackexchange.com/questions/17064/never-create-frame-in-ediff
   (use-package beancount
     :straight '(beancount :host github :repo "beancount/beancount-mode")
     :hook (outline-minor-mode)
-    :config
-    (add-to-list 'auto-mode-alist '("\\.beancount" . beancount-mode))
+    :mode ("\\.beancount" . beancount-mode)
     :bind (("C-c C-n" . #'outline-next-visible-heading)
            ("C-c C-p" . #'outline-previous-visible-heading)))
 #+end_src
