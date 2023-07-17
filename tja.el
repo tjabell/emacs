@@ -112,11 +112,10 @@
 ;;;###autoload
 (defun tja-vterm-run-fbp-api ()
   (interactive)
-  (with-current-buffer (vterm (concat "*vterm* *FBP API*"))
-    (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/")
-    (vterm-send-return)
-    (vterm-send-string "./local-startup.sh")
-    (vterm-send-return)))
+  (open-or-start-vterm-buffer
+   "*vterm* *FBP API*"
+   "/home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/"
+   "./local-startup.sh"))
 
 ;;;###autoload
 (defun tja-vterm-run-fbp-api-test ()
@@ -163,14 +162,22 @@
     (vterm-send-string "./local-startup.sh")
     (vterm-send-return)))
 
+(defun open-or-start-vterm-buffer (buf folder startup-script)
+    (if (buffer-live-p (get-buffer buf))
+        (switch-to-buffer buf)
+      (with-current-buffer (vterm (concat buf))
+        (vterm-send-string (concat "cd " folder))
+        (vterm-send-return)
+        (vterm-send-string (concat ". " startup-script))
+        (vterm-send-return))))
+
 ;;;###autoload
 (defun tja-vterm-run-fbp-web ()
   (interactive)
-  (with-current-buffer (vterm (concat "*vterm* *FBP Web*"))
-    (vterm-send-string "cd /home/trevor/projects/goddard/src/FranchiseePortal-Website/")
-    (vterm-send-return)
-    (vterm-send-string ". ./local-startup.sh")
-    (vterm-send-return)))
+  (open-or-start-vterm-buffer
+   "*vterm* *FBP Web*"
+   "/home/trevor/projects/goddard/src/FranchiseePortal-Website/"
+   "./local-startup.sh"))
 
 ;;;###autoload
 (defun tja-vterm-run-fbp-web-test ()
@@ -482,7 +489,7 @@ same directory as the org-buffer and insert a link to this file."
          (title (cdr (assoc 'System.Title (assoc 'fields props)))))
     (list id title)))
 
-(defun my:gsi/get-azure-ticket (ticket-number)    
+(defun my:gsi/get-azure-ticket (ticket-number)
   (with-temp-buffer ; temp buffer to hold json data
     (let* ((username my/azure-un)
            (password my/azure-password)
@@ -632,7 +639,7 @@ same directory as the org-buffer and insert a link to this file."
 (org-babel-load-file "~/projects/extended_stay/esa-elisp.org")
 
 ;; From chatgpt 2023-06-01
-;;;###autoload 
+;;;###autoload
 (defun my:escape-elisp-string (string)
   "Escapes special characters in the given STRING for reading as an Emacs Lisp string."
   (replace-regexp-in-string "[\"\\\\\a\b\f\n\r\t\v]"
@@ -650,7 +657,7 @@ same directory as the org-buffer and insert a link to this file."
                             string))
 
 ;; From chatgpt 2023-06-01
-;;;###autoload 
+;;;###autoload
 (defun my:escape-quotes (string)
   "Escapes quotes in the given STRING."
   (replace-regexp-in-string "\"" "\\\\\"" string))
