@@ -848,13 +848,19 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 
 * Magit
 #+begin_src emacs-lisp
+  ;; Adding the options for no-merges and first-parent for following branch lines
   (use-package magit
     :straight (:host github :repo "magit/magit" :branch "main")
     :config
     (require 'magit-extras)
+    (transient-append-suffix 'magit-log "-n"
+      '("-m" "No Merges" "--no-merges"))
+    (transient-append-suffix 'magit-log "-n"
+      '("-x" "First Parent" "--first-parent"))
     :bind
     ("<f10>" . magit-status)
-    ("C-x g" . magit-status))
+    ("C-x g" . magit-status)
+    )
 #+end_src
 
 #+RESULTS:
