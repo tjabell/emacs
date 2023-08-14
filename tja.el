@@ -115,9 +115,9 @@
   (open-or-start-vterm-buffer
    "*vterm* *GODDARD VPN*"
    "/home/trevor/projects/goddard"
-   ". ~/.secrets.sh && echo $GODDARDPWD | sudo openconnect --no-dtls vpn.goddardsystems.com -u parsus-ta"))
+   "~/.secrets.sh && echo $GODDARDPWD | sudo openconnect --no-dtls vpn.goddardsystems.com -u parsus-ta"))
 
-      ;;;###autoload
+;;;###autoload
 (defun tja-vterm-run-fbp-api ()
   (interactive)
   (open-or-start-vterm-buffer
