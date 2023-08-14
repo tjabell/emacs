@@ -109,7 +109,7 @@
     (vterm-send-string command)
     (vterm-send-return)))
 
-;;;autoload
+;;;###autoload
 (defun tja-vterm-connect-goddard-vpn ()
   (interactive)
   (open-or-start-vterm-buffer
@@ -152,7 +152,7 @@
     (vterm-send-string "./local-startup.sh")
     (vterm-send-return)))
 
-      ;;;###autoload
+;;;###autoload
 (defun tja-vterm-run-tours-api ()
   (interactive)
   (open-or-start-vterm-buffer
@@ -194,7 +194,7 @@
    "/home/trevor/projects/goddard/src/FranchiseePortal-Website/"
    "./local-startup-test.sh"))
 
-      ;;;###autoload
+;;;###autoload
 (defun tja-vterm-log-franchiseportal-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FBP WEB*"))
@@ -252,20 +252,18 @@
 ;;;###autoload
 (defun tja-vterm-esa-run-dotcms ()
   (interactive)
-  (with-current-buffer (vterm (concat "*vterm* *DOTCMS*"))
-    (vterm-send-string "cd /home/trevor/projects/extended_stay/src/frontend/")
-    (vterm-send-return)
-    (vterm-send-string ". ./local-startup.sh")
-    (vterm-send-return)))
+  (open-or-start-vterm-buffer
+   "*vterm* *DOTCMS*"
+   "/home/trevor/projects/extended_stay/src/frontend/"
+   "./local-startup.sh"))
 
 ;;;###autoload
 (defun tja-vterm-esa-run-esa-dotcms-node ()
   (interactive)
-  (with-current-buffer (vterm (concat "*vterm* *DOTCMS - Frontend*"))
-    (vterm-send-string "cd /home/trevor/projects/extended_stay/src/frontend/")
-    (vterm-send-return)
-    (vterm-send-string ". ./local-startup-node.sh")
-    (vterm-send-return)))
+  (open-or-start-vterm-buffer
+   "*vterm* *DOTCMS - Frontend*"
+   "/home/trevor/projects/extended_stay/src/frontend/"
+   "./local-startup-node.sh"))
 
 (defun tja-vterm-mtsinai-run-prepc ()
   (interactive)
