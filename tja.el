@@ -109,7 +109,15 @@
     (vterm-send-string command)
     (vterm-send-return)))
 
-;;;###autoload
+;;;autoload
+(defun tja-vterm-connect-goddard-vpn ()
+  (interactive)
+  (open-or-start-vterm-buffer
+   "*vterm* *GODDARD VPN*"
+   "/home/trevor/projects/goddard"
+   ". ~/.secrets.sh && echo $GODDARDPWD | sudo openconnect --no-dtls vpn.goddardsystems.com -u parsus-ta"))
+
+      ;;;###autoload
 (defun tja-vterm-run-fbp-api ()
   (interactive)
   (open-or-start-vterm-buffer
@@ -144,16 +152,15 @@
     (vterm-send-string "./local-startup.sh")
     (vterm-send-return)))
 
-;;;###autoload
+      ;;;###autoload
 (defun tja-vterm-run-tours-api ()
   (interactive)
-  (with-current-buffer (vterm (concat "*vterm* *TOURS API*"))
-    (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-tours-api/")
-    (vterm-send-return)
-    (vterm-send-string "./local-startup.sh")
-    (vterm-send-return)))
+  (open-or-start-vterm-buffer
+   "*vterm* *TOURS API*"
+   "/home/trevor/projects/goddard/src/ipaas-tours-api/"
+   "./local-startup.sh"))
 
-;;;###autoload
+      ;;;###autoload
 (defun tja-vterm-run-content-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *CONTENT API*"))
@@ -163,15 +170,15 @@
     (vterm-send-return)))
 
 (defun open-or-start-vterm-buffer (buf folder startup-script)
-    (if (buffer-live-p (get-buffer buf))
-        (switch-to-buffer buf)
-      (with-current-buffer (vterm (concat buf))
-        (vterm-send-string (concat "cd " folder))
-        (vterm-send-return)
-        (vterm-send-string (concat ". " startup-script))
-        (vterm-send-return))))
+  (if (buffer-live-p (get-buffer buf))
+      (switch-to-buffer buf)
+    (with-current-buffer (vterm (concat buf))
+      (vterm-send-string (concat "cd " folder))
+      (vterm-send-return)
+      (vterm-send-string (concat ". " startup-script))
+      (vterm-send-return))))
 
-;;;###autoload
+      ;;;###autoload
 (defun tja-vterm-run-fbp-web ()
   (interactive)
   (open-or-start-vterm-buffer
@@ -182,13 +189,12 @@
 ;;;###autoload
 (defun tja-vterm-run-fbp-web-test ()
   (interactive)
-  (with-current-buffer (vterm (concat "*vterm* *FBP Web Tests*"))
-    (vterm-send-string "cd /home/trevor/projects/goddard/src/FranchiseePortal-Website/")
-    (vterm-send-return)
-    (vterm-send-string ". ./local-startup-test.sh")
-    (vterm-send-return)))
+  (open-or-start-vterm-buffer
+   "*vterm* *FBP Web Tests*"
+   "/home/trevor/projects/goddard/src/FranchiseePortal-Website/"
+   "./local-startup-test.sh"))
 
-;;;###autoload
+      ;;;###autoload
 (defun tja-vterm-log-franchiseportal-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FBP WEB*"))
