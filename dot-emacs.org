@@ -1647,6 +1647,10 @@ Swap vertico-map with  minibuffer-local-completion-map if not using vertico
 (use-package csv-mode)
 #+end_src
 
+* Restclient
+#+begin_src emacs-lisp :results raw
+(use-package restclient)
+#+end_src
 * TJA.el Add my Emacs lisp extensions
 This file may have dependencies on libraries above
 
