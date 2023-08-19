@@ -1491,7 +1491,7 @@ https://emacs.stackexchange.com/questions/17064/never-create-frame-in-ediff
   (use-package beancount
     :straight '(beancount :host github :repo "beancount/beancount-mode")
     :hook (outline-minor-mode)
-    :mode ("\\.beancount" . beancount-mode)
+    :mode (("\\.beancount" . beancount-mode) ("\\.bean" . beancount-mode))
     :bind (("C-c C-n" . #'outline-next-visible-heading)
            ("C-c C-p" . #'outline-previous-visible-heading)))
 #+end_src
@@ -1651,6 +1651,7 @@ Swap vertico-map with  minibuffer-local-completion-map if not using vertico
 #+begin_src emacs-lisp :results raw
 (use-package restclient)
 #+end_src
+
 * TJA.el Add my Emacs lisp extensions
 This file may have dependencies on libraries above
 

@@ -101,17 +101,17 @@ Installing, creating these
   (defun tja-vterm-run-in-vterm (command)
     "Execute string COMMAND in a new vterm.
 
-    Interactively, prompt for COMMAND with the current buffer's file
-    name supplied. When called from Dired, supply the name of the
-    file at point.
+      Interactively, prompt for COMMAND with the current buffer's file
+      name supplied. When called from Dired, supply the name of the
+      file at point.
 
-    Like `async-shell-command`, but run in a vterm for full terminal features.
+      Like `async-shell-command`, but run in a vterm for full terminal features.
 
-    The new vterm buffer is named in the form `*foo bar.baz*`, the
-    command and its arguments in earmuffs.
+      The new vterm buffer is named in the form `*foo bar.baz*`, the
+      command and its arguments in earmuffs.
 
-    When the command terminates, the shell remains open, but when the
-    shell exits, the buffer is killed."
+      When the command terminates, the shell remains open, but when the
+      shell exits, the buffer is killed."
     (interactive
      (list
       (let* ((f (cond (buffer-file-name)
@@ -128,7 +128,15 @@ Installing, creating these
       (vterm-send-return)))
 
   ;;;###autoload
-  (defun tja-vterm-connect-goddard-vpn ()
+  (defun tja-vterm-connect-vpn-equinox ()
+    (interactive)
+    (open-or-start-vterm-buffer
+     "*vterm* *EQUINOX VPN*"
+     "/home/trevor/projects/equinox"
+     "~/.secrets.sh && echo $EQUINOXPWD | sudo openconnect --no-dtls vpn.eqpmt.net -u eqpmt.net\\tabell -v"))
+
+  ;;;###autoload
+  (defun tja-vterm-connect-vpn-goddard ()
     (interactive)
     (open-or-start-vterm-buffer
      "*vterm* *GODDARD VPN*"
