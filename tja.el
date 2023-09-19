@@ -110,6 +110,14 @@
     (vterm-send-return)))
 
 ;;;###autoload
+(defun tja-vterm-beancount-fava ()
+    (interactive)
+    (open-or-start-vterm-buffer
+     "*vterm* *BEANCOUNT FAVA*"
+     "/home/trevor/env/tools/"
+     "./start-beancount-fava.sh"))
+
+;;;###autoload
 (defun tja-vterm-connect-vpn-equinox ()
   (interactive)
   (open-or-start-vterm-buffer
@@ -186,7 +194,14 @@
       (vterm-send-string (concat ". " startup-script))
       (vterm-send-return))))
 
-      ;;;###autoload
+;;;###autoload
+(defun tja-vterm-run-fbp ()
+  (interactive)
+  (tja-vterm-run-fbp-api)
+  (tja-vterm-run-fbp-web)
+  (tja-vterm-run-tours-api))
+
+;;;###autoload
 (defun tja-vterm-run-fbp-web ()
   (interactive)
   (open-or-start-vterm-buffer
@@ -646,6 +661,7 @@ same directory as the org-buffer and insert a link to this file."
                  for principal-paid = (- payment interest-paid)
                  do (princ (format "%-10d %-10.2f %-10.2f %-10.2f\n" month payment interest-paid principal-paid))))))))
 
+(load-file "/home/trevor/.clockify-secrets.el")
 (load-file "/home/trevor/emacs/lisp/my-clockify.el")
 
 (org-babel-load-file "~/projects/extended_stay/esa-elisp.org")

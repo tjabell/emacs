@@ -1,4 +1,22 @@
+(require 'json)
+(require 'cl-lib)
+(require 'request)
 (require 'clockify)
+
+(defun clockify--post (endpoint data)
+  "Retrieve user information."
+  (let ((response (request-response-data
+		   (request endpoint
+		     :type "POST"
+		     :headers (clockify--generate-headers)
+		     :sync t
+		     :parser 'json-read
+                     :data data
+		     :error 'clockify--error-fn))))
+    response))
+  
+(setq clockify--curent-user-id (cdr (assoc 'id response)))
+(setq clockify--active-workspace-id (cdr (assoc 'activeWorkspace response)))
 
 (defun my:clockify/add-entry (st et desc project-id)
     (let* ((workspace-id "5d6de2a927f8c341bd8fc10d")
@@ -11,52 +29,35 @@
                     ("description". ,desc)
                     ("projectId". ,project-id)                               
                     ))))
-      (clockify--post endpoint data)
-      )
-    )
+      (clockify--post endpoint data)))
 
 (defun my:clockify-init ()
   (interactive)
 ;;; Need this to initialize clockify api I guess
   (setq my:clockify:userid  (clockify--user-info))
 
-  (setq my:ws (clockify--workspaces))
+  ;; (setq my:ws (clockify--workspaces-endpoint))
 
-  (setq my:ws:id (cdar (aref my:ws 0)) )
+  ;; (setq my:ws:id (cdar (aref my:ws 0)) )
 
-  (setq clockify--active-workspace-id my:ws:id)
+  (setq clockify--active-workspace-id "5d6de2a927f8c341bd8fc10d")
 
-  (setq my:esa-project-id "5ec8372146cf2748cd6a77c6"))
-
+  (setq my:esa-project-id "5ec8372146cf2748cd6a77c6")
   (setq my:projects (clockify--projects))
+  "Clockify projects initiated")
 
-  ;(setq my:gilbert:task-id "5e948870ea8094116e8c7188")
-  ;(setq my:gilbert:project-id "5e948870ea8094116e8c7188")
+(setq my:parsus-training-id "5d702b48a3fe2c1b233ea83c")
 
-  ;(setq my:karisma-pgs:project-id "5d702211a3fe2c1b233e9e30")
+(setq my:acdhh-project-id "5d6fff262b576659a087efb4")
 
-  ;(setq my:bonappetit-hosting-project-id "5ea87fcd7468d5567e641f34")
+(setq my:acdhh-public-website-task-id "5d6fffd2a3fe2c1b233e709b")
 
-  ;(setq my:bonappetit-maintenance-project-id "5eacc1ec26b404092a8bf1aa")
+(setq my:acdhh-cdbms-task-id "5d6fffd72b576659a087f096")
 
-  (setq my:parsus-training-id "5d702b48a3fe2c1b233ea83c")
-
-  (setq my:acdhh-project-id "5d6fff262b576659a087efb4")
-
-  (setq my:acdhh-public-website-task-id "5d6fffd2a3fe2c1b233e709b")
-
-  (setq my:acdhh-cdbms-task-id "5d6fffd72b576659a087f096")
-
-  ;(setq my:righter-project-id "5ec815cb46cf2748cd6a2023")
-
-  ;(setq my:righter-bug-fix-task-id "5ec8161696f46724f636f516")
-  ;(setq my:righter-startup-fix-task-id "5ec815f846cf2748cd6a20b8")
-  ;(setq my:righter-enhancement-task-id "5ec8160996f46724f636f4f5")
-
-  ;(setq my:equinox-project-id "5d6fe70bd162f830901a8df2")
-  ;(setq my:equinox-gac-task-id "5d8e74c4a0b06a32d93904da")
-  ;(setq my:equinox-rks-task-id "5d8e74bfad3d0067ca648e6b")
-  ;(setq my:equinox-wpt-task-id "5d6fff98a3fe2c1b233e704d")
+;;(setq my:equinox-project-id "5d6fe70bd162f830901a8df2")
+;;(setq my:equinox-gac-task-id "5d8e74c4a0b06a32d93904da")
+;;(setq my:equinox-rks-task-id "5d8e74bfad3d0067ca648e6b")
+;;(setq my:equinox-wpt-task-id "5d6fff98a3fe2c1b233e704d")
 
 (defun my:clockify-print-projects ()
   (interactive)
