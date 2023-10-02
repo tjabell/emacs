@@ -5,6 +5,7 @@
 * New Emacs configuration file
 
 * Native compilation
+
 #+begin_src emacs-lisp
   ;; Fix for undefined var error (hopefully temporary 2023-03-06)
   (defvar native-comp-deferred-compilation-deny-list nil)
@@ -15,6 +16,7 @@
 #+end_src
 
 * [Fix] For using multibyte characters
+
 Ended up putting -*- coding: utf-8 -*- on top of the file
 otherwide ⤵ would get converted to bytes when opening this file
 
@@ -166,6 +168,7 @@ https://www.gnu.org/software/emacs/manual/html_node/tramp/Auto_002dsave-File-Loc
 
 #+RESULTS:
 : other-window
+
 ** Key chord mode
 #+begin_src emacs-lisp
   (use-package key-chord
@@ -288,10 +291,16 @@ Couldn't find a good shortcut 16-Jun-2023
   ;(global-set-key (kbd "C-c C-s l") #'split-window-right)
   ;(global-set-key (kbd "C-c C-s j") #'split-window-below)
 #+end_src
+
 ** Long lined files
 #+begin_src emacs-lisp
 (if (version<= "27.1" emacs-version)
     (global-so-long-mode 1))
+#+end_src
+
+** Pixel scroll precision
+#+begin_src emacs-lisp :results raw
+  (pixel-scroll-precision-mode)
 #+end_src
 
 * Org mode, org-tempo, org bullets, org-roam
@@ -1095,6 +1104,34 @@ Builtin after emacs 29
 
 #+RESULTS:
 
+
+** GCMH
+#+begin_src emacs-lisp :results raw
+  ;install gcmh package to increase the gc value when necessary and decrease it. nice package btw
+  (use-package gcmh)
+#+end_src
+** Speeding up Eglot
+#+begin_src emacs-lisp :results raw
+  ;;Copied from:
+  ;;https://www.reddit.com/r/emacs/comments/16vixg6/how_to_make_lsp_and_eglot_way_faster_like_neovim/
+  (fset #'jsonrpc--log-event #'ignore) ;remove laggy typing it probably reduces chatty json from lsp to eglot i guess
+
+  (setq eglot-events-buffer-size 0) ;disabling event logging in eglot
+
+  (setq eglot-sync-connect nil) ;disabling elgot freeze the UI for up to 3s when you open file maybe large one
+
+  ;(add-hook 'focus-out-hook 'garbage-collect) optional, if you don't want to use gcmh package
+
+  (setq eglot-connect-timeout nil) ;optional "my code actually"
+
+  ;set this values on company package or
+
+  (setq company-idle-delay 0) ;how long to wait for company mode to wait after it got completion obviously you don't want to wait so just set it to 0
+
+  (setq company-minimum-prefix-length 1) ;how many characters you want to type before popping up the completion UI obviously 1 right
+
+#+end_src
+
 ** CSharp/Omnisharp with tree-sitter mode and dotnet
 
 *** Csharp/omnisharp/dotnet
@@ -1242,7 +1279,8 @@ Using apache velocity template langage for ESA
 #+begin_src emacs-lisp
   (use-package typescript-mode
     :mode "\\.ts\\'"
-    :custom ((typescript-indent-level 4)))
+    :custom ((typescript-indent-level 4)
+             (typescript-ts-mode-indent-offset 4)))
 
   (add-to-list 'auto-mode-alist '("\\.tsx$" . tsx-ts-mode))
 #+end_src
@@ -1537,8 +1575,8 @@ https://emacs.stackexchange.com/questions/17064/never-create-frame-in-ediff
 * EJira
 #+begin_src emacs-lisp
   (use-package jiralib2
-    :init (setq jiralib2-auth  'basic ;; 'cookie, 'token or 'basic
-                ))
+    ;; 'cookie, 'token or 'basic
+    :custom (jiralib2-auth 'token))
   (load "~/.jira-secrets.el") ;; Configuration loaded here
 #+end_src
 
@@ -1657,6 +1695,7 @@ Swap vertico-map with  minibuffer-local-completion-map if not using vertico
 #+begin_src emacs-lisp :results raw
 (use-package restclient)
 #+end_src
+
 
 * TJA.el Add my Emacs lisp extensions
 This file may have dependencies on libraries above

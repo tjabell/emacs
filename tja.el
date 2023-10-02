@@ -1,3 +1,5 @@
+(global-unset-key (kbd "C-x m"))
+
 ;;; MAGIT EXTENSION FUNCTIONS
 ;;; Note: Converting to just use call process - shouldn't (require magit) anymore
 (require 'magit)
@@ -176,7 +178,15 @@
    "/home/trevor/projects/goddard/src/ipaas-tours-api/"
    "./local-startup.sh"))
 
-      ;;;###autoload
+;;;###autoload
+(defun tja-vterm-run-tours-api-test ()
+  (interactive)
+  (open-or-start-vterm-buffer
+   "*vterm* *FBP TOURS API Tests*"
+   "/home/trevor/projects/goddard/src/ipaas-tours-api/"
+   "./local-startup-tests.sh"))
+
+;;;###autoload
 (defun tja-vterm-run-content-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *CONTENT API*"))

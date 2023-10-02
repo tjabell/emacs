@@ -14,9 +14,6 @@
                      :data data
 		     :error 'clockify--error-fn))))
     response))
-  
-(setq clockify--curent-user-id (cdr (assoc 'id response)))
-(setq clockify--active-workspace-id (cdr (assoc 'activeWorkspace response)))
 
 (defun my:clockify/add-entry (st et desc project-id)
     (let* ((workspace-id "5d6de2a927f8c341bd8fc10d")
@@ -27,7 +24,7 @@
                     ("end". ,et)
                     ("billable" . "true")
                     ("description". ,desc)
-                    ("projectId". ,project-id)                               
+                    ("projectId". ,project-id)
                     ))))
       (clockify--post endpoint data)))
 
@@ -70,3 +67,6 @@
   (let ((tasks (clockify--tasks project-id)))
     (with-current-buffer (get-buffer-create (concat "*my-tasks-" project-id "*"))
       (seq-map (lambda (i) (cl-prettyprint i)) tasks))))
+
+
+;(my:clockify-init)
