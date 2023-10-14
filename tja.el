@@ -187,6 +187,22 @@
    "./local-startup-tests.sh"))
 
 ;;;###autoload
+(defun tja-vterm-run-leads-api ()
+  (interactive)
+  (open-or-start-vterm-buffer
+   "*vterm* *LEADS API*"
+   "/home/trevor/projects/goddard/src/ipaas-leads-api/"
+   "./local-startup.sh"))
+
+;;;###autoload
+(defun tja-vterm-run-leads-api-test ()
+  (interactive)
+  (open-or-start-vterm-buffer
+   "*vterm* *FBP LEADS API Tests*"
+   "/home/trevor/projects/goddard/src/ipaas-leads-api/"
+   "./local-startup-tests.sh"))
+
+;;;###autoload
 (defun tja-vterm-run-content-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *CONTENT API*"))
@@ -699,3 +715,26 @@ same directory as the org-buffer and insert a link to this file."
 (defun my:escape-quotes (string)
   "Escapes quotes in the given STRING."
   (replace-regexp-in-string "\"" "\\\\\"" string))
+
+;; A Ctl-c u keymap
+;;   Ctl-c u g for GSI
+;;   Ctl-c u e for ESA
+;;   Ctl-c u m for Me
+(defun my/gsi:insert-school-id ()
+  (interactive)
+  (insert "F0EDC50F-ED22-DE11-B821-0014221C4264"))
+(defun my/esa:insert-dev-search-api ()
+  (interactive)
+  (insert "https://api.dev.bws.esa.com/search-results-widget-api/searchByGeo?lat=32.7766642&lng=-96.79698789999999&rooms=1&adults=1&child=0&code&rateType=ESH&checkIn=2023-10-04&checkOut=2023-10-11"))
+
+(defvar my-keymap (make-sparse-keymap))
+(global-set-key (kbd "C-c u") my-keymap)
+
+(defvar gsi-keymap (make-sparse-keymap))
+(define-key gsi-keymap (kbd "e") 'my/gsi:insert-school-id)
+(define-key gsi-keymap (kbd "r") 'tja-vterm-run-fbp)
+(define-key my-keymap (kbd "g") gsi-keymap)
+
+(defvar esa-keymap (make-sparse-keymap))
+(define-key esa-keymap (kbd "a") 'my/esa:insert-dev-search-api)
+(define-key my-keymap (kbd "e") esa-keymap)

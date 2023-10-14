@@ -4,11 +4,11 @@
 
 (load-library "tempo-snippets")
 
-(tempo-define-snippet
+(tempo-define-template
     "assembla-ticket-email"
   '((p "Space: " project) "+" p "@tickets.assembla.com"))
 
-(tempo-define-snippet
+(tempo-define-template
     "velocity-null-check-with-default"
   '("#set( " (p "LVar name: " lv) " = "(p "Default: " dv) " )" &
     "#if($UtilMethods.isSet(" (p "RVar Name: " rv) "))" &
@@ -18,12 +18,12 @@
 (define-abbrev web-mode-abbrev-table "vdefault"
   "" 'tempo-template-velocity-null-check-with-default)
 
-(tempo-define-snippet
+(tempo-define-template
     "velocity-surround-with-text-default"
   '("#textDefault( \"" (p "Key name: " key) "\" , \"" (r "Default: " dv) "\" )" ))
 
 
-(tempo-define-snippet
+(tempo-define-template
     "velocity-if-utilmethods-isset-directive"
   '("#if( $UtilMethods.isSet(" (p "var: " v) ") )" &
     > "#end"))
@@ -32,27 +32,27 @@
 (define-abbrev web-mode-abbrev-table "vifset"
   "" 'tempo-template-velocity-if-utilmethods-isset-directive)
 
-(tempo-define-snippet
+(tempo-define-template
     "velocity-if-not-utilmethods-isset-directive"
   '("#if( !$UtilMethods.isSet(" (p "var: " v) ") )" &
     >"#end"))
-(tempo-define-snippet
+(tempo-define-template
     "velocity-set-directive"
   '("#set( " (p "LVar: " lv) " = "(p "RVar: " dv) " )"))
 
 (define-abbrev web-mode-abbrev-table "vset"
   "" 'tempo-template-velocity-set-directive)
 
-(tempo-define-snippet
+(tempo-define-template
     "velocity-macro-responsive-background-image-set"
   '("data-bgset=\"#responsiveBackgroundImageSet(" (p "var:" v) ")"))
 
-(tempo-define-snippet
+(tempo-define-template
     "esa-cr-ticket"
   '("** CR: BWSRAS-" (p "ticket number: " tn) &
     >"https://extendedstay.atlassian.net/browse/BWSRAS-" (s tn)))
 
-(tempo-define-snippet
+(tempo-define-template
     "esa-ticket"
   '("** TODO BWSRAS-" (p "ticket number: " tn) " - " (p "description: " d) &
     >"https://extendedstay.atlassian.net/browse/BWSRAS-" (s tn) &
