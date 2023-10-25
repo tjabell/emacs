@@ -900,9 +900,9 @@ https://github.com/justbur/emacs-which-key
 ** Perspective
 Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x s on startup?
 #+begin_src emacs-lisp
-  (use-package perspective
-    :bind (("C-x k" . persp-kill-buffer*))
-    :config (persp-mode))
+  ;; (use-package perspective
+  ;;   :bind (("C-x k" . persp-kill-buffer*))
+  ;;   :config (persp-mode))
 #+end_src
 
 #+RESULTS:
