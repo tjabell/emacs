@@ -195,12 +195,12 @@
    "./local-startup.sh"))
 
 ;;;###autoload
-(defun tja-vterm-run-leads-api-test ()
+(defun tja-vterm-run-leads-api-unit-test ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *FBP LEADS API Tests*"
    "/home/trevor/projects/goddard/src/ipaas-leads-api/"
-   "./local-startup-tests.sh"))
+   "./local-startup-unit-tests.sh"))
 
 ;;;###autoload
 (defun tja-vterm-run-content-api ()
@@ -636,7 +636,7 @@ same directory as the org-buffer and insert a link to this file."
     (kill-new path-with-line-number)
     (message (concat path-with-line-number " copied to clipboard"))))
 
-(defun tja-esa-frontend-copy-relative-current-line-position-to-clipboard ()
+(defun my:copy-relative-current-line-position-to-clipboard ()
   "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
   (interactive)
   (let ((path-with-line-number
@@ -644,7 +644,7 @@ same directory as the org-buffer and insert a link to this file."
     (kill-new path-with-line-number)
     (message (concat path-with-line-number " copied to clipboard"))))
 
-(defun tja-copy-project-current-line-position-to-clipboard ()
+(defun my:copy-project-current-line-position-to-clipboard ()
   "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
   (interactive)
   (cl-flet ((find-git-dir  ()
@@ -657,7 +657,7 @@ same directory as the org-buffer and insert a link to this file."
       (message (concat path-with-line-number " copied to clipboard")))))
 
 ;;; ESA Functions to swap environments in URLs
-(defun my/esa:replace-url-with-local ()
+(defun my:replace-url-with-local ()
   (interactive)
   (let ((regex "http\[s\]*://.*?/")
         (replacement "http://localhost:8080/"))
@@ -665,10 +665,10 @@ same directory as the org-buffer and insert a link to this file."
       (replace-match replacement))))
 
 
-;;; Run in Vterm
-(defun my/insert-shrug ()
+;;; ¯\_(ツ)_/¯
+(defun my:insert-shrug ()
   (interactive)
-  (insert "¯\_(ツ)_/¯"))
+  (insert "¯\\_(ツ)_/¯"))
 
 (defun openai/generate-amortization-calendar (principal rate years)
   (interactive "nPrincipal: \nnRate: \nnYears: ")
