@@ -1207,9 +1207,16 @@ Builtin after emacs 29
 #+RESULTS:
 | lsp-deferred |
 
+So this essentially uses async-shell-command and finds the local test or nearest project to run.
+
+The output isn't as rich as even vterm so I'm commenting this out again for now 24-Oct-2023
+
+(async-shell-command *cmd* "*dotnet*")
+(setq *cmd* "dotnet test /home/trevor/projects/goddard/src/ipaas-leads-api/Goddard.LeadsApi.IntegrationTests/Goddard.LeadsApi.IntegrationTests.csproj --filter \"InsertLead\"")
 #+begin_src emacs-lisp
   ;; (use-package dotnet
-  ;;   :hook (csharp-tree-sitter-mode . dotnet-mode)
+  ;;   :hook 
+  ;;   (csharp-ts-mode . dotnet-mode)
   ;;   (csharp-mode . dotnet-mode))
 #+end_src
 
