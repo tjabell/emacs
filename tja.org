@@ -803,8 +803,8 @@ Print amortization calendar
 #+end_src
 
 #+RESULTS:
-t
-t
+
+
 
 * Project specific functions
 #+begin_src emacs-lisp :results raw

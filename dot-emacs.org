@@ -1748,11 +1748,11 @@ Swap vertico-map with  minibuffer-local-completion-map if not using vertico
 * Clockify
 
 #+begin_src emacs-lisp
-        (use-package clockify
-          :straight '(clockify :host github :repo "mdallastella/clockify.el")
-          :config
-          (load-file "~/.clockify-secrets.el")
-          (setq my:clockify/userid  (clockify--user-info)))
+  (use-package clockify
+    :straight '(clockify :host github :repo "tjabell/clockify.el")
+    :config
+    (load-file "~/.clockify-secrets.el")
+    (setq my:clockify/userid  (clockify--user-info)))
 #+end_src
 
 * CSV Mode
