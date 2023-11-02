@@ -863,6 +863,7 @@ Loaded ~/projects/extended_stay/esa-elisp.el
 
   (defvar my-keymap (make-sparse-keymap))
   (global-set-key (kbd "C-c u") my-keymap)
+  (global-set-key (kbd "C-c u R") 'recompile)
 
   (defvar gsi-keymap (make-sparse-keymap))
   (define-key gsi-keymap (kbd "e") 'my/gsi:insert-school-id)
@@ -875,6 +876,7 @@ Loaded ~/projects/extended_stay/esa-elisp.el
 #+end_src
 
 #+RESULTS:
+(keymap (97 . my/esa:insert-dev-search-api))
 tja-vterm-run-fbp
 
 * Local Variables - sets the after save hook to tangle this org file on save

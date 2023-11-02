@@ -729,6 +729,7 @@ same directory as the org-buffer and insert a link to this file."
 
 (defvar my-keymap (make-sparse-keymap))
 (global-set-key (kbd "C-c u") my-keymap)
+(global-set-key (kbd "C-c u R") 'recompile)
 
 (defvar gsi-keymap (make-sparse-keymap))
 (define-key gsi-keymap (kbd "e") 'my/gsi:insert-school-id)

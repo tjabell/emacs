@@ -1211,8 +1211,9 @@ So this essentially uses async-shell-command and finds the local test or nearest
 
 The output isn't as rich as even vterm so I'm commenting this out again for now 24-Oct-2023
 
-(async-shell-command *cmd* "*dotnet*")
 (setq *cmd* "dotnet test /home/trevor/projects/goddard/src/ipaas-leads-api/Goddard.LeadsApi.IntegrationTests/Goddard.LeadsApi.IntegrationTests.csproj --filter \"InsertLead\"")
+(async-shell-command *cmd* "*dotnet*")
+
 #+begin_src emacs-lisp
   ;; (use-package dotnet
   ;;   :hook 
@@ -1765,6 +1766,19 @@ Swap vertico-map with  minibuffer-local-completion-map if not using vertico
 (use-package restclient)
 #+end_src
 
+* Compilation mode and Parrot mode
+
+#+begin_src emacs-lisp :results raw
+(defun my/parrot-animate-when-compile-success (buffer result)
+  (if (string-match "^finished" result)
+      (parrot-start-animation)))
+
+(use-package parrot
+  :ensure t
+  :config
+  (parrot-mode)
+  (add-to-list 'compilation-finish-functions 'my/parrot-animate-when-compile-success))
+#+end_src
 * TJA.el Add my Emacs lisp extensions
 This file may have dependencies on libraries above
 
