@@ -848,7 +848,7 @@ embark-become: switches the command but keeps input
 ** Consult-dir
 TBD
 
-* Compilation
+* Compilation and parrot mode
 #+begin_src emacs-lisp
   (require 'ansi-color)
   (defun colorize-compilation-buffer ()
@@ -856,6 +856,20 @@ TBD
     (ansi-color-apply-on-region compilation-filter-start (point))
     (read-only-mode))
   (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+
+  
+#+end_src
+
+#+begin_src emacs-lisp :results raw
+(defun my/parrot-animate-when-compile-success (buffer result)
+  (if (string-match "^finished" result)
+      (parrot-start-animation)))
+
+(use-package parrot
+  :ensure t
+  :config
+  (parrot-mode)
+  (add-to-list 'compilation-finish-functions 'my/parrot-animate-when-compile-success))
 #+end_src
 
 * Which Key
@@ -1749,11 +1763,14 @@ Swap vertico-map with  minibuffer-local-completion-map if not using vertico
 * Clockify
 
 #+begin_src emacs-lisp
-  (use-package clockify
-    :straight '(clockify :host github :repo "tjabell/clockify.el")
-    :config
-    (load-file "~/.clockify-secrets.el")
-    (setq my:clockify/userid  (clockify--user-info)))
+    (use-package clockify
+      :straight '(clockify :host github :repo "mdallastella/clockify.el"
+                           :fork (:host github
+                 :repo "tjabell/clockify.el"))
+    
+      :config
+      (load-file "~/.clockify-secrets.el")
+      (setq my:clockify/userid  (clockify--user-info)))
 #+end_src
 
 * CSV Mode
@@ -1766,19 +1783,6 @@ Swap vertico-map with  minibuffer-local-completion-map if not using vertico
 (use-package restclient)
 #+end_src
 
-* Compilation mode and Parrot mode
-
-#+begin_src emacs-lisp :results raw
-(defun my/parrot-animate-when-compile-success (buffer result)
-  (if (string-match "^finished" result)
-      (parrot-start-animation)))
-
-(use-package parrot
-  :ensure t
-  :config
-  (parrot-mode)
-  (add-to-list 'compilation-finish-functions 'my/parrot-animate-when-compile-success))
-#+end_src
 * TJA.el Add my Emacs lisp extensions
 This file may have dependencies on libraries above
 

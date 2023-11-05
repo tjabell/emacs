@@ -71,31 +71,44 @@
 
 (provide 'tja-magit)
 
+(setq special-display-buffer-names
+      '("*compilation*"))
+
+;; Stop compilation buffer from appearing in new window 
+(setq special-display-function
+      (lambda (buffer &optional args)
+        (get-buffer-window buffer 0)))
+
+  ;;;###autoload
+(defun tja-compile-leads-api-unit-test ()
+  (interactive)
+  (compile "dotnet test /home/trevor/projects/goddard/src/ipaas-leads-api/Goddard.LeadsApi.UnitTests/Goddard.LeadsApi.UnitTests.csproj"))
+
 (require 'vterm)
 
-;;; https://www.reddit.com/r/emacs/comments/ft84xy/run_shell_command_in_new_vterm/
-;;; I really don't get what this is doing 20211029TJA
+  ;;; https://www.reddit.com/r/emacs/comments/ft84xy/run_shell_command_in_new_vterm/
+  ;;; I really don't get what this is doing 20211029TJA
 (defun tja-vterm-run-in-vterm-kill (process event)
   "A process sentinel. Kills PROCESS's buffer if it is live."
   (let ((b (process-buffer process)))
     (and (buffer-live-p b)
          (kill-buffer b))))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-run-in-vterm (command)
   "Execute string COMMAND in a new vterm.
 
-    Interactively, prompt for COMMAND with the current buffer's file
-    name supplied. When called from Dired, supply the name of the
-    file at point.
+      Interactively, prompt for COMMAND with the current buffer's file
+      name supplied. When called from Dired, supply the name of the
+      file at point.
 
-    Like `async-shell-command`, but run in a vterm for full terminal features.
+      Like `async-shell-command`, but run in a vterm for full terminal features.
 
-    The new vterm buffer is named in the form `*foo bar.baz*`, the
-    command and its arguments in earmuffs.
+      The new vterm buffer is named in the form `*foo bar.baz*`, the
+      command and its arguments in earmuffs.
 
-    When the command terminates, the shell remains open, but when the
-    shell exits, the buffer is killed."
+      When the command terminates, the shell remains open, but when the
+      shell exits, the buffer is killed."
   (interactive
    (list
     (let* ((f (cond (buffer-file-name)
@@ -111,15 +124,15 @@
     (vterm-send-string command)
     (vterm-send-return)))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-beancount-fava ()
-    (interactive)
-    (open-or-start-vterm-buffer
-     "*vterm* *BEANCOUNT FAVA*"
-     "/home/trevor/env/tools/"
-     "./start-beancount-fava.sh"))
+  (interactive)
+  (open-or-start-vterm-buffer
+   "*vterm* *BEANCOUNT FAVA*"
+   "/home/trevor/env/tools/"
+   "./start-beancount-fava.sh"))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-connect-vpn-equinox ()
   (interactive)
   (open-or-start-vterm-buffer
@@ -127,7 +140,7 @@
    "/home/trevor/projects/equinox"
    "~/.secrets.sh && echo $EQUINOXPWD | sudo openconnect --no-dtls vpn.eqpmt.net -u eqpmt.net\\tabell -v"))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-connect-vpn-goddard ()
   (interactive)
   (open-or-start-vterm-buffer
@@ -135,7 +148,7 @@
    "/home/trevor/projects/goddard"
    "~/.secrets.sh && echo $GODDARDPWD | sudo openconnect --no-dtls vpn.goddardsystems.com -u parsus-ta"))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-run-fbp-api ()
   (interactive)
   (open-or-start-vterm-buffer
@@ -143,7 +156,7 @@
    "/home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/"
    "./local-startup.sh"))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-run-fbp-api-test ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FBP API Tests*"))
@@ -152,7 +165,7 @@
     (vterm-send-string "./local-startup-tests.sh")
     (vterm-send-return)))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-run-schools-api-test ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FBP Schools API Tests*"))
@@ -161,7 +174,7 @@
     (vterm-send-string "./local-startup-tests.sh")
     (vterm-send-return)))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-run-faculty-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FACULTY API*"))
@@ -170,7 +183,7 @@
     (vterm-send-string "./local-startup.sh")
     (vterm-send-return)))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-run-tours-api ()
   (interactive)
   (open-or-start-vterm-buffer
@@ -178,7 +191,7 @@
    "/home/trevor/projects/goddard/src/ipaas-tours-api/"
    "./local-startup.sh"))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-run-tours-api-test ()
   (interactive)
   (open-or-start-vterm-buffer
@@ -186,7 +199,7 @@
    "/home/trevor/projects/goddard/src/ipaas-tours-api/"
    "./local-startup-tests.sh"))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-run-leads-api ()
   (interactive)
   (open-or-start-vterm-buffer
@@ -194,7 +207,7 @@
    "/home/trevor/projects/goddard/src/ipaas-leads-api/"
    "./local-startup.sh"))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-run-leads-api-unit-test ()
   (interactive)
   (open-or-start-vterm-buffer
@@ -202,7 +215,7 @@
    "/home/trevor/projects/goddard/src/ipaas-leads-api/"
    "./local-startup-unit-tests.sh"))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-run-content-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *CONTENT API*"))
@@ -220,14 +233,14 @@
       (vterm-send-string (concat ". " startup-script))
       (vterm-send-return))))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-run-fbp ()
   (interactive)
   (tja-vterm-run-fbp-api)
   (tja-vterm-run-fbp-web)
   (tja-vterm-run-tours-api))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-run-fbp-web ()
   (interactive)
   (open-or-start-vterm-buffer
@@ -235,7 +248,7 @@
    "/home/trevor/projects/goddard/src/FranchiseePortal-Website/"
    "./local-startup.sh"))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-run-fbp-web-test ()
   (interactive)
   (open-or-start-vterm-buffer
@@ -243,7 +256,7 @@
    "/home/trevor/projects/goddard/src/FranchiseePortal-Website/"
    "./local-startup-test.sh"))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-log-franchiseportal-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FBP WEB*"))
@@ -252,7 +265,7 @@
     (vterm-send-string "az webapp log tail --name ipaas-franchiseeportal-dev-useast-api --resource-group ipaas-dev-useast-rsg")
     (vterm-send-return)))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-az-webapp-log (api-name environment)
   (interactive
    (list
@@ -269,7 +282,7 @@
     (vterm-send-string (concat "az webapp log tail --name ipaas-" api-name "-" environment "-useast-api --resource-group ipaas-" environment "-useast-rsg"))
     (vterm-send-return)))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja--log-aem (env instance log)
   (let ((number (if (string-equal env "qa") "85656" "77402")))
     (with-current-buffer (vterm (concat "*vterm* *AEM LOG: " env "-"instance " ERROR *"))
@@ -278,27 +291,27 @@
       (vterm-send-string (concat  "aio cloudmanager:tail-logs " number " " instance " " log))
       (vterm-send-return))))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-log-aem-author-dev-error ()
   (interactive)
   (tja--log-aem "dev" "author" "aemerror"))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-log-aem-publish-dev-error ()
   (interactive)
   (tja--log-aem "dev" "publish" "aemerror"))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-log-aem-author-qa-error ()
   (interactive)
   (tja--log-aem "qa" "author" "aemerror"))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-log-aem-publish-qa-error ()
   (interactive)
   (tja--log-aem-dev "qa" "publish" "aemerror"))
 
-;;;###autoload
+  ;;;###autoload
 (defun tja-vterm-esa-run-dotcms ()
   (interactive)
   (open-or-start-vterm-buffer
@@ -306,8 +319,8 @@
    "/home/trevor/projects/extended_stay/src/frontend/"
    "./local-startup.sh"))
 
-;;;###autoload
-(defun tja-vterm-esa-run-esa-dotcms-node ()
+  ;;;###autoload
+(defun tja-vterm-esa-run-dotcms-node ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *DOTCMS - Frontend*"
@@ -734,8 +747,11 @@ same directory as the org-buffer and insert a link to this file."
 (defvar gsi-keymap (make-sparse-keymap))
 (define-key gsi-keymap (kbd "e") 'my/gsi:insert-school-id)
 (define-key gsi-keymap (kbd "r") 'tja-vterm-run-fbp)
+(define-key gsi-keymap (kbd "<f5>") 'tja-compile-leads-api-unit-test)
 (define-key my-keymap (kbd "g") gsi-keymap)
 
 (defvar esa-keymap (make-sparse-keymap))
 (define-key esa-keymap (kbd "a") 'my/esa:insert-dev-search-api)
+(define-key esa-keymap (kbd "d") 'tja-vterm-esa-run-dotcms)
+(define-key esa-keymap (kbd "f") 'tja-vterm-esa-run-dotcms-node)
 (define-key my-keymap (kbd "e") esa-keymap)
