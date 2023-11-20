@@ -414,8 +414,6 @@ Org ellipsis has been bugging out tangle a little bit.
                           "~/projects/equinox/todo_equinox.org"
                           "~/projects/goddard/todo_goddard.org"
                           "~/projects/extended_stay/todo_esa.org"
-                          "~/projects/parsus/parsus_misc.org"
-                          "~/projects/parsus/meeting_updates.org"
                           "~/projects/acdhh/todo_acdhh-cdbms.org"
                           "~/projects/acdhh/todo_acdhh-www.org"
                           "~/projects/mtsinai/todo_mtsinai.org"
