@@ -222,7 +222,6 @@ tja-compile-leads-api-integration-test
      "*vterm* *FBP API*"
      "/home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/"
      "./local-startup.sh"))
-
   (defun my:vterm-stop-fbp-api ()
     (interactive)
     (my:stop-vterm "*vterm* *FBP API*"))
@@ -323,12 +322,21 @@ tja-compile-leads-api-integration-test
         (vterm-send-string (concat ". " startup-script))
         (vterm-send-return))))
 
-      ;;;###autoload
+  ;;;###autoload
   (defun my:vterm-run-fbp ()
     (interactive)
     (my:vterm-run-fbp-api)
     (my:vterm-run-fbp-web)
-    (my:vterm-run-tours-api))
+    (my:vterm-run-tours-api)
+    (my:vterm-run-leads-api))
+
+  ;;;###autoload
+  (defun my:vterm-stop-fbp ()
+    (interactive)
+    (my:vterm-stop-fbp-web)
+    (my:vterm-stop-fbp-api)
+    (my:vterm-stop-tours-api)
+    (my:vterm-stop-leads-api))
 
       ;;;###autoload
   (defun my:vterm-run-fbp-web ()
@@ -337,6 +345,10 @@ tja-compile-leads-api-integration-test
      "*vterm* *FBP Web*"
      "/home/trevor/projects/goddard/src/FranchiseePortal-Website/"
      "./local-startup.sh"))
+
+  (defun my:vterm-stop-fbp-web ()
+    (interactive)
+    (my:stop-vterm "*vterm* *FBP Web*"))
 
       ;;;###autoload
   (defun my:vterm-run-fbp-web-test ()
