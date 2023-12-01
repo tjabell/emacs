@@ -447,9 +447,9 @@
   (insert (shell-command-to-string "echo -n $(date +%d-%b-%Y)")))
 (defalias 'icd2 'insert-current-date2)
 ;;;###autoload
-(defun insert-signature-for-code ()
+(defun my:insert-signature-for-code ()
   (interactive)
-  (insert (shell-command-to-string "echo -n $(date +%Y%m%d)TJA")))
+  (insert (shell-command-to-string "echo -n tja_$(date +%Y%m%d)")))
 (defalias 'isc 'insert-signature-for-code)
 
 ;;;###autoload
@@ -808,6 +808,7 @@ same directory as the org-buffer and insert a link to this file."
 (defvar my-keymap (make-sparse-keymap))
 (global-set-key (kbd "C-c u") my-keymap)
 (global-set-key (kbd "C-c u R") 'recompile)
+(global-set-key (kbd "C-c u I") 'my:insert-signature-for-code)
 
 ;; GSI Keymap
 ;; uses leader keys for projects, t = tours, l = leads, then f5-7 run api, unit, integration tests
