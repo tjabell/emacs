@@ -2,6 +2,7 @@
 #+title: Emacs: New Config in an Org file
 #+STARTUP: overview
 #+property: header-args:emacs-lisp  :tangle ~/.emacs.d/init.el :results none
+
 * New Emacs configuration file
 
 * Native compilation
@@ -1057,9 +1058,12 @@ Builtin after emacs 29
 
 ** LSP/Eglot
 #+begin_src emacs-lisp
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+                 '(vue-mode . ("vls" "--stdio"))))
   ;;(setq my:csharp-lsp-server "/usr/bin/omnisharp")
 
-   ;;; LSP
+     ;;; LSP
   ;; (use-package lsp-mode
   ;;   :hook (
   ;;          (csharp-tree-sitter-mode . lsp-deferred)
@@ -1795,7 +1799,7 @@ This file may have dependencies on libraries above
 #+begin_src emacs-lisp
   (org-babel-load-file "~/emacs/tja.org")
 
-  (require 'tja-vterm)
+  (require 'my:vterm)
   (require 'tja-magit)
   (require 'tja-misc)
   (require 'tja-org)
@@ -1816,7 +1820,7 @@ This file may have dependencies on libraries above
 
 * Emacs EDBI
 #+begin_src emacs-lisp :results raw
-
+  (use-package edbi)
 #+end_src
 
 * Local Variables - sets the after save hook to tangle this org file on save

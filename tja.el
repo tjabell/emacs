@@ -245,15 +245,15 @@
    "./local-startup.sh"))
 
 (defun my:stop-vterm (buffer)
-  (with-current-buffer
-      buffer
-    (vterm-send-string "")
-
-    (vterm-send-string "exit")
-    (vterm-send-return)
-    ;; Didn't seem to work sending the string once, so trying twise.  I think it will be a no-op if the first one works.
-    (vterm-send-string "exit")
-    (vterm-send-return)))
+  (when (get-buffer buffer)
+    (switch-to-buffer-other-window buffer) 
+    (with-current-buffer
+        buffer
+      (vterm-send-string "")
+      (sleep-for 2)
+      (vterm-send-string "exit")
+      (vterm-send-return))
+    ))
 
 (defun my:vterm-stop-leads-api ()
   (interactive)
@@ -399,6 +399,7 @@
     (vterm-send-return)
     (vterm-send-string ". ./local-startup.sh")
     (vterm-send-return)))
+
 (provide 'my:vterm)
 
 ;;;###autoload
