@@ -1820,7 +1820,7 @@ This file may have dependencies on libraries above
 
 * Emacs EDBI
 #+begin_src emacs-lisp :results raw
-  (use-package edbi)
+  ;(use-package edbi)
 #+end_src
 
 * Local Variables - sets the after save hook to tangle this org file on save
