@@ -35,8 +35,8 @@ otherwide ⤵ would get converted to bytes when opening this file
   (toggle-debug-on-error t)
 #+end_src
 
-** Base bootstrap config for straight.el and use-package replacement
-#+begin_src emacs-lisp
+** Garbage collection, startup time
+#+begin_src emacs-lisp :results raw
   ;;; Some base emacs gc config
   (setq gc-cons-threshold (* 100 1024 1024)
 	read-process-output-max (* 1024 1024 3))
@@ -50,6 +50,10 @@ otherwide ⤵ would get converted to bytes when opening this file
 
   (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
+#+end_src
+
+** Base bootstrap config for straight.el and use-package replacement
+#+begin_src emacs-lisp
   ;;; Bootstrap Straight.el
   (defvar bootstrap-version)
   (let ((bootstrap-file
@@ -155,9 +159,13 @@ https://www.gnu.org/software/emacs/manual/html_node/tramp/Auto_002dsave-File-Loc
 #+RESULTS:
 : ((^/\(\(?:\([[:alnum:]-]+\):\(?:\([^/|: 	]+\)@\)?\(\(?:[[:alnum:]_.%-]+\|\[\(?:\(?:[[:alnum:]]*:\)+[[:alnum:].]+\)?]\)\(?:#[[:digit:]]+\)?\)?|\)+\)?\([[:alnum:]-]+\):\(?:\([^/|: 	]+\)@\)?\(\(?:[[:alnum:]_.%-]+\|\[\(?:\(?:[[:alnum:]]*:\)+[[:alnum:].]+\)?]\)\(?:#[[:digit:]]+\)?\)?:\([^
 : ]*\'\)) (.* . /tmp/))
+
 ** Visible Bell
 #+begin_src emacs-lisp
-  (setq visible-bell t)
+  ;; Eliminate the 'flash/visible-bell' on ctl-g, other misc errors.  It's distracting, though maybe sometimes useful...
+  (setq visible-bell nil
+        ring-bell-function #'ignore)
+
 #+end_src
 
 ** Other window as M-o is nice, and previous as M-O
@@ -556,6 +564,8 @@ https://github.com/jdormit/ob-graphql
                 ("C-j" . vertico-insert))
     :init
     (vertico-mode))
+
+  (setq enable-recursive-minibuffers t)
 #+end_src
 
 #+RESULTS:
@@ -648,7 +658,8 @@ Disabling Annotators
 https://github.com/minad/marginalia#disabling-annotators-builtin-or-lightweight-annotators
 
 ** Consult
-   My configuration for consult
+
+My configuration for consult:
 
 Using configuration under the vertico section.  Might revisit this...
 #+begin_src emacs-lisp
@@ -656,7 +667,6 @@ Using configuration under the vertico section.  Might revisit this...
     :bind (;; C-c bindings (mode-specific-map)
            ("C-c h" . consult-history)
            ("C-c m" . consult-mode-command)
-           ("C-c b" . consult-bookmark)
            ("C-c k" . consult-kmacro)
            ("C-c b" . consult-bookmark)
            ;; M-g bindings (goto-map)
@@ -670,13 +680,14 @@ Using configuration under the vertico section.  Might revisit this...
            ("M-g i" . consult-imenu)
            ("M-g I" . consult-imenu-multi)
            ;; M-s bindings (search-map)
-           ("C-s" . consult-line)                   ;; needed by consult-line to detect isearch
+           ;; ("C-s" . consult-line)                   ;; needed by consult-line to detect isearch
+           ("M-s l" . consult-line)                   ;; needed by consult-line to detect isearch
            ("M-s g" . consult-grep)
            ("M-s G" . consult-git-grep)
            ("M-s r" . consult-ripgrep)
-           ("M-s l" . isearch-forward)
            ("M-s L" . consult-line-multi)
-           ("M-s t" . consult-theme))
+           ("M-s t" . consult-theme)
+           ("C-s" . isearch-forward))     ;; Resetting C-s to default isearch
     :config
     ;; Configure preview. The default value
     ;; is 'any, such that any key triggers the preview.
@@ -707,11 +718,21 @@ Using configuration under the vertico section.  Might revisit this...
 
 ** Orderless
 
-   Completion style package.  Uses space separated components to match candidates.
+Completion style package.  Uses space separated components to match candidates.
 #+begin_src emacs-lisp
-    (use-package orderless
-      :ensure t
-      :custom (completion-styles '(orderless)))
+  (use-package orderless
+    :ensure t
+    :custom
+    ;; Configure a custom style dispatcher (see the Consult wiki)
+    ;; (setq orderless-style-dispatchers '(orderless-dispatch)
+    ;;        orderless-component-separator #'orderless-escapable-split-on-space)
+    (completion-styles '(flex orderless basic))
+    (completion-category-overrides '((file (styles basic partial-completion)))))
+
+
+  (use-package emacs
+    :custom
+    (read-buffer-completion-ignore-case t))
 
   (defun flex-if-twiddle (pattern _index _total)
     (when (string-suffix-p "~" pattern)
@@ -728,14 +749,14 @@ Using configuration under the vertico section.  Might revisit this...
       `(orderless-without-literal . ,(substring pattern 1)))))
 
   (setq orderless-matching-styles '(orderless-regexp)
-	orderless-style-dispatchers '(flex-if-twiddle
-				      without-if-bang))
+        orderless-style-dispatchers '(flex-if-twiddle
+        			      without-if-bang))
 
   (defun my/match-components-literally ()
     "Components match literally for the rest of the session."
     (interactive)
     (setq-local orderless-matching-styles '(orderless-literal)
-		orderless-style-dispatchers nil))
+        	orderless-style-dispatchers nil))
 
   (define-key vertico-map (kbd "M-l")
     #'my/match-components-literally)
@@ -774,6 +795,16 @@ Everything goes through `embark-act`
 Learning embark
 
 #+begin_src emacs-lisp
+  (defun my:export-region-to-scratch-buffer (start end)
+    "Export the selected region to a temporary scratch buffer in fundamental mode."
+    (interactive "r")
+    (let ((region-content (buffer-substring-no-properties start end))
+          (scratch-buffer (generate-new-buffer "*Temporary Scratch*")))
+      (with-current-buffer scratch-buffer
+        (fundamental-mode)
+        (insert region-content)
+        (switch-to-buffer-other-window scratch-buffer)))) 
+
   ;; Credit: https://karthinks.com/software/fifteen-ways-to-use-embark/#open-any-buffer-by-splitting-any-window
   (use-package embark
     :ensure t
@@ -817,7 +848,10 @@ Learning embark
 
     (define-key embark-file-map     (kbd "3") (my/embark-split-action find-file split-window-right))
     (define-key embark-buffer-map   (kbd "3") (my/embark-split-action switch-to-buffer split-window-right))
-    (define-key embark-bookmark-map (kbd "3") (my/embark-split-action bookmark-jump split-window-right)))
+    (define-key embark-bookmark-map (kbd "3") (my/embark-split-action bookmark-jump split-window-right))
+    
+    (define-key embark-region-map (kbd "T") 'my:export-region-to-scratch-buffer))
+
 
   ;; Consult users will also want the embark-consult package.
   (use-package embark-consult
@@ -846,6 +880,12 @@ embark-become: switches the command but keeps input
 
 ** Consult-dir
 TBD
+
+** Avy
+#+begin_src emacs-lisp :results raw
+  (use-package avy
+       :bind (("M-s a" . avy-goto-word-or-subword-1)))
+#+end_src
 
 * Compilation and parrot mode
 #+begin_src emacs-lisp
@@ -887,7 +927,13 @@ https://github.com/justbur/emacs-which-key
 
 * Projects: Projectile | Consult-projectile
    #+begin_src emacs-lisp
+     ;; 17-Apr-2024 this was breaking eglot
+     ;; (require-with-check 'project) was throwing
+     ;; 18-Apr-2024 Update: I think maybe it was trying to use project.el from the recipe
+     ;;   recipe looks like (project :type git :host github :repo "emacs-straight/project" :files ("*" (:exclude ".git")))
+     ;;   so seems plausible, adding :straight nil
      (use-package project
+       :straight nil
        :custom
        (project-vc-merge-submodules . nil))
 
@@ -921,17 +967,118 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 #+RESULTS:
 : persp-kill-buffer*
 
-* Company
+* Company (deprecated for Corfu)
 #+begin_src emacs-lisp
-    (use-package company
-      :hook ((prog-mode . company-mode))
-      :config (progn
-                (setq company-idle-delay 0.0
-                      company-minimum-prefix-length 3)))
+  ;; (use-package company
+  ;;   :hook ((prog-mode . company-mode))
+  ;;   :config (progn
+  ;;             (setq company-idle-delay 0.0
+  ;;                   company-minimum-prefix-length 3)))
 #+end_src
 
 #+RESULTS:
-| global-company-mode | org-persist-read-all | #[0 \302=\205	 \303	!\207 [window-system pgtk-use-im-context-on-new-connection pgtk pgtk-use-im-context] 2] | tramp-register-archive-file-name-handler | magit-maybe-define-global-key-bindings | table--make-cell-map |
+
+* Corfu (Experimental Company Alternative)
+
+Default Configuration from website
+#+begin_src emacs-lisp
+    (use-package corfu
+      ;; Optional customizations
+      :custom
+      ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+      (corfu-auto t)                 ;; Enable auto completion
+      ;; (corfu-separator ?\s)          ;; Orderless field separator
+      ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+      ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+      ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+      ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
+      ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+      ;; (corfu-scroll-margin 5)        ;; Use scroll margin
+
+      ;; Enable Corfu only for certain modes.
+      ;; :hook ((prog-mode . corfu-mode)
+      ;;        (shell-mode . corfu-mode)
+      ;;        (eshell-mode . corfu-mode))
+
+      ;; Configure corfu-popup
+      (corfu-popupinfo-delay '(1.0 . 1.0))
+
+      ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
+      ;; be used globally (M-/).  See also the customization variable
+      ;; `global-corfu-modes' to exclude certain modes.
+
+      :init
+      (global-corfu-mode)
+      (corfu-popupinfo-mode))
+
+
+    (defun my:setup-corfu-prog-mode ()
+        (setq-local corfu-auto-delay  0
+                    corfu-auto-prefix 1))
+
+    (defun my:setup-corfu-writing-mode ()
+      (setq-local corfu-auto-delay  1
+                  corfu-auto-prefix 3))
+
+    (add-hook 'prog-mode-hook
+              #'my:setup-corfu-prog-mode)
+
+    (add-hook 'sql-interactive-mode-hook
+              #'my:setup-corfu-writing-mode)
+
+    (add-hook 'org-mode-hook
+              #'my:setup-corfu-writing-mode)
+
+    ;; A few more useful configurations...
+    (use-package emacs
+      :init
+      ;; TAB cycle if there are only few candidates
+      ;; (setq completion-cycle-threshold 3)
+
+      ;; Enable indentation+completion using the TAB key.
+      ;; `completion-at-point' is often bound to M-TAB.
+      (setq tab-always-indent 'complete)
+
+      ;; Emacs 30 and newer: Disable Ispell completion function. As an alternative,
+      ;; try `cape-dict'.
+      (setq text-mode-ispell-word-completion nil)
+
+      ;; Emacs 28 and newer: Hide commands in M-x which do not apply to the current
+      ;; mode.  Corfu commands are hidden, since they a
+      ;; mode.  Corfu commands are hidden, since they are not used via M-x. This
+      ;; setting is useful beyond Corfu.
+      (setq read-extended-command-predicate #'command-completion-default-include-p))
+#+end_src
+
+* Kind icons (for corfu)
+#+begin_src emacs-lisp :results raw
+  (use-package kind-icon
+    :ensure t
+    :after corfu
+    ;:custom
+    ; (kind-icon-blend-background t)
+    ; (kind-icon-default-face 'corfu-default) ; only needed with blend-background
+    :config
+    (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
+  ;; (use-package kind-icon
+  ;;   :ensure t
+  ;;   :config
+  ;;   (add-hook 'my-completion-ui-mode-hook
+  ;;    	    (lambda ()
+  ;;    	      (setq completion-in-region-function
+  ;;    		    (kind-icon-enhance-completion
+  ;;    		     completion-in-region-function)))))
+#+end_src
+
+* All the Icons
+
+Will it interfere with kind-icons?
+
+#+begin_src emacs-lisp :results raw
+  (use-package all-the-icons
+    :if (display-graphic-p))
+#+end_src
 
 * Magit
 #+begin_src emacs-lisp
@@ -953,14 +1100,16 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 : magit-status
 
 ** Forge
+
 #+begin_src emacs-lisp
-  (use-package forge
-    :after magit
-    :config (setcar forge-alist
-                    '("github.com"
-                      "api.github.com"
-                      "github.com"
-                      forge-github-repository)))
+  ;; Breaking 17-Apr-2024 - error with arguments
+  ;; (use-package forge
+  ;;   :after magit
+  ;;   :config (setcar forge-alist
+  ;;                   '("github.com"
+  ;;                     "api.github.com"
+  ;;                     "github.com"
+  ;;                     forge-github-repository)))
 #+end_src
 
 #+RESULTS:
@@ -1163,8 +1312,6 @@ Builtin after emacs 29
   ;;                                         ;"~/.nvm/versions/node/v16.16.0/lib/node_modules/typescript/lib/"
   ;;    ))
 
-  (use-package flymake)
-
   (use-package treemacs
     :bind (("<f8>" . treemacs)
            :map treemacs-mode-map
@@ -1254,8 +1401,10 @@ Trying Sharper
 #+end_src
 
 ** Flymake
+
 #+begin_src emacs-lisp
-  (use-package flymake)
+  ;; 17-Apr-2024 commenting out because it's breaking eglot for soem reason
+  ;(use-package flymake)
 #+end_src
 
 #+RESULTS:
@@ -1403,20 +1552,22 @@ Using apache velocity template langage for ESA
 (use-package kotlin-mode)
 #+end_src
 
-** Common Lisp/Slime setup
+** Common Lisp/Slime setup [Deprecating in favor of Sly 06-Mar-2024]
 
+** Common Lisp/Sly setup
 #+begin_src emacs-lisp
-  (load (expand-file-name "~/quicklisp/slime-helper.el"))
+  (use-package sly)
   (setq inferior-lisp-program "sbcl")
 
   ;; Slime contrip
-  (require 'slime-autoloads)
+  ;(require 'slime-autoloads)
 #+end_src
 
 Add init file as lisp file
 #+begin_src emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.sbclrc$" . lisp-mode))
+;(add-to-list 'auto-mode-alist '("\\.sbclrc$" . lisp-mode))
 #+end_src
+
 ** Combobulate
 #+begin_src emacs-lisp :results raw
 (use-package combobulate)
@@ -1620,7 +1771,7 @@ https://emacs.stackexchange.com/questions/17064/never-create-frame-in-ediff
 #+begin_src emacs-lisp
   (use-package beancount
     :straight '(beancount :host github :repo "beancount/beancount-mode")
-    :hook (outline-minor-mode)
+    ;;:hook (outline-minor-mode) ;; breaking outline-minor mode...
     :mode (("\\.beancount" . beancount-mode) ("\\.bean" . beancount-mode))
     :bind (("C-c C-n" . #'outline-next-visible-heading)
            ("C-c C-p" . #'outline-previous-visible-heading)))
@@ -1794,12 +1945,11 @@ This file may have dependencies on libraries above
 #+end_src
 
 #+RESULTS:
-| ~/emacs/lisp/ | /home/trevor/.emacs.d/straight/build/perspective | /home/trevor/.emacs.d/straight/build/tree-sitter-indent | /home/trevor/.emacs.d/straight/build/tree-sitter-langs | /home/trevor/.emacs.d/straight/build/tsc | /home/trevor/.emacs.d/straight/build/tree-sitter | /home/trevor/.emacs.d/straight/build/csharp-mode | /home/trevor/.emacs.d/straight/build/treemacs-projectile | /home/trevor/.emacs.d/straight/build/lsp-treemacs | /home/trevor/.emacs.d/straight/build/posframe | /home/trevor/.emacs.d/straight/build/cfrs | /home/trevor/.emacs.d/straight/build/hydra | /home/trevor/.emacs.d/straight/build/pfuture | /home/trevor/.emacs.d/straight/build/avy | /home/trevor/.emacs.d/straight/build/ace-window | /home/trevor/.emacs.d/straight/build/treemacs | /home/trevor/.emacs.d/straight/build/eldoc | /home/trevor/.emacs.d/straight/build/flymake | /home/trevor/.emacs.d/straight/build/lsp-ui | /home/trevor/.emacs.d/straight/build/lv | /home/trevor/.emacs.d/straight/build/spinner | /home/trevor/.emacs.d/straight/build/ht | /home/trevor/.emacs.d/straight/build/lsp-mode | /home/trevor/.emacs.d/straight/build/shrink-path | /home/trevor/.emacs.d/straight/build/all-the-icons | /home/trevor/.emacs.d/straight/build/doom-modeline | /home/trevor/.emacs.d/straight/build/vterm-toggle | /home/trevor/.emacs.d/straight/build/vterm | /home/trevor/.emacs.d/straight/build/yaml | /home/trevor/.emacs.d/straight/build/markdown-mode | /home/trevor/.emacs.d/straight/build/treepy | /home/trevor/.emacs.d/straight/build/let-alist | /home/trevor/.emacs.d/straight/build/ghub | /home/trevor/.emacs.d/straight/build/closql | /home/trevor/.emacs.d/straight/build/forge | /home/trevor/.emacs.d/straight/build/with-editor | /home/trevor/.emacs.d/straight/build/transient | /home/trevor/.emacs.d/straight/build/git-commit | /home/trevor/.emacs.d/straight/build/magit | /home/trevor/.emacs.d/straight/build/company | /home/trevor/.emacs.d/straight/build/consult-projectile | /home/trevor/.emacs.d/straight/build/projectile | /home/trevor/.emacs.d/straight/build/xref | /home/trevor/.emacs.d/straight/build/project | /home/trevor/.emacs.d/straight/build/which-key | /home/trevor/.emacs.d/straight/build/app-launcher | /home/trevor/.emacs.d/straight/build/embark-consult | /home/trevor/.emacs.d/straight/build/embark | /home/trevor/.emacs.d/straight/build/orderless | /home/trevor/.emacs.d/straight/build/consult | /home/trevor/.emacs.d/straight/build/marginalia | /home/trevor/.emacs.d/straight/build/vertico | /home/trevor/.emacs.d/straight/build/magit-section | /home/trevor/.emacs.d/straight/build/emacsql-sqlite | /home/trevor/.emacs.d/straight/build/emacsql | /home/trevor/.emacs.d/straight/build/s | /home/trevor/.emacs.d/straight/build/f | /home/trevor/.emacs.d/straight/build/dash | /home/trevor/.emacs.d/straight/build/org-roam | /home/trevor/.emacs.d/straight/build/org-contrib | /home/trevor/.emacs.d/straight/build/org-bullets | /home/trevor/.emacs.d/straight/build/org | /home/trevor/.emacs.d/straight/build/rainbow-delimiters | /home/trevor/.emacs.d/straight/build/key-chord | /home/trevor/.emacs.d/straight/build/spacemacs-theme | /home/trevor/.emacs.d/straight/build/bind-key | /home/trevor/.emacs.d/straight/build/use-package | /home/trevor/.emacs.d/straight/build/straight | /usr/share/emacs/28.0.60/site-lisp | /usr/share/emacs/site-lisp | /usr/share/emacs/28.0.60/lisp | /usr/share/emacs/28.0.60/lisp/vc | /usr/share/emacs/28.0.60/lisp/url | /usr/share/emacs/28.0.60/lisp/textmodes | /usr/share/emacs/28.0.60/lisp/progmodes | /usr/share/emacs/28.0.60/lisp/play | /usr/share/emacs/28.0.60/lisp/org | /usr/share/emacs/28.0.60/lisp/nxml | /usr/share/emacs/28.0.60/lisp/net | /usr/share/emacs/28.0.60/lisp/mh-e | /usr/share/emacs/28.0.60/lisp/mail | /usr/share/emacs/28.0.60/lisp/leim | /usr/share/emacs/28.0.60/lisp/language | /usr/share/emacs/28.0.60/lisp/international | /usr/share/emacs/28.0.60/lisp/image | /usr/share/emacs/28.0.60/lisp/gnus | /usr/share/emacs/28.0.60/lisp/eshell | /usr/share/emacs/28.0.60/lisp/erc | /usr/share/emacs/28.0.60/lisp/emulation | /usr/share/emacs/28.0.60/lisp/emacs-lisp | /usr/share/emacs/28.0.60/lisp/cedet | /usr/share/emacs/28.0.60/lisp/calendar | /usr/share/emacs/28.0.60/lisp/calc | /usr/share/emacs/28.0.60/lisp/obsolete |
 
 #+begin_src emacs-lisp
   (org-babel-load-file "~/emacs/tja.org")
 
-  (require 'my:vterm)
+  (require 'my:gsi:vterm)
   (require 'tja-magit)
   (require 'tja-misc)
   (require 'tja-org)
@@ -1821,6 +1971,12 @@ This file may have dependencies on libraries above
 * Emacs EDBI
 #+begin_src emacs-lisp :results raw
   ;(use-package edbi)
+#+end_src
+
+* Edebug Alias
+
+#+begin_src emacs-lisp :results raw
+  (defalias 'edebug-toggle-global-debug-on-error 'toggle-debug-on-error)
 #+end_src
 
 * Local Variables - sets the after save hook to tangle this org file on save

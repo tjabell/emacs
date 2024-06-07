@@ -85,7 +85,7 @@
   (compile "dotnet test /home/trevor/projects/goddard/src/ipaas-leads-api/Goddard.LeadsApi.UnitTests/Goddard.LeadsApi.UnitTests.csproj"))
 
 (defun my:get-integration-test-command-with-filter (testcmd filter)
-  (let* ((cmd (concat "dotnet test " testcmd))
+  (let* ((cmd (concat "dotnet test --logger='console;verbosity=detailed' " testcmd))
          (cmd (if (> (length filter) 0) (concat cmd " --filter \"" filter "\"") cmd)))
     cmd))
 
@@ -98,12 +98,20 @@
     (compile cmd)))
 
 ;;;###autoload
-(defun my:compile-tours-api-unit-tests ()
+(defun my:compile-recognitions-api-integration-tests (filter)
+  (interactive "sFilter: ")
+  (let ((cmd (my:get-integration-test-command-with-filter
+              "/home/trevor/projects/goddard/src/ipaas-recognitions-api/GoddardRecognitions.IntegrationTests/GoddardRecognitions.IntegrationTests.csproj"
+              filter)))
+    (compile cmd)))
+
+;;;###autoload
+(defun my:gsi:compile-tours-api-unit-tests ()
   (interactive)
   (compile "dotnet test /home/trevor/projects/goddard/src/ipaas-tours-api/Goddard.ToursWebApi.UnitTests/Goddard.ToursWebApi.UnitTests.csproj"))
 
 ;;;###autoload
-(defun my:compile-tours-api-integration-tests (filter)
+(defun my:gsi:compile-tours-api-integration-tests (filter)
   (interactive "sFilter: ")
   (let ((cmd (my:get-integration-test-command-with-filter "/home/trevor/projects/goddard/src/ipaas-tours-api/Goddard.ToursWebApi.IntegrationTests/Goddard.ToursWebApi.IntegrationTests.csproj" filter)))
     (compile cmd)))
@@ -112,14 +120,14 @@
 
     ;;; https://www.reddit.com/r/emacs/comments/ft84xy/run_shell_command_in_new_vterm/
     ;;; I really don't get what this is doing 20211029TJA
-(defun my:vterm-run-in-vterm-kill (process event)
+(defun my:gsi:vterm-run-in-vterm-kill (process event)
   "A process sentinel. Kills PROCESS's buffer if it is live."
   (let ((b (process-buffer process)))
     (and (buffer-live-p b)
          (kill-buffer b))))
 
-    ;;;###autoload
-(defun my:vterm-run-in-vterm (command)
+;;;###autoload
+(defun my:gsi:vterm-run-in-vterm (command)
   "Execute string COMMAND in a new vterm.
 
         Interactively, prompt for COMMAND with the current buffer's file
@@ -148,49 +156,50 @@
     (vterm-send-string command)
     (vterm-send-return)))
 
-    ;;;###autoload
-(defun my:vterm-run-beancount-fava ()
+;;;###autoload
+(defun my:gsi:vterm-run-beancount-fava ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *BEANCOUNT FAVA*"
    "/home/trevor/env/tools/"
    "./start-beancount-fava.sh"))
-(defun my:vterm-run-beancount-import ()
+
+(defun my:gsi:vterm-run-beancount-import ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *BEANCOUNT IMPORT*"
    "/home/trevor/env/tools/"
    "./start-beancount-import.sh"))
 
-    ;;;###autoload
-(defun my:vterm-connect-vpn-equinox ()
+;;;###autoload
+(defun my:gsi:vterm-connect-vpn-equinox ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *EQUINOX VPN*"
    "/home/trevor/projects/equinox"
    "~/.secrets.sh && echo $EQUINOXPWD | sudo openconnect --no-dtls vpn.eqpmt.net -u eqpmt.net\\tabell -v"))
 
-    ;;;###autoload
-(defun my:vterm-connect-vpn-goddard ()
+;;;###autoload
+(defun my:gsi:vterm-connect-vpn-goddard ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *GODDARD VPN*"
    "/home/trevor/projects/goddard"
    "~/.secrets.sh && echo $GODDARDPWD | sudo openconnect --no-dtls vpn.goddardsystems.com -u parsus-ta"))
 
-    ;;;###autoload
-(defun my:vterm-run-fbp-api ()
+;;;###autoload
+(defun my:gsi:vterm-run-fbp-api ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *FBP API*"
    "/home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/"
    "./local-startup.sh"))
-(defun my:vterm-stop-fbp-api ()
+(defun my:gsi:vterm-stop-fbp-api ()
   (interactive)
   (my:stop-vterm "*vterm* *FBP API*"))
 
-    ;;;###autoload
-(defun my:vterm-run-fbp-api-test ()
+;;;###autoload
+(defun my:gsi:vterm-run-fbp-api-test ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FBP API Tests*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/")
@@ -198,8 +207,8 @@
     (vterm-send-string "./local-startup-tests.sh")
     (vterm-send-return)))
 
-    ;;;###autoload
-(defun my:vterm-run-schools-api-test ()
+;;;###autoload
+(defun my:gsi:vterm-run-schools-api-test ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FBP Schools API Tests*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-schools-api/")
@@ -207,8 +216,8 @@
     (vterm-send-string "./local-startup-tests.sh")
     (vterm-send-return)))
 
-    ;;;###autoload
-(defun my:vterm-run-faculty-api ()
+;;;###autoload
+(defun my:gsi:vterm-run-faculty-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FACULTY API*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-faculty-api/")
@@ -216,32 +225,48 @@
     (vterm-send-string "./local-startup.sh")
     (vterm-send-return)))
 
-    ;;;###autoload
-(defun my:vterm-run-tours-api ()
+;;;###autoload
+(defun my:gsi:vterm-run-tours-api ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *TOURS API*"
    "/home/trevor/projects/goddard/src/ipaas-tours-api/"
    "./local-startup.sh"))
 
-(defun my:vterm-stop-tours-api ()
+;;;###autoload
+(defun my:gsi:vterm-run-school-events-api ()
+  (interactive)
+  (open-or-start-vterm-buffer
+   "*vterm* *SCHOOL EVENTS API*"
+   "/home/trevor/projects/goddard/src/ipaas-schoolevents-api/"
+   "./local-startup.sh"))
+
+(defun my:gsi:vterm-stop-tours-api ()
   (interactive)
   (my:stop-vterm "*vterm* *TOURS API*"))
 
-    ;;;###autoload
-(defun my:vterm-run-tours-api-test ()
+;;;###autoload
+(defun my:gsi:vterm-run-tours-api-test ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *FBP TOURS API Tests*"
    "/home/trevor/projects/goddard/src/ipaas-tours-api/"
    "./local-startup-tests.sh"))
 
-    ;;;###autoload
-(defun my:vterm-run-leads-api ()
+;;;###autoload
+(defun my:gsi:vterm-run-leads-api ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *LEADS API*"
    "/home/trevor/projects/goddard/src/ipaas-leads-api/"
+   "./local-startup.sh"))
+
+;;;###autoload
+(defun my:gsi:vterm-run-recognitions-api ()
+  (interactive)
+  (open-or-start-vterm-buffer
+   "*vterm* *RECOGNITIONS API*"
+   "/home/trevor/projects/goddard/src/ipaas-recognitions-api/"
    "./local-startup.sh"))
 
 (defun my:stop-vterm (buffer)
@@ -255,26 +280,54 @@
       (vterm-send-return))
     ))
 
-(defun my:vterm-stop-leads-api ()
+(defun my:gsi:vterm-stop-leads-api ()
   (interactive)
   (my:stop-vterm "*vterm* *LEADS API*"))
 
-    ;;;###autoload
-(defun my:vterm-run-leads-api-unit-test ()
+;;;###autoload
+(defun my:gsi:vterm-run-leads-api-unit-test ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *FBP LEADS API Tests*"
    "/home/trevor/projects/goddard/src/ipaas-leads-api/"
    "./local-startup-unit-tests.sh"))
 
-    ;;;###autoload
-(defun my:vterm-run-content-api ()
+;;;###autoload
+(defun my:gsi:vterm-run-content-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *CONTENT API*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-content-api/")
     (vterm-send-return)
     (vterm-send-string "./local-startup.sh")
     (vterm-send-return)))
+
+(require 'json-mode)
+
+(defun curl-and-format-json (url buffer-name)
+  "Fetch JSON data from the given URL using curl, place the result in a new buffer,
+   set the buffer to json-mode, and format the buffer."
+  (interactive "sEnter URL: ")
+  (let ((json-buffer (generate-new-buffer buffer-name)))
+    (with-current-buffer json-buffer
+      (shell-command (concat "curl -sb -H 'Accept: application/json' '" url "'") t)
+      (json-mode)
+      (json-pretty-print-buffer))
+    (pop-to-buffer json-buffer)))
+
+(defun my:gsi:execute-content-api-call-qa-schools-randolph ()
+  (interactive)
+  (curl-and-format-json "https://ipaas-content-qa-useast-api.azurewebsites.net/api/v1/dcp/schools?crmId=09eaf707-0c18-db11-b2e1-0014221c4264" "*CONTENT-API-SCHOOLS-RANDOLPH*"))
+
+
+;;;###autoload
+(defun my:gsi:vterm-run-content-api-unit-test ()
+    (interactive)
+    (open-or-start-vterm-buffer
+     "*vterm* *FBP CONTENT API Tests*"
+     "/home/trevor/projects/goddard/src/ipaas-content-api/src/Goddard.ContentWebApiUnitTests"
+     "./local-startup-unit-tests.sh"))
+
+
 
 (defun open-or-start-vterm-buffer (buf folder startup-script)
   (if (buffer-live-p (get-buffer buf))
@@ -286,43 +339,42 @@
       (vterm-send-return))))
 
 ;;;###autoload
-(defun my:vterm-run-fbp ()
+(defun my:gsi:vterm-run-fbp ()
   (interactive)
-  (my:vterm-run-fbp-api)
-  (my:vterm-run-fbp-web)
-  (my:vterm-run-tours-api)
-  (my:vterm-run-leads-api))
+  (my:gsi:vterm-run-fbp-api)
+  (my:gsi:vterm-run-fbp-web)
+  (my:gsi:vterm-run-recognitions-api))
 
 ;;;###autoload
-(defun my:vterm-stop-fbp ()
+(defun my:gsi:vterm-stop-fbp ()
   (interactive)
-  (my:vterm-stop-fbp-web)
-  (my:vterm-stop-fbp-api)
-  (my:vterm-stop-tours-api)
-  (my:vterm-stop-leads-api))
+  (my:gsi:vterm-stop-fbp-web)
+  (my:gsi:vterm-stop-fbp-api)
+  (my:gsi:vterm-stop-tours-api)
+  (my:gsi:vterm-stop-leads-api))
 
-    ;;;###autoload
-(defun my:vterm-run-fbp-web ()
+;;;###autoload
+(defun my:gsi:vterm-run-fbp-web ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *FBP Web*"
    "/home/trevor/projects/goddard/src/FranchiseePortal-Website/"
    "./local-startup.sh"))
 
-(defun my:vterm-stop-fbp-web ()
+(defun my:gsi:vterm-stop-fbp-web ()
   (interactive)
   (my:stop-vterm "*vterm* *FBP Web*"))
 
-    ;;;###autoload
-(defun my:vterm-run-fbp-web-test ()
+;;;###autoload
+(defun my:gsi:vterm-run-fbp-web-test ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *FBP Web Tests*"
    "/home/trevor/projects/goddard/src/FranchiseePortal-Website/"
    "./local-startup-test.sh"))
 
-    ;;;###autoload
-(defun my:vterm-log-franchiseportal-api ()
+;;;###autoload
+(defun my:gsi:vterm-log-franchiseportal-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FBP WEB*"))
     (vterm-send-string "cd /home/trevor/")
@@ -330,8 +382,8 @@
     (vterm-send-string "az webapp log tail --name ipaas-franchiseeportal-dev-useast-api --resource-group ipaas-dev-useast-rsg")
     (vterm-send-return)))
 
-    ;;;###autoload
-(defun my:vterm-az-webapp-log (api-name environment)
+;;;###autoload
+(defun my:gsi:vterm-az-webapp-log (api-name environment)
   (interactive
    (list
     (completing-read "Api: "
@@ -347,7 +399,7 @@
     (vterm-send-string (concat "az webapp log tail --name ipaas-" api-name "-" environment "-useast-api --resource-group ipaas-" environment "-useast-rsg"))
     (vterm-send-return)))
 
-    ;;;###autoload
+;;;###autoload
 (defun my:-log-aem (env instance log)
   (let ((number (if (string-equal env "qa") "85656" "77402")))
     (with-current-buffer (vterm (concat "*vterm* *AEM LOG: " env "-"instance " ERROR *"))
@@ -356,43 +408,71 @@
       (vterm-send-string (concat  "aio cloudmanager:tail-logs " number " " instance " " log))
       (vterm-send-return))))
 
-    ;;;###autoload
-(defun my:vterm-log-aem-author-dev-error ()
+;;;###autoload
+(defun my:gsi:vterm-log-aem-author-dev-error ()
   (interactive)
   (my:-log-aem "dev" "author" "aemerror"))
 
-    ;;;###autoload
-(defun my:vterm-log-aem-publish-dev-error ()
+;;;###autoload
+(defun my:gsi:vterm-log-aem-publish-dev-error ()
   (interactive)
   (my:-log-aem "dev" "publish" "aemerror"))
 
-    ;;;###autoload
-(defun my:vterm-log-aem-author-qa-error ()
+;;;###autoload
+(defun my:gsi:vterm-log-aem-author-qa-error ()
   (interactive)
   (my:-log-aem "qa" "author" "aemerror"))
 
-    ;;;###autoload
-(defun my:vterm-log-aem-publish-qa-error ()
+;;;###autoload
+(defun my:gsi:vterm-log-aem-publish-qa-error ()
   (interactive)
   (my:-log-aem-dev "qa" "publish" "aemerror"))
 
-    ;;;###autoload
-(defun my:vterm-esa-run-dotcms ()
+;;;###autoload
+(defun my:esa:vterm-esa-run-dotcms-server ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *DOTCMS*"
    "/home/trevor/projects/extended_stay/src/frontend/"
    "./local-startup.sh"))
 
-    ;;;###autoload
-(defun my:vterm-esa-run-dotcms-node ()
+;;;###autoload
+(defun my:esa:vterm-esa-run-dotcms ()
+  "Runs dotcms, node, and booking repos"
+  (interactive)
+  (my:esa:vterm-esa-run-dotcms-server)
+  (my:esa:vterm-esa-run-dotcms-node-watch)
+  (my:esa:vterm-esa-run-dotcms-node-serve)
+  (sleep 3)                             ;; Let dotcms spin up on port 80808 before running the booking repo
+  (my:esa:vterm-esa-run-booking)
+  ;; The dotcms buffer might need sudo, switch to that
+  (switch-to-buffer "*vterm* *DOTCMS*"))
+
+;;;###autoload
+(defun my:esa:vterm-esa-run-booking ()
   (interactive)
   (open-or-start-vterm-buffer
-   "*vterm* *DOTCMS - Frontend*"
+   "*vterm* *ESA Booking Repo*"
+   "/home/trevor/projects/extended_stay/src/booking/"
+   "./local-startup.sh"))
+
+;;;###autoload
+(defun my:esa:vterm-esa-run-dotcms-node-watch ()
+  (interactive)
+  (open-or-start-vterm-buffer
+   "*vterm* *DOTCMS - Frontend Watch*"
    "/home/trevor/projects/extended_stay/src/frontend/"
    "./local-startup-node.sh"))
 
-(defun my:vterm-mtsinai-run-prepc ()
+(defun my:esa:vterm-esa-run-dotcms-node-serve ()
+  (interactive)
+  (open-or-start-vterm-buffer
+   "*vterm* *DOTCMS - Frontend Serve*"
+   "/home/trevor/projects/extended_stay/src/frontend/"
+   ;; For some reason I put the . in front of the script, so using ; to get around it here
+   "; npm run serve-assets"))
+
+(defun my:mtsinai:vterm-mtsinai-run-prepc ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *PREPC*"))
     (vterm-send-string "cd /home/trevor/projects/mtsinai/src/parsus-internal.mountsinai-prepc")
@@ -400,7 +480,7 @@
     (vterm-send-string ". ./local-startup.sh")
     (vterm-send-return)))
 
-(provide 'my:vterm)
+(provide 'my:gsi:vterm)
 
 ;;;###autoload
 (defun straight-open-repository-directory ()
@@ -607,9 +687,10 @@ same directory as the org-buffer and insert a link to this file."
 
 (provide 'tja-ocr)
 
+;; set my/azure-un, my/azure-pw
 (load-file "~/.azure-secrets.el")
 
-(defun my:gsi/print-azure-ticket-title (ticket-number)
+(defun my:gsi/print-ticket-heading (ticket-number)
   (interactive "sTicket-number: ")
   (let* ((obj (my:gsi/get-azure-ticket ticket-number))
          (info (my:gsi/get-azure-ticket-title-and-id obj)))
@@ -820,9 +901,9 @@ same directory as the org-buffer and insert a link to this file."
 
 (defvar tours-keymap (make-sparse-keymap))
 (define-key gsi-keymap (kbd "t") tours-keymap)
-(define-key tours-keymap (kbd "<f5>") 'my:vterm-run-tours-api)
-(define-key tours-keymap (kbd "<f6>") 'my:compile-tours-api-unit-tests)
-(define-key tours-keymap (kbd "<f7>") 'my:compile-tours-api-integration-tests)
+(define-key tours-keymap (kbd "<f5>") 'my:gsi:vterm-run-tours-api)
+(define-key tours-keymap (kbd "<f6>") 'my:gsi:compile-tours-api-unit-tests)
+(define-key tours-keymap (kbd "<f7>") 'my:gsi:compile-tours-api-integration-tests)
 
 (defvar leads-keymap (make-sparse-keymap))
 (define-key gsi-keymap (kbd "l") leads-keymap)
@@ -832,6 +913,62 @@ same directory as the org-buffer and insert a link to this file."
 
 (defvar esa-keymap (make-sparse-keymap))
 (define-key esa-keymap (kbd "a") 'my/esa:insert-dev-search-api)
-(define-key esa-keymap (kbd "d") 'tja-vterm-esa-run-dotcms)
+(define-key esa-keymap (kbd "d") 'my:esa:vterm-run-dotcms)
 (define-key esa-keymap (kbd "f") 'tja-vterm-esa-run-dotcms-node)
 (define-key my-keymap (kbd "e") esa-keymap)
+
+(global-set-key (kbd "<f5>") '(lambda () (interactive) (find-file "~/projects/extended_stay/todo_esa.org")))
+
+(defun +jiralib2-extract-issue-id (issueKey)
+  "Extracts the issue id from the issue key, e.g. ecomm-4952"
+  (assoc 'id (jiralib2-get-issue issueKey)))
+
+(defun +jiralib2-extract-repository-names (issueKey)
+  "Extracts repository names from the given DATA."
+  (let* ((issueId (cdr (+jiralib2-extract-issue-id issueKey)))
+         (issue (jiralib2-session-call (concat "/rest/dev-status/1.0/issue/detail?issueId=" issueId "&applicationType=bitbucket&dataType=pullrequest"))))
+    (cl-destructuring-bind (_errors (_detail (_branches . ((_a . branches-list) . _)))) issue
+      (let ((repos (mapcar (lambda (x) (cdr (assoc 'repositoryName x))) branches-list)))
+        (delq nil (delete-dups repos))))))
+
+(defun +jiralib2-repository-names (issueKey)
+  "Extracts repository names from the given DATA."
+  (interactive "sIssue Key: ")
+  (let* ((repositoryList (+jiralib2-extract-repository-names issueKey)))
+    (insert (format "%s" repositoryList))))
+
+(defun my:esa:print-ticket-with-dependencies (issueKey)
+  "Extracts issue name and dependencies."
+  (interactive "sIssue Key: ")
+  (funcall-interactively 'my:esa:print-ticket-heading issueKey)
+  (let* ((repositoryList (+jiralib2-extract-repository-names issueKey)))
+    (insert (format "\n%s" repositoryList))))
+
+(defun my:sly-eval-and-display (expression)
+  "Evaluate the given EXPRESSION using sly-eval-async and display the result in a new buffer."
+  (interactive "MExpression: ")
+  (sly-eval-async
+      `(cl:progn (cl:setf (cl:cdr (cl:assoc 'slynk:*string-elision-length* slynk:*slynk-pprint-bindings*)) 10000)
+                 (slynk:eval-and-grab-output ,expression))
+    (lambda (result)
+      (let ((output-buffer (get-buffer-create "*Sly Eval Output*")))
+        (with-current-buffer output-buffer
+          (read-only-mode -1)
+          (erase-buffer)
+          (insert (cadr result))  ; (cadr result) contains the string output of the evaluation
+
+          ;; Cleanup buffer from slynk metadata
+          ;; Deletes the first quote and the last two lines with the lenght and the quote
+          (goto-char (point-min))
+          (delete-region (line-beginning-position) (line-beginning-position 2))
+          (goto-char (point-max))
+          (delete-region (line-beginning-position) (line-beginning-position 2))
+          (forward-line -1)
+          (delete-region (line-beginning-position) (line-beginning-position 2))
+          ;; End cleanup
+
+          ;; Temporarily set mode 
+          (sql-mode)
+          (display-buffer output-buffer)))))
+  (sly-eval-async
+      `(cl:progn (cl:setf (cl:cdr (cl:assoc 'slynk:*string-elision-length* slynk:*slynk-pprint-bindings*)) 200))))
