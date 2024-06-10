@@ -92,8 +92,6 @@ otherwide ⤵ would get converted to bytes when opening this file
 
 (straight-use-package 'spacemacs-theme)
 
-(load-theme 'tango-dark)
-
 (if (fboundp 'tool-bar-mode)
     (progn
       (tool-bar-mode 0)
@@ -727,7 +725,8 @@ Completion style package.  Uses space separated components to match candidates.
     ;; (setq orderless-style-dispatchers '(orderless-dispatch)
     ;;        orderless-component-separator #'orderless-escapable-split-on-space)
     (completion-styles '(flex orderless basic))
-    (completion-category-overrides '((file (styles basic partial-completion)))))
+    (completion-category-overrides '((file (styles basic partial-completion))
+                                     (buffer (styles substring flex)))))
 
 
   (use-package emacs
@@ -1141,6 +1140,10 @@ Will it interfere with kind-icons?
 
   (use-package doom-modeline
     :init (doom-modeline-mode 1))
+
+
+(load-theme 'doom-dark+ t)
+
 #+end_src
 
 #+RESULTS:
