@@ -194,6 +194,8 @@
    "*vterm* *FBP API*"
    "/home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/"
    "./local-startup.sh"))
+
+;;;###autoload
 (defun my:gsi:vterm-stop-fbp-api ()
   (interactive)
   (my:stop-vterm "*vterm* *FBP API*"))
@@ -221,6 +223,15 @@
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FACULTY API*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-faculty-api/")
+    (vterm-send-return)
+    (vterm-send-string "./local-startup.sh")
+    (vterm-send-return)))
+
+;;;###autoload
+(defun my:gsi:vterm-run-schools-api ()
+  (interactive)
+  (with-current-buffer (vterm (concat "*vterm* *SCHOOLS API*"))
+    (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-schools-api/")
     (vterm-send-return)
     (vterm-send-string "./local-startup.sh")
     (vterm-send-return)))
@@ -343,7 +354,8 @@
   (interactive)
   (my:gsi:vterm-run-fbp-api)
   (my:gsi:vterm-run-fbp-web)
-  (my:gsi:vterm-run-recognitions-api))
+  ;; Schools api needed for login.  Other local apis can be run as required.
+  (my:gsi:vterm-run-schools-api))
 
 ;;;###autoload
 (defun my:gsi:vterm-stop-fbp ()
@@ -437,6 +449,14 @@
    "./local-startup.sh"))
 
 ;;;###autoload
+(defun my:esa:vterm-esa-run-dotcms-server-franchise-site ()
+  (interactive)
+  (open-or-start-vterm-buffer
+   "*vterm* *DOTCMS - FRANCHISE*"
+   "/home/trevor/projects/extended_stay/src/cms.ms.common"
+   "./local-startup.sh"))
+
+;;;###autoload
 (defun my:esa:vterm-esa-run-dotcms ()
   "Runs dotcms, node, and booking repos"
   (interactive)
@@ -464,6 +484,14 @@
    "/home/trevor/projects/extended_stay/src/frontend/"
    "./local-startup-node.sh"))
 
+;;;###autoload
+(defun my:esa:vterm-esa-run-dotcms-node-watch-franchise ()
+  (interactive)
+  (open-or-start-vterm-buffer
+   "*vterm* *DOTCMS Franchise - Frontend Watch*"
+   "/home/trevor/projects/extended_stay/src/cms.ms.common"
+   "./local-startup-node.sh"))
+
 (defun my:esa:vterm-esa-run-dotcms-node-serve ()
   (interactive)
   (open-or-start-vterm-buffer
@@ -482,8 +510,35 @@
 
 (provide 'my:gsi:vterm)
 
+;; Join Lines from: https://whatacold.io/blog/2023-06-12-emacs-join-lines/
 ;;;###autoload
-(defun straight-open-repository-directory ()
+(defvar m/join-lines--last-separator ","
+  "Keep the last used separator for `w/join-lines', a comma by default.")
+
+;;;###autoload
+(defun m/join-lines (&optional specify-separator)
+  "Join lines in the active region by a separator, by default the last used.
+Specify the separator by typing C-u before executing this command.
+
+Note: it depends on s.el."
+  (interactive "P")
+  (require 's)
+  (unless (region-active-p)
+    (error "select a region of lines first."))
+  (let* ((separator (if (not specify-separator)
+                        m/join-lines--last-separator
+                      (read-string "Separator: ")))
+         (text (buffer-substring-no-properties
+               (region-beginning)
+               (region-end)))
+         (lines (split-string text "\n"))
+         (result (s-join separator lines)))
+    (delete-region (region-beginning) (region-end))
+    (insert result)
+    (setq w/join-lines--last-separator separator)))
+
+;;;###autoload
+(defun m/straight-open-repository-directory ()
 "Open the Straight.el repository directory."
 (interactive)
 (let ((repository-dir (straight--repos-dir)))
@@ -491,7 +546,7 @@
     (find-file repository-dir))))
 
 ;;;###autoload
-(defun convert-spaces-to-underscores (start end)
+(defun m/convert-spaces-to-underscores (start end)
   "Converts dashes to underscores in the region between START and END."
   (interactive "r")
   (save-excursion
@@ -500,7 +555,7 @@
       (replace-match "_" nil t))))
 
 ;;;###autoload
-(defun convert-dashes-to-underscores (start end)
+(defun m/convert-dashes-to-underscores (start end)
   "Converts dashes to underscores in the region between START and END."
   (interactive "r")
   (save-excursion
@@ -510,7 +565,7 @@
 
 
 ;;;###autoload
-(defun copy-buffer-filename-to-kill-ring ()
+(defun m/copy-buffer-filename-to-kill-ring ()
   "Copy the filename of the current buffer to the kill ring."
   (interactive)
   (when buffer-file-name
@@ -518,17 +573,18 @@
     (message "Filename copied to kill ring: %s" buffer-file-name)))
 
 ;;;###autoload
-(defun insert-current-date ()
+(defun m/insert-current-date ()
   (interactive)
   (insert (shell-command-to-string "echo -n $(date +%Y-%m-%d)")))
-(defalias 'icd 'insert-current-date)
+(defalias 'm/icd 'm/insert-current-date)
 
-(defun insert-current-date2 ()
+(defun m/insert-current-date2 ()
   (interactive)
   (insert (shell-command-to-string "echo -n $(date +%d-%b-%Y)")))
-(defalias 'icd2 'insert-current-date2)
+(defalias 'm/icd2 'm/insert-current-date2)
+
 ;;;###autoload
-(defun my:insert-signature-for-code ()
+(defun m/insert-signature-for-code ()
   (interactive)
   (insert (shell-command-to-string "echo -n tja_$(date +%Y%m%d)")))
 (defalias 'isc 'insert-signature-for-code)
@@ -690,19 +746,19 @@ same directory as the org-buffer and insert a link to this file."
 ;; set my/azure-un, my/azure-pw
 (load-file "~/.azure-secrets.el")
 
-(defun my:gsi/print-ticket-heading (ticket-number)
+(defun m/gsi/print-ticket-heading (ticket-number)
   (interactive "sTicket-number: ")
-  (let* ((obj (my:gsi/get-azure-ticket ticket-number))
-         (info (my:gsi/get-azure-ticket-title-and-id obj)))
+  (let* ((obj (m/gsi/get-azure-ticket ticket-number))
+         (info (m/gsi/get-azure-ticket-title-and-id obj)))
     (insert (format "%s: %s" (car info) (cadr info)))))
 
-(defun my:gsi/get-azure-ticket-title-and-id (obj)
+(defun m/gsi/get-azure-ticket-title-and-id (obj)
   (let* ((props (aref (cdr (cadr obj)) 0))
          (id (cdar props))
          (title (cdr (assoc 'System.Title (assoc 'fields props)))))
     (list id title)))
 
-(defun my:gsi/get-azure-ticket (ticket-number)
+(defun m/gsi/get-azure-ticket (ticket-number)
   (with-temp-buffer ; temp buffer to hold json data
     (let* ((username my/azure-un)
            (password my/azure-password)
@@ -714,6 +770,76 @@ same directory as the org-buffer and insert a link to this file."
                                            (concat username ":" password) t))))))
       (url-insert-file-contents ticket-url))
     (json-read)))
+
+(defun m/gsi/get-azure-tickets (wql display-fn)
+  (let* ((username my/azure-un)
+         (password my/azure-password)
+         (api-version "7.1-preview.2")
+         (api-url (format "https://dev.azure.com/GoddardSystemsIT/_apis/wit/wiql?api-version=%s" api-version))
+         (url-request-extra-headers
+          `(("Content-Type" . "application/json")
+            ("Authorization" . ,(concat "Basic "
+                                        (base64-encode-string
+                                         (concat username ":" password) t))))))
+    (request
+      api-url
+      :type "POST"
+      :sync t
+      :data (json-encode `((query . ,wql)))
+      :headers url-request-extra-headers
+      :parser 'json-read
+      :success (cl-function
+                (lambda (&key data &allow-other-keys)
+                  (message (format "successfully retrieved from %s" api-url))
+                  (funcall display-fn data)))
+      :error (cl-function
+              (lambda (&key symbol-status data error-thrown &allow-other-keys&rest _)
+                (let ((buffer (get-buffer-create "*Example.org Response*")))
+                  (with-current-buffer buffer
+                    (erase-buffer)
+                    (insert (format "Error:\n%s" error-thrown))
+                    (display-buffer buffer))))))))
+
+
+(defvar wql-for-done-tickets 
+ "Select [System.Id], [System.Title], [System.State] From WorkItems 
+  Where ([System.WorkItemType] = 'User Story' OR [System.WorkItemType] = 'Bug')
+  AND [System.TeamProject] = 'Franchisee Business Portal'
+  AND [System.Tags] Contains Words 'Ready for PROD'
+  AND ([System.State] = 'UAT' OR [SYSTEM.STATE] = 'Resolved')
+  AND [State] <> 'Removed'
+  AND [State] <> 'Closed' 
+  order by [System.WorkItemType] desc, [Microsoft.VSTS.Common.Priority] asc, [System.CreatedDate] desc")
+
+(defun m/gsi/report-fbp-azure-done-tickets ()
+  (interactive)
+  (cl-flet ((display-in-new-buffer (data) 
+              (let ((buffer (get-buffer-create "*Azure API Response*")))
+                (with-current-buffer buffer
+                  (erase-buffer)
+                  (when (not data)
+                    (insert "No tickets to release"))
+                  (insert (json-encode data))
+                  (json-pretty-print-buffer)
+                  (json-mode)) ; Assuming you have json-mode installed for better readability
+                (display-buffer buffer))))
+    (let* ((wql wql-for-done-tickets))
+      (m/gsi/get-azure-tickets wql #'display-in-new-buffer))))
+
+(defun m/gsi/report-fbp-azure-done-tickets-for-changelog ()
+  (interactive)
+  (cl-flet ((display-id-only-in-new-buffer (data) 
+              (let ((work-item-ids (mapcar (lambda (item)
+                                             (format "#%d" (alist-get 'id item)))
+                                           (alist-get 'workItems data)))
+                    (buffer (get-buffer-create "*Azure API Response - Changelog*")))
+                (with-current-buffer buffer
+                  (erase-buffer)
+                  (dolist (id work-item-ids)
+                    (insert (format "%s\n" id)))
+                  (display-buffer buffer)))))
+    (let* ((wql wql-for-done-tickets))
+      (m/gsi/get-azure-tickets wql #'display-id-only-in-new-buffer))))
 
 (load-file "~/.azure-secrets.el")
 (defun azure--session-call (path credentials)
@@ -787,49 +913,6 @@ same directory as the org-buffer and insert a link to this file."
 (provide 'js-beautify)
 ;;; js-beautify.el ends here
 
-;;; https://gist.github.com/kristianhellquist/3082383#gistcomment-2373734
-(defun tja-copy-current-line-position-to-clipboard ()
-  "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
-  (interactive)
-  (let ((path-with-line-number
-         (concat (buffer-file-name) ":" (number-to-string (line-number-at-pos)))))
-    (kill-new path-with-line-number)
-    (message (concat path-with-line-number " copied to clipboard"))))
-
-(defun my:copy-relative-current-line-position-to-clipboard ()
-  "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
-  (interactive)
-  (let ((path-with-line-number
-         (concat (s-replace (expand-file-name (vc-root-dir)) ""  (buffer-file-name)) ":" (number-to-string (line-number-at-pos)))))
-    (kill-new path-with-line-number)
-    (message (concat path-with-line-number " copied to clipboard"))))
-
-(defun my:copy-project-current-line-position-to-clipboard ()
-  "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
-  (interactive)
-  (cl-flet ((find-git-dir  ()
-                        (file-truename
-                         (locate-dominating-file (buffer-file-name (current-buffer)) ".git"))))
-    (let* ((project-dir (find-git-dir))
-          (path-with-line-number
-           (concat "<proj>/" (s-replace project-dir ""  (buffer-file-name)) ":" (number-to-string (line-number-at-pos)))))
-      (kill-new path-with-line-number)
-      (message (concat path-with-line-number " copied to clipboard")))))
-
-;;; ESA Functions to swap environments in URLs
-(defun my:replace-url-with-local ()
-  (interactive)
-  (let ((regex "http\[s\]*://.*?/")
-        (replacement "http://localhost:8080/"))
-    (while (re-search-forward regex nil t)
-      (replace-match replacement))))
-
-
-;;; ¯\_(ツ)_/¯
-(defun my:insert-shrug ()
-  (interactive)
-  (insert "¯\\_(ツ)_/¯"))
-
 (defun openai/generate-amortization-calendar (principal rate years)
   (interactive "nPrincipal: \nnRate: \nnYears: ")
   "Generate an amortization calendar given the loan PRINCIPAL, annual interest RATE, and total YEARS of the loan."
@@ -853,7 +936,8 @@ same directory as the org-buffer and insert a link to this file."
 (org-babel-load-file "~/projects/extended_stay/esa-elisp.org")
 
 ;; From chatgpt 2023-06-01
-;;;###autoload
+    ;;;###autoload
+
 (defun my:escape-elisp-string (string)
   "Escapes special characters in the given STRING for reading as an Emacs Lisp string."
   (replace-regexp-in-string "[\"\\\\\a\b\f\n\r\t\v]"
@@ -870,11 +954,57 @@ same directory as the org-buffer and insert a link to this file."
                                ((string-equal match "\v") "\\v")))
                             string))
 
-;; From chatgpt 2023-06-01
-;;;###autoload
+;; Also used by org-clockify-report
 (defun my:escape-quotes (string)
   "Escapes quotes in the given STRING."
   (replace-regexp-in-string "\"" "\\\\\"" string))
+
+(defun my:escape-quotes-in-string (input)
+  "Escape quotes in the given string INPUT."  
+  (replace-regexp-in-string "\"" "\\\"" input))
+
+(defun my:escape-json-recursively (json-string)
+  "Escape quotes in a JSON string, including nested JSON strings."
+  (let ((json-escaped (my:escape-quotes-in-string json-string)))
+    (with-temp-buffer
+      (insert json-escaped)
+      (goto-char (point-min))
+      (while (re-search-forward "\\\\\"" nil t)
+        (replace-match "\\\\\\\\\"" nil nil))
+      (buffer-string))))
+
+
+(defun my:buffer-to-elisp-string-recursive ()
+  "Convert the entire buffer content to an elisp string with escaped quotes, handling nested JSON escaping.
+  Note: tried this for json, easier to just parse the json I think"
+  (interactive)
+  (let* ((buffer-content (buffer-string))
+         (escaped-content (my:escape-quotes-in-string)))
+    (kill-new (concat "\"" escaped-content "\""))
+    (message "Buffer content converted to elisp string with recursive JSON escaping and copied to clipboard.")))
+
+                                        ;(global-set-key (kbd "C-c e") 'my:buffer-to-elisp-string-recursive)
+
+;;   ;;;###autoload
+;; (defun my:escape-quotes (string)
+;;   "Escapes quotes in the given STRING."
+;;   (replace-regexp-in-string "\"" "\\\\\"" string))
+
+;; (defun my:buffer-to-elisp-string ()
+;;   "Convert the entire buffer content to an elisp string with escaped quotes."
+;;   (interactive)
+;;   (let* ((buffer-content (buffer-string))
+;;          (escaped-content (my:escape-quotes buffer-content)))
+;;     (kill-new (concat "\"" escaped-content "\""))
+;;     (message "Buffer content converted to elisp string and copied to clipboard.")))
+
+;; (defun my:list-environment-variables ()
+;;   "List all current environment variables."
+;;   (interactive)
+;;   (with-output-to-temp-buffer "*Environment Variables*"
+;;     (dolist (env process-environment)
+;;       (princ env)
+;;       (princ "\n"))))
 
 ;; A Ctl-c u keymap
 ;;   Ctl-c u g for GSI
@@ -944,6 +1074,39 @@ same directory as the org-buffer and insert a link to this file."
   (let* ((repositoryList (+jiralib2-extract-repository-names issueKey)))
     (insert (format "\n%s" repositoryList))))
 
+;; From chatGPT Session https://chatgpt.com/c/90d883ce-9dea-40d5-9809-1486c4146305
+(defun my:add-function-to-package (package-name function-name position)
+  "Add FUNCTION-NAME to the export list of PACKAGE-NAME in packages.lisp at the given POSITION.
+POSITION should be either 'start or 'end."
+  (let ((package-file "packages.lisp"))
+    (with-temp-buffer
+      (insert-file-contents package-file)
+      (goto-char (point-min))
+      (if (re-search-forward (format "(defpackage %s" package-name) nil t)
+          (if (re-search-forward "(:export" nil t)
+              (let ((export-start (point)))
+                (forward-sexp)
+                (backward-char)
+                (let ((export-end (point)))
+                  (goto-char (if (eq position 'start) export-start export-end))
+                  (if (eq position 'start)
+                      (insert (format " :%s" function-name))
+                    (insert (format " :%s" function-name))))
+                (write-region (point-min) (point-max) package-file))
+            (message "No export list found in package %s" package-name))
+        (message "No package definition found for %s" package-name)))))
+
+(defun my:add-current-function-to-package (package-name position)
+  "Add the function at point to the export list of PACKAGE-NAME in packages.lisp at the given POSITION.
+POSITION should be either 'start or 'end."
+  (interactive "sPackage name: \nSPosition (start or end): ")
+  (save-excursion
+    (beginning-of-defun)
+    (if (looking-at "(defun \\(\\_<[^ )]+\\_>\\)")
+        (let ((function-name (match-string 1)))
+          (add-function-to-package package-name function-name position))
+      (message "No function at point"))))
+
 (defun my:sly-eval-and-display (expression)
   "Evaluate the given EXPRESSION using sly-eval-async and display the result in a new buffer."
   (interactive "MExpression: ")
@@ -972,3 +1135,46 @@ same directory as the org-buffer and insert a link to this file."
           (display-buffer output-buffer)))))
   (sly-eval-async
       `(cl:progn (cl:setf (cl:cdr (cl:assoc 'slynk:*string-elision-length* slynk:*slynk-pprint-bindings*)) 200))))
+
+;;; https://gist.github.com/kristianhellquist/3082383#gistcomment-2373734
+(defun tja-copy-current-line-position-to-clipboard ()
+  "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
+  (interactive)
+  (let ((path-with-line-number
+         (concat (buffer-file-name) ":" (number-to-string (line-number-at-pos)))))
+    (kill-new path-with-line-number)
+    (message (concat path-with-line-number " copied to clipboard"))))
+
+(defun my:copy-relative-current-line-position-to-clipboard ()
+  "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
+  (interactive)
+  (let ((path-with-line-number
+         (concat (s-replace (expand-file-name (vc-root-dir)) ""  (buffer-file-name)) ":" (number-to-string (line-number-at-pos)))))
+    (kill-new path-with-line-number)
+    (message (concat path-with-line-number " copied to clipboard"))))
+
+(defun my:copy-project-current-line-position-to-clipboard ()
+  "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
+  (interactive)
+  (cl-flet ((find-git-dir  ()
+                        (file-truename
+                         (locate-dominating-file (buffer-file-name (current-buffer)) ".git"))))
+    (let* ((project-dir (find-git-dir))
+          (path-with-line-number
+           (concat "<proj>/" (s-replace project-dir ""  (buffer-file-name)) ":" (number-to-string (line-number-at-pos)))))
+      (kill-new path-with-line-number)
+      (message (concat path-with-line-number " copied to clipboard")))))
+
+;;; ESA Functions to swap environments in URLs
+(defun my:replace-url-with-local ()
+  (interactive)
+  (let ((regex "http\[s\]*://.*?/")
+        (replacement "http://localhost:8080/"))
+    (while (re-search-forward regex nil t)
+      (replace-match replacement))))
+
+
+;;; ¯\_(ツ)_/¯
+(defun my:insert-shrug ()
+  (interactive)
+  (insert "¯\\_(ツ)_/¯"))
