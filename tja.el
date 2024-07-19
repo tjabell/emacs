@@ -106,12 +106,12 @@
     (compile cmd)))
 
 ;;;###autoload
-(defun my:gsi:compile-tours-api-unit-tests ()
+(defun m/gsi:compile-tours-api-unit-tests ()
   (interactive)
   (compile "dotnet test /home/trevor/projects/goddard/src/ipaas-tours-api/Goddard.ToursWebApi.UnitTests/Goddard.ToursWebApi.UnitTests.csproj"))
 
 ;;;###autoload
-(defun my:gsi:compile-tours-api-integration-tests (filter)
+(defun m/gsi:compile-tours-api-integration-tests (filter)
   (interactive "sFilter: ")
   (let ((cmd (my:get-integration-test-command-with-filter "/home/trevor/projects/goddard/src/ipaas-tours-api/Goddard.ToursWebApi.IntegrationTests/Goddard.ToursWebApi.IntegrationTests.csproj" filter)))
     (compile cmd)))
@@ -120,14 +120,14 @@
 
     ;;; https://www.reddit.com/r/emacs/comments/ft84xy/run_shell_command_in_new_vterm/
     ;;; I really don't get what this is doing 20211029TJA
-(defun my:gsi:vterm-run-in-vterm-kill (process event)
+(defun m/gsi:vterm-run-in-vterm-kill (process event)
   "A process sentinel. Kills PROCESS's buffer if it is live."
   (let ((b (process-buffer process)))
     (and (buffer-live-p b)
          (kill-buffer b))))
 
 ;;;###autoload
-(defun my:gsi:vterm-run-in-vterm (command)
+(defun m/gsi:vterm-run-in-vterm (command)
   "Execute string COMMAND in a new vterm.
 
         Interactively, prompt for COMMAND with the current buffer's file
@@ -157,14 +157,14 @@
     (vterm-send-return)))
 
 ;;;###autoload
-(defun my:gsi:vterm-run-beancount-fava ()
+(defun m/gsi:vterm-run-beancount-fava ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *BEANCOUNT FAVA*"
    "/home/trevor/env/tools/"
    "./start-beancount-fava.sh"))
 
-(defun my:gsi:vterm-run-beancount-import ()
+(defun m/gsi:vterm-run-beancount-import ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *BEANCOUNT IMPORT*"
@@ -172,7 +172,7 @@
    "./start-beancount-import.sh"))
 
 ;;;###autoload
-(defun my:gsi:vterm-connect-vpn-equinox ()
+(defun m/gsi:vterm-connect-vpn-equinox ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *EQUINOX VPN*"
@@ -180,7 +180,7 @@
    "~/.secrets.sh && echo $EQUINOXPWD | sudo openconnect --no-dtls vpn.eqpmt.net -u eqpmt.net\\tabell -v"))
 
 ;;;###autoload
-(defun my:gsi:vterm-connect-vpn-goddard ()
+(defun m/gsi:vterm-connect-vpn-goddard ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *GODDARD VPN*"
@@ -188,7 +188,7 @@
    "~/.secrets.sh && echo $GODDARDPWD | sudo openconnect --no-dtls vpn.goddardsystems.com -u parsus-ta"))
 
 ;;;###autoload
-(defun my:gsi:vterm-run-fbp-api ()
+(defun m/gsi:vterm-run-fbp-api ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *FBP API*"
@@ -196,12 +196,12 @@
    "./local-startup.sh"))
 
 ;;;###autoload
-(defun my:gsi:vterm-stop-fbp-api ()
+(defun m/gsi:vterm-stop-fbp-api ()
   (interactive)
   (my:stop-vterm "*vterm* *FBP API*"))
 
 ;;;###autoload
-(defun my:gsi:vterm-run-fbp-api-test ()
+(defun m/gsi:vterm-run-fbp-api-test ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FBP API Tests*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/")
@@ -210,7 +210,7 @@
     (vterm-send-return)))
 
 ;;;###autoload
-(defun my:gsi:vterm-run-schools-api-test ()
+(defun m/gsi:vterm-run-schools-api-test ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FBP Schools API Tests*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-schools-api/")
@@ -219,7 +219,7 @@
     (vterm-send-return)))
 
 ;;;###autoload
-(defun my:gsi:vterm-run-faculty-api ()
+(defun m/gsi:vterm-run-faculty-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FACULTY API*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-faculty-api/")
@@ -228,7 +228,7 @@
     (vterm-send-return)))
 
 ;;;###autoload
-(defun my:gsi:vterm-run-schools-api ()
+(defun m/gsi:vterm-run-schools-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *SCHOOLS API*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-schools-api/")
@@ -237,7 +237,7 @@
     (vterm-send-return)))
 
 ;;;###autoload
-(defun my:gsi:vterm-run-tours-api ()
+(defun m/gsi:vterm-run-tours-api ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *TOURS API*"
@@ -245,19 +245,19 @@
    "./local-startup.sh"))
 
 ;;;###autoload
-(defun my:gsi:vterm-run-school-events-api ()
+(defun m/gsi:vterm-run-school-events-api ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *SCHOOL EVENTS API*"
    "/home/trevor/projects/goddard/src/ipaas-schoolevents-api/"
    "./local-startup.sh"))
 
-(defun my:gsi:vterm-stop-tours-api ()
+(defun m/gsi:vterm-stop-tours-api ()
   (interactive)
   (my:stop-vterm "*vterm* *TOURS API*"))
 
 ;;;###autoload
-(defun my:gsi:vterm-run-tours-api-test ()
+(defun m/gsi:vterm-run-tours-api-test ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *FBP TOURS API Tests*"
@@ -265,7 +265,7 @@
    "./local-startup-tests.sh"))
 
 ;;;###autoload
-(defun my:gsi:vterm-run-leads-api ()
+(defun m/gsi:vterm-run-leads-api ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *LEADS API*"
@@ -273,7 +273,7 @@
    "./local-startup.sh"))
 
 ;;;###autoload
-(defun my:gsi:vterm-run-recognitions-api ()
+(defun m/gsi:vterm-run-recognitions-api ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *RECOGNITIONS API*"
@@ -291,12 +291,12 @@
       (vterm-send-return))
     ))
 
-(defun my:gsi:vterm-stop-leads-api ()
+(defun m/gsi:vterm-stop-leads-api ()
   (interactive)
   (my:stop-vterm "*vterm* *LEADS API*"))
 
 ;;;###autoload
-(defun my:gsi:vterm-run-leads-api-unit-test ()
+(defun m/gsi:vterm-run-leads-api-unit-test ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *FBP LEADS API Tests*"
@@ -304,7 +304,7 @@
    "./local-startup-unit-tests.sh"))
 
 ;;;###autoload
-(defun my:gsi:vterm-run-content-api ()
+(defun m/gsi:vterm-run-content-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *CONTENT API*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-content-api/")
@@ -325,13 +325,13 @@
       (json-pretty-print-buffer))
     (pop-to-buffer json-buffer)))
 
-(defun my:gsi:execute-content-api-call-qa-schools-randolph ()
+(defun m/gsi:execute-content-api-call-qa-schools-randolph ()
   (interactive)
   (curl-and-format-json "https://ipaas-content-qa-useast-api.azurewebsites.net/api/v1/dcp/schools?crmId=09eaf707-0c18-db11-b2e1-0014221c4264" "*CONTENT-API-SCHOOLS-RANDOLPH*"))
 
 
 ;;;###autoload
-(defun my:gsi:vterm-run-content-api-unit-test ()
+(defun m/gsi:vterm-run-content-api-unit-test ()
     (interactive)
     (open-or-start-vterm-buffer
      "*vterm* *FBP CONTENT API Tests*"
@@ -350,35 +350,35 @@
       (vterm-send-return))))
 
 ;;;###autoload
-(defun my:gsi:vterm-run-fbp ()
+(defun m/gsi:vterm-run-fbp ()
   (interactive)
-  (my:gsi:vterm-run-fbp-api)
-  (my:gsi:vterm-run-fbp-web)
+  (m/gsi:vterm-run-fbp-api)
+  (m/gsi:vterm-run-fbp-web)
   ;; Schools api needed for login.  Other local apis can be run as required.
-  (my:gsi:vterm-run-schools-api))
+  (m/gsi:vterm-run-schools-api))
 
 ;;;###autoload
-(defun my:gsi:vterm-stop-fbp ()
+(defun m/gsi:vterm-stop-fbp ()
   (interactive)
-  (my:gsi:vterm-stop-fbp-web)
-  (my:gsi:vterm-stop-fbp-api)
-  (my:gsi:vterm-stop-tours-api)
-  (my:gsi:vterm-stop-leads-api))
+  (m/gsi:vterm-stop-fbp-web)
+  (m/gsi:vterm-stop-fbp-api)
+  (m/gsi:vterm-stop-tours-api)
+  (m/gsi:vterm-stop-leads-api))
 
 ;;;###autoload
-(defun my:gsi:vterm-run-fbp-web ()
+(defun m/gsi:vterm-run-fbp-web ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *FBP Web*"
    "/home/trevor/projects/goddard/src/FranchiseePortal-Website/"
    "./local-startup.sh"))
 
-(defun my:gsi:vterm-stop-fbp-web ()
+(defun m/gsi:vterm-stop-fbp-web ()
   (interactive)
   (my:stop-vterm "*vterm* *FBP Web*"))
 
 ;;;###autoload
-(defun my:gsi:vterm-run-fbp-web-test ()
+(defun m/gsi:vterm-run-fbp-web-test ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *FBP Web Tests*"
@@ -386,7 +386,7 @@
    "./local-startup-test.sh"))
 
 ;;;###autoload
-(defun my:gsi:vterm-log-franchiseportal-api ()
+(defun m/gsi:vterm-log-franchiseportal-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *FBP WEB*"))
     (vterm-send-string "cd /home/trevor/")
@@ -395,7 +395,7 @@
     (vterm-send-return)))
 
 ;;;###autoload
-(defun my:gsi:vterm-az-webapp-log (api-name environment)
+(defun m/gsi:vterm-az-webapp-log (api-name environment)
   (interactive
    (list
     (completing-read "Api: "
@@ -421,22 +421,22 @@
       (vterm-send-return))))
 
 ;;;###autoload
-(defun my:gsi:vterm-log-aem-author-dev-error ()
+(defun m/gsi:vterm-log-aem-author-dev-error ()
   (interactive)
   (my:-log-aem "dev" "author" "aemerror"))
 
 ;;;###autoload
-(defun my:gsi:vterm-log-aem-publish-dev-error ()
+(defun m/gsi:vterm-log-aem-publish-dev-error ()
   (interactive)
   (my:-log-aem "dev" "publish" "aemerror"))
 
 ;;;###autoload
-(defun my:gsi:vterm-log-aem-author-qa-error ()
+(defun m/gsi:vterm-log-aem-author-qa-error ()
   (interactive)
   (my:-log-aem "qa" "author" "aemerror"))
 
 ;;;###autoload
-(defun my:gsi:vterm-log-aem-publish-qa-error ()
+(defun m/gsi:vterm-log-aem-publish-qa-error ()
   (interactive)
   (my:-log-aem-dev "qa" "publish" "aemerror"))
 
@@ -508,7 +508,7 @@
     (vterm-send-string ". ./local-startup.sh")
     (vterm-send-return)))
 
-(provide 'my:gsi:vterm)
+(provide 'm/gsi:vterm)
 
 ;; Join Lines from: https://whatacold.io/blog/2023-06-12-emacs-join-lines/
 ;;;###autoload
@@ -1010,10 +1010,10 @@ same directory as the org-buffer and insert a link to this file."
 ;;   Ctl-c u g for GSI
 ;;   Ctl-c u e for ESA
 ;;   Ctl-c u m for Me
-(defun my/gsi:insert-school-id ()
+(defun m/gsi:insert-school-id ()
   (interactive)
   (insert "F0EDC50F-ED22-DE11-B821-0014221C4264"))
-(defun my/esa:insert-dev-search-api ()
+(defun m/esa:insert-dev-search-api ()
   (interactive)
   (insert "https://api.dev.bws.esa.com/search-results-widget-api/searchByGeo?lat=32.7766642&lng=-96.79698789999999&rooms=1&adults=1&child=0&code&rateType=ESH&checkIn=2023-10-04&checkOut=2023-10-11"))
 
@@ -1025,15 +1025,15 @@ same directory as the org-buffer and insert a link to this file."
 ;; GSI Keymap
 ;; uses leader keys for projects, t = tours, l = leads, then f5-7 run api, unit, integration tests
 (defvar gsi-keymap (make-sparse-keymap))
-(define-key gsi-keymap (kbd "e") 'my/gsi:insert-school-id)
+(define-key gsi-keymap (kbd "e") 'm/gsi:insert-school-id)
 (define-key gsi-keymap (kbd "r") 'tja-vterm-run-fbp)
 (define-key my-keymap (kbd "g") gsi-keymap)
 
 (defvar tours-keymap (make-sparse-keymap))
 (define-key gsi-keymap (kbd "t") tours-keymap)
-(define-key tours-keymap (kbd "<f5>") 'my:gsi:vterm-run-tours-api)
-(define-key tours-keymap (kbd "<f6>") 'my:gsi:compile-tours-api-unit-tests)
-(define-key tours-keymap (kbd "<f7>") 'my:gsi:compile-tours-api-integration-tests)
+(define-key tours-keymap (kbd "<f5>") 'm/gsi:vterm-run-tours-api)
+(define-key tours-keymap (kbd "<f6>") 'm/gsi:compile-tours-api-unit-tests)
+(define-key tours-keymap (kbd "<f7>") 'm/gsi:compile-tours-api-integration-tests)
 
 (defvar leads-keymap (make-sparse-keymap))
 (define-key gsi-keymap (kbd "l") leads-keymap)
@@ -1042,7 +1042,7 @@ same directory as the org-buffer and insert a link to this file."
 (define-key leads-keymap (kbd "<f7>") 'my:compile-leads-api-integration-tests)
 
 (defvar esa-keymap (make-sparse-keymap))
-(define-key esa-keymap (kbd "a") 'my/esa:insert-dev-search-api)
+(define-key esa-keymap (kbd "a") 'm/esa:insert-dev-search-api)
 (define-key esa-keymap (kbd "d") 'my:esa:vterm-run-dotcms)
 (define-key esa-keymap (kbd "f") 'tja-vterm-esa-run-dotcms-node)
 (define-key my-keymap (kbd "e") esa-keymap)

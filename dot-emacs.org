@@ -316,6 +316,9 @@ Couldn't find a good shortcut 16-Jun-2023
 (global-unset-key (kbd "C-x z"))
 #+end_src
 * Tempel Snippets
+
+Templates are in ~/.emacs.d/templates
+
 #+begin_src emacs-lisp
 ;; Configure Tempel
 (use-package tempel
@@ -1958,7 +1961,7 @@ This file may have dependencies on libraries above
 #+begin_src emacs-lisp
   (org-babel-load-file "~/emacs/tja.org")
 
-  (require 'my:gsi:vterm)
+  (require 'm/gsi:vterm)
   (require 'tja-magit)
   (require 'tja-misc)
   (require 'tja-org)
