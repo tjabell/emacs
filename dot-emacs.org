@@ -781,17 +781,17 @@ Minibuffer completion map toggle C-l to get orderless literal style
 	orderless-style-dispatchers '(flex-if-twiddle
 				      without-if-bang))
 
-  (defun my/match-components-literally ()
+  (defun m/match-components-literally ()
     "Components match literally for the rest of the session."
     (interactive)
     (setq-local orderless-matching-styles '(orderless-literal)
 		orderless-style-dispatchers nil))
 
   (define-key minibuffer-local-completion-map (kbd "M-l")
-    #'my/match-components-literally)
+    #'m/match-components-literally)
 
   (define-key vertico-map (kbd "M-l")
-    #'my/match-components-literally)
+    #'m/match-components-literally)
 #+end_src
 
 #+RESULTS:

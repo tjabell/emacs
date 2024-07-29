@@ -479,7 +479,7 @@ tja-compile-leads-api-integration-test
     (my:-log-aem-dev "qa" "publish" "aemerror"))
 
   ;;;###autoload
-  (defun my:esa:vterm-esa-run-dotcms-server ()
+  (defun m/esa:vterm-esa-run-dotcms-server ()
     (interactive)
     (open-or-start-vterm-buffer
      "*vterm* *DOTCMS*"
@@ -487,7 +487,7 @@ tja-compile-leads-api-integration-test
      "./local-startup.sh"))
 
   ;;;###autoload
-  (defun my:esa:vterm-esa-run-dotcms-server-franchise-site ()
+  (defun m/esa:vterm-esa-run-dotcms-server-franchise-site ()
     (interactive)
     (open-or-start-vterm-buffer
      "*vterm* *DOTCMS - FRANCHISE*"
@@ -495,19 +495,19 @@ tja-compile-leads-api-integration-test
      "./local-startup.sh"))
 
   ;;;###autoload
-  (defun my:esa:vterm-esa-run-dotcms ()
+  (defun m/esa:vterm-esa-run-dotcms ()
     "Runs dotcms, node, and booking repos"
     (interactive)
-    (my:esa:vterm-esa-run-dotcms-server)
-    (my:esa:vterm-esa-run-dotcms-node-watch)
-    (my:esa:vterm-esa-run-dotcms-node-serve)
-    (sleep 3)                             ;; Let dotcms spin up on port 80808 before running the booking repo
-    (my:esa:vterm-esa-run-booking)
+    (m/esa:vterm-esa-run-dotcms-server)
+    (m/esa:vterm-esa-run-dotcms-node-watch)
+    (m/esa:vterm-esa-run-dotcms-node-serve)
+    (sleep-for 3)                             ;; Let dotcms spin up on port 80808 before running the booking repo
+    (m/esa:vterm-esa-run-booking)
     ;; The dotcms buffer might need sudo, switch to that
     (switch-to-buffer "*vterm* *DOTCMS*"))
 
   ;;;###autoload
-  (defun my:esa:vterm-esa-run-booking ()
+  (defun m/esa:vterm-esa-run-booking ()
     (interactive)
     (open-or-start-vterm-buffer
      "*vterm* *ESA Booking Repo*"
@@ -515,7 +515,7 @@ tja-compile-leads-api-integration-test
      "./local-startup.sh"))
 
   ;;;###autoload
-  (defun my:esa:vterm-esa-run-dotcms-node-watch ()
+  (defun m/esa:vterm-esa-run-dotcms-node-watch ()
     (interactive)
     (open-or-start-vterm-buffer
      "*vterm* *DOTCMS - Frontend Watch*"
@@ -523,14 +523,14 @@ tja-compile-leads-api-integration-test
      "./local-startup-node.sh"))
 
   ;;;###autoload
-  (defun my:esa:vterm-esa-run-dotcms-node-watch-franchise ()
+  (defun m/esa:vterm-esa-run-dotcms-node-watch-franchise ()
     (interactive)
     (open-or-start-vterm-buffer
      "*vterm* *DOTCMS Franchise - Frontend Watch*"
      "/home/trevor/projects/extended_stay/src/cms.ms.common"
      "./local-startup-node.sh"))
 
-  (defun my:esa:vterm-esa-run-dotcms-node-serve ()
+  (defun m/esa:vterm-esa-run-dotcms-node-serve ()
     (interactive)
     (open-or-start-vterm-buffer
      "*vterm* *DOTCMS - Frontend Serve*"
@@ -538,7 +538,7 @@ tja-compile-leads-api-integration-test
      ;; For some reason I put the . in front of the script, so using ; to get around it here
      "; npm run serve-assets"))
 
-  (defun my:mtsinai:vterm-mtsinai-run-prepc ()
+  (defun m/mtsinai:vterm-mtsinai-run-prepc ()
     (interactive)
     (with-current-buffer (vterm (concat "*vterm* *PREPC*"))
       (vterm-send-string "cd /home/trevor/projects/mtsinai/src/parsus-internal.mountsinai-prepc")
@@ -554,6 +554,8 @@ tja-compile-leads-api-integration-test
 
 * Misc functions
 #+begin_src emacs-lisp
+
+
   ;; Join Lines from: https://whatacold.io/blog/2023-06-12-emacs-join-lines/
   ;;;###autoload
   (defvar m/join-lines--last-separator ","
@@ -671,7 +673,7 @@ tja-compile-leads-api-integration-test
     (json-pretty-print-buffer))
 
   ;; https://stackoverflow.com/questions/39861580/emacs-program-to-collapse-json-to-single-line
-  (defun json-to-single-line (beg end)
+  (defun m/json-to-single-line (beg end)
     "Collapse prettified json in region between BEG and END to a single line"
     (interactive "r")
     (if (use-region-p)
@@ -683,7 +685,7 @@ tja-compile-leads-api-integration-test
               (replace-match " "))))
       (print "This function operates on a region")))
 
-  (defun json-escape-for-common-lisp (beg end)
+  (defun m/json-escape-for-common-lisp (beg end)
     "escapes json for use in a common lisp string"
     (interactive "r")
     (if (use-region-p)
@@ -874,7 +876,7 @@ my:org-move-item-to-top
                       (display-buffer buffer))))))))
 
 
-  (defvar wql-for-done-tickets 
+  (defvar wql-for-done-tickets
    "Select [System.Id], [System.Title], [System.State] From WorkItems 
     Where ([System.WorkItemType] = 'User Story' OR [System.WorkItemType] = 'Bug')
     AND [System.TeamProject] = 'Franchisee Business Portal'
