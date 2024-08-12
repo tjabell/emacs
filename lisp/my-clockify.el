@@ -15,7 +15,7 @@
 		     :error 'clockify--error-fn))))
     response))
 
-(defun my:clockify/add-entry (st et desc project-id)
+(defun m/clockify:add-entry (st et desc project-id)
     (let* ((workspace-id "5d6de2a927f8c341bd8fc10d")
            (endpoint (concat (clockify--workspaces-endpoint) "/" workspace-id "/time-entries"))
            (data (json-encode-alist
@@ -28,10 +28,10 @@
                     ))))
       (clockify--post endpoint data)))
 
-(defun my:clockify-init ()
+(defun m/clockify:init ()
   (interactive)
 ;;; Need this to initialize clockify api I guess
-  (setq my:clockify:userid  (clockify--user-info))
+  (setq m/clockify:*clockify-user-id* (clockify--user-info))
 
   ;; (setq my:ws (clockify--workspaces-endpoint))
 
@@ -40,7 +40,7 @@
   (setq clockify--active-workspace-id "5d6de2a927f8c341bd8fc10d")
 
   (setq my:esa-project-id "5ec8372146cf2748cd6a77c6")
-  (setq my:projects (clockify--projects))
+  (setq m/clockify:*projects* (clockify--projects))
   "Clockify projects initiated")
 
 (setq my:parsus-training-id "5d702b48a3fe2c1b233ea83c")
@@ -56,17 +56,24 @@
 ;;(setq my:equinox-rks-task-id "5d8e74bfad3d0067ca648e6b")
 ;;(setq my:equinox-wpt-task-id "5d6fff98a3fe2c1b233e704d")
 
-(defun my:clockify-print-projects ()
+(defun m/clockify:print-projects ()
   (interactive)
-  (unless (boundp my:projects)
-    (setq my:projects (clockify--projects)))
-  (with-current-buffer (get-buffer-create "*my-projects*")
-    (seq-map (lambda (i) (insert (cl-prettyprint i))) my:projects)))
+  (unless (boundp 'm/clockify:*projects*)
+    (setq m/clockify:*projects* (clockify--projects)))
+  (with-current-buffer (get-buffer-create "*clockify-projects*")
+    (erase-buffer)
+    (let ((fields (mapcar (lambda (p) (list (assoc 'id p) (assoc 'name p) (assoc 'clientName p))) 
+                          m/clockify:*projects*)))
+      (dolist (field fields)
+        (insert (format "id: %s, name: %s, clientName: %s\n"
+                        (cdr (nth 0 field))
+                        (cdr (nth 1 field))
+                        (cdr (nth 2 field))))))))
 
-(defun my:clockify-print-tasks (project-id)
+(defun m/clockify:print-tasks (project-id)
   (let ((tasks (clockify--tasks project-id)))
     (with-current-buffer (get-buffer-create (concat "*my-tasks-" project-id "*"))
       (seq-map (lambda (i) (cl-prettyprint i)) tasks))))
 
 
-;(my:clockify-init)
+;(m/clockify:init)

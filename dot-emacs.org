@@ -23,6 +23,10 @@ otherwide ⤵ would get converted to bytes when opening this file
 
 * System config and some basic keys and programming packages
 
+** Allow erase-buffer command
+#+begin_src emacs-lisp :results raw
+(put 'erase-buffer 'disabled nil)
+#+end_src
 ** Auto mode alist config (dot files)
 
 #+begin_src emacs-lisp
@@ -184,7 +188,8 @@ https://www.gnu.org/software/emacs/manual/html_node/tramp/Auto_002dsave-File-Loc
     (progn (key-chord-define-global "qf" 'find-file)
            (key-chord-define-global "qk" 'kill-this-buffer)
            (key-chord-define-global "qr" 'next-buffer)
-           (key-chord-define-global "qe" 'previous-buffer)))
+           ;(key-chord-define-global "qe" 'previous-buffer) ;;02-Aug-2024 - removed because it was interfering with some lisp programming
+))
 #+end_src
 
 #+RESULTS:
@@ -1580,6 +1585,17 @@ Add init file as lisp file
 ;(add-to-list 'auto-mode-alist '("\\.sbclrc$" . lisp-mode))
 #+end_src
 
+** Paredit
+#+begin_src emacs-lisp :results raw
+  (use-package paredit
+    :hook ((lisp-mode . enable-paredit-mode)))
+#+end_src
+
+** Lispy
+#+begin_src emacs-lisp :results raw
+  (use-package lispy)
+#+end_src
+
 ** Combobulate
 #+begin_src emacs-lisp :results raw
 (use-package combobulate)
@@ -1935,7 +1951,7 @@ Swap vertico-map with  minibuffer-local-completion-map if not using vertico
     
       :config
       (load-file "~/.clockify-secrets.el")
-      (setq my:clockify/userid  (clockify--user-info)))
+      (setq m/clockify:*clockify-user-id*  (clockify--user-info)))
 #+end_src
 
 * CSV Mode

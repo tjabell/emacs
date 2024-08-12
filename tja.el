@@ -117,9 +117,17 @@
     (compile cmd)))
 
 (require 'vterm)
+(defun open-or-start-vterm-buffer (buf folder startup-script)
+  (if (buffer-live-p (get-buffer buf))
+      (switch-to-buffer buf)
+    (with-current-buffer (vterm (concat buf))
+      (vterm-send-string (concat "cd " folder))
+      (vterm-send-return)
+      (vterm-send-string startup-script)
+      (vterm-send-return))))
 
-    ;;; https://www.reddit.com/r/emacs/comments/ft84xy/run_shell_command_in_new_vterm/
-    ;;; I really don't get what this is doing 20211029TJA
+;;; https://www.reddit.com/r/emacs/comments/ft84xy/run_shell_command_in_new_vterm/
+;;; I really don't get what this is doing 20211029TJA
 (defun m/gsi:vterm-run-in-vterm-kill (process event)
   "A process sentinel. Kills PROCESS's buffer if it is live."
   (let ((b (process-buffer process)))
@@ -130,17 +138,17 @@
 (defun m/gsi:vterm-run-in-vterm (command)
   "Execute string COMMAND in a new vterm.
 
-        Interactively, prompt for COMMAND with the current buffer's file
-        name supplied. When called from Dired, supply the name of the
-        file at point.
+          Interactively, prompt for COMMAND with the current buffer's file
+          name supplied. When called from Dired, supply the name of the
+          file at point.
 
-        Like `async-shell-command`, but run in a vterm for full terminal features.
+          Like `async-shell-command`, but run in a vterm for full terminal features.
 
-        The new vterm buffer is named in the form `*foo bar.baz*`, the
-        command and its arguments in earmuffs.
+          The new vterm buffer is named in the form `*foo bar.baz*`, the
+          command and its arguments in earmuffs.
 
-        When the command terminates, the shell remains open, but when the
-        shell exits, the buffer is killed."
+          When the command terminates, the shell remains open, but when the
+          shell exits, the buffer is killed."
   (interactive
    (list
     (let* ((f (cond (buffer-file-name)
@@ -156,20 +164,21 @@
     (vterm-send-string command)
     (vterm-send-return)))
 
+
 ;;;###autoload
 (defun m/gsi:vterm-run-beancount-fava ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *BEANCOUNT FAVA*"
    "/home/trevor/env/tools/"
-   "./start-beancount-fava.sh"))
+   ". ./start-beancount-fava.sh"))
 
 (defun m/gsi:vterm-run-beancount-import ()
   (interactive)
   (open-or-start-vterm-buffer
    "*vterm* *BEANCOUNT IMPORT*"
    "/home/trevor/env/tools/"
-   "./start-beancount-import.sh"))
+   ". ./start-beancount-import.sh"))
 
 ;;;###autoload
 (defun m/gsi:vterm-connect-vpn-equinox ()
@@ -193,7 +202,7 @@
   (open-or-start-vterm-buffer
    "*vterm* *FBP API*"
    "/home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/"
-   "./local-startup.sh"))
+   ". ./local-startup.sh"))
 
 ;;;###autoload
 (defun m/gsi:vterm-stop-fbp-api ()
@@ -206,7 +215,7 @@
   (with-current-buffer (vterm (concat "*vterm* *FBP API Tests*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/")
     (vterm-send-return)
-    (vterm-send-string "./local-startup-tests.sh")
+    (vterm-send-string ". ./local-startup-tests.sh")
     (vterm-send-return)))
 
 ;;;###autoload
@@ -215,7 +224,7 @@
   (with-current-buffer (vterm (concat "*vterm* *FBP Schools API Tests*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-schools-api/")
     (vterm-send-return)
-    (vterm-send-string "./local-startup-tests.sh")
+    (vterm-send-string ". ./local-startup-tests.sh")
     (vterm-send-return)))
 
 ;;;###autoload
@@ -224,7 +233,7 @@
   (with-current-buffer (vterm (concat "*vterm* *FACULTY API*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-faculty-api/")
     (vterm-send-return)
-    (vterm-send-string "./local-startup.sh")
+    (vterm-send-string ". ./local-startup.sh")
     (vterm-send-return)))
 
 ;;;###autoload
@@ -233,8 +242,26 @@
   (with-current-buffer (vterm (concat "*vterm* *SCHOOLS API*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-schools-api/")
     (vterm-send-return)
-    (vterm-send-string "./local-startup.sh")
+    (vterm-send-string ". ./local-startup.sh")
     (vterm-send-return)))
+
+;;;###autoload
+(defun m/gsi:vterm-run-authorization-api ()
+  (interactive)
+  (with-current-buffer (vterm (concat "*vterm* *AUTHORIZATION API*"))
+    (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-authorization-api/")
+    (vterm-send-return)
+    (vterm-send-string ". ./local-startup.sh")
+    (vterm-send-return)))
+
+;;;###autoload
+    (defun m/gsi:vterm-run-mock-gsi-servers ()
+      (interactive)
+      (with-current-buffer (vterm (concat "*vterm* *MOCK GSI SERVERS*"))
+        (vterm-send-string "cd /home/trevor/projects/goddard/src/mock-crm-server/")
+        (vterm-send-return)
+        (vterm-send-string "./mock-gsi-servers")
+        (vterm-send-return)))
 
 ;;;###autoload
 (defun m/gsi:vterm-run-tours-api ()
@@ -242,7 +269,7 @@
   (open-or-start-vterm-buffer
    "*vterm* *TOURS API*"
    "/home/trevor/projects/goddard/src/ipaas-tours-api/"
-   "./local-startup.sh"))
+   ". ./local-startup.sh"))
 
 ;;;###autoload
 (defun m/gsi:vterm-run-school-events-api ()
@@ -250,7 +277,7 @@
   (open-or-start-vterm-buffer
    "*vterm* *SCHOOL EVENTS API*"
    "/home/trevor/projects/goddard/src/ipaas-schoolevents-api/"
-   "./local-startup.sh"))
+   ". ./local-startup.sh"))
 
 (defun m/gsi:vterm-stop-tours-api ()
   (interactive)
@@ -262,7 +289,7 @@
   (open-or-start-vterm-buffer
    "*vterm* *FBP TOURS API Tests*"
    "/home/trevor/projects/goddard/src/ipaas-tours-api/"
-   "./local-startup-tests.sh"))
+   ". ./local-startup-tests.sh"))
 
 ;;;###autoload
 (defun m/gsi:vterm-run-leads-api ()
@@ -270,7 +297,7 @@
   (open-or-start-vterm-buffer
    "*vterm* *LEADS API*"
    "/home/trevor/projects/goddard/src/ipaas-leads-api/"
-   "./local-startup.sh"))
+   ". ./local-startup.sh"))
 
 ;;;###autoload
 (defun m/gsi:vterm-run-recognitions-api ()
@@ -278,18 +305,19 @@
   (open-or-start-vterm-buffer
    "*vterm* *RECOGNITIONS API*"
    "/home/trevor/projects/goddard/src/ipaas-recognitions-api/"
-   "./local-startup.sh"))
+   ". ./local-startup.sh"))
 
-(defun my:stop-vterm (buffer)
+(defun m/vterm:stop (buffer)
+  "Stop a vterm buffer by its name BUFFER."
   (when (get-buffer buffer)
-    (switch-to-buffer-other-window buffer) 
-    (with-current-buffer
-        buffer
-      (vterm-send-string "")
-      (sleep-for 2)
-      (vterm-send-string "exit")
-      (vterm-send-return))
-    ))
+    (with-current-buffer buffer
+      (when (and (derived-mode-p 'vterm-mode)
+                 (get-buffer-process buffer))
+        (ignore-errors
+          (vterm-send-string "\C-c")
+          (sleep-for 1)  ;; Reduce sleep time if possible
+          (let ((kill-buffer-query-functions nil))
+            (kill-buffer buffer)))))))
 
 (defun m/gsi:vterm-stop-leads-api ()
   (interactive)
@@ -301,7 +329,7 @@
   (open-or-start-vterm-buffer
    "*vterm* *FBP LEADS API Tests*"
    "/home/trevor/projects/goddard/src/ipaas-leads-api/"
-   "./local-startup-unit-tests.sh"))
+   ". ./local-startup-unit-tests.sh"))
 
 ;;;###autoload
 (defun m/gsi:vterm-run-content-api ()
@@ -309,14 +337,14 @@
   (with-current-buffer (vterm (concat "*vterm* *CONTENT API*"))
     (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-content-api/")
     (vterm-send-return)
-    (vterm-send-string "./local-startup.sh")
+    (vterm-send-string ". ./local-startup.sh")
     (vterm-send-return)))
 
 (require 'json-mode)
 
 (defun curl-and-format-json (url buffer-name)
   "Fetch JSON data from the given URL using curl, place the result in a new buffer,
-   set the buffer to json-mode, and format the buffer."
+     set the buffer to json-mode, and format the buffer."
   (interactive "sEnter URL: ")
   (let ((json-buffer (generate-new-buffer buffer-name)))
     (with-current-buffer json-buffer
@@ -332,22 +360,11 @@
 
 ;;;###autoload
 (defun m/gsi:vterm-run-content-api-unit-test ()
-    (interactive)
-    (open-or-start-vterm-buffer
-     "*vterm* *FBP CONTENT API Tests*"
-     "/home/trevor/projects/goddard/src/ipaas-content-api/src/Goddard.ContentWebApiUnitTests"
-     "./local-startup-unit-tests.sh"))
-
-
-
-(defun open-or-start-vterm-buffer (buf folder startup-script)
-  (if (buffer-live-p (get-buffer buf))
-      (switch-to-buffer buf)
-    (with-current-buffer (vterm (concat buf))
-      (vterm-send-string (concat "cd " folder))
-      (vterm-send-return)
-      (vterm-send-string (concat ". " startup-script))
-      (vterm-send-return))))
+  (interactive)
+  (open-or-start-vterm-buffer
+   "*vterm* *FBP CONTENT API Tests*"
+   "/home/trevor/projects/goddard/src/ipaas-content-api/src/Goddard.ContentWebApiUnitTests"
+   ". ./local-startup-unit-tests.sh"))
 
 ;;;###autoload
 (defun m/gsi:vterm-run-fbp ()
@@ -355,15 +372,32 @@
   (m/gsi:vterm-run-fbp-api)
   (m/gsi:vterm-run-fbp-web)
   ;; Schools api needed for login.  Other local apis can be run as required.
-  (m/gsi:vterm-run-schools-api))
+  (m/gsi:vterm-run-schools-api)
+  (m/gsi:vterm-run-authorization-api))
+
+;;;###autoload
+(defun m/gsi:vterm-run-fbp-for-tours ()
+  (interactive)
+  (m/gsi:vterm-run-fbp-api)
+  (m/gsi:vterm-run-fbp-web)
+  ;; Schools api needed for login.  Other local apis can be run as required.
+  (m/gsi:vterm-run-schools-api)
+  (m/gsi:vterm-run-tours-api)
+  (m/gsi:vterm-run-leads-api))
 
 ;;;###autoload
 (defun m/gsi:vterm-stop-fbp ()
   (interactive)
   (m/gsi:vterm-stop-fbp-web)
-  (m/gsi:vterm-stop-fbp-api)
+  (m/gsi:vterm-stop-fbp-api)  
   (m/gsi:vterm-stop-tours-api)
-  (m/gsi:vterm-stop-leads-api))
+  (m/gsi:vterm-stop-leads-api)
+  (m/vterm:stop "*vterm* *RECOGNITIONS API*")
+  (m/vterm:stop "*vterm* *FACULTY API*")
+  (m/vterm:stop "*vterm* *SCHOOLS API*")
+  (m/vterm:stop "*vterm* *SCHOOL EVENTS API*")
+  (m/vterm:stop "*vterm* *CONTENT API*")
+  (m/vterm:stop "*vterm* *AUTHORIZATION API*"))
 
 ;;;###autoload
 (defun m/gsi:vterm-run-fbp-web ()
@@ -371,7 +405,7 @@
   (open-or-start-vterm-buffer
    "*vterm* *FBP Web*"
    "/home/trevor/projects/goddard/src/FranchiseePortal-Website/"
-   "./local-startup.sh"))
+   ". ./local-startup.sh"))
 
 (defun m/gsi:vterm-stop-fbp-web ()
   (interactive)
@@ -383,7 +417,7 @@
   (open-or-start-vterm-buffer
    "*vterm* *FBP Web Tests*"
    "/home/trevor/projects/goddard/src/FranchiseePortal-Website/"
-   "./local-startup-test.sh"))
+   ". ./local-startup-test.sh"))
 
 ;;;###autoload
 (defun m/gsi:vterm-log-franchiseportal-api ()
@@ -446,7 +480,7 @@
   (open-or-start-vterm-buffer
    "*vterm* *DOTCMS*"
    "/home/trevor/projects/extended_stay/src/frontend/"
-   "./local-startup.sh"))
+   ". ./local-startup.sh"))
 
 ;;;###autoload
 (defun m/esa:vterm-esa-run-dotcms-server-franchise-site ()
@@ -454,7 +488,14 @@
   (open-or-start-vterm-buffer
    "*vterm* *DOTCMS - FRANCHISE*"
    "/home/trevor/projects/extended_stay/src/cms.ms.common"
-   "./local-startup.sh"))
+   ". ./local-startup.sh"))
+
+(defun m/esa:vterm-run-mock-apis-server ()
+  (interactive)
+  (open-or-start-vterm-buffer
+   "*vterm* *DOTCMS - MOCK APIS*"
+   "/home/trevor/projects/extended_stay/src/esa-cl-server/"
+   "./start-mock-apis-server"))
 
 ;;;###autoload
 (defun m/esa:vterm-esa-run-dotcms ()
@@ -463,10 +504,22 @@
   (m/esa:vterm-esa-run-dotcms-server)
   (m/esa:vterm-esa-run-dotcms-node-watch)
   (m/esa:vterm-esa-run-dotcms-node-serve)
+  (m/esa:vterm-run-mock-apis-server)
   (sleep-for 3)                             ;; Let dotcms spin up on port 80808 before running the booking repo
   (m/esa:vterm-esa-run-booking)
   ;; The dotcms buffer might need sudo, switch to that
   (switch-to-buffer "*vterm* *DOTCMS*"))
+
+;;;###autoload
+(defun m/esa:vterm-esa-stop-dotcms ()
+    "Runs dotcms, node, and booking repos"
+    (interactive)
+    (m/vterm:stop "*vterm* *DOTCMS - FRANCHISE*")
+    (m/vterm:stop "*vterm* *DOTCMS*")
+    (m/vterm:stop "*vterm* *DOTCMS - Frontend Watch*")
+    (m/vterm:stop "*vterm* *DOTCMS - Frontend Serve*")
+    (m/vterm:stop "*vterm* *ESA Booking Repo*")
+    (m/vterm:stop "*vterm* *DOTCMS - MOCK APIS*"))
 
 ;;;###autoload
 (defun m/esa:vterm-esa-run-booking ()
@@ -474,7 +527,7 @@
   (open-or-start-vterm-buffer
    "*vterm* *ESA Booking Repo*"
    "/home/trevor/projects/extended_stay/src/booking/"
-   "./local-startup.sh"))
+   ". ./local-startup.sh"))
 
 ;;;###autoload
 (defun m/esa:vterm-esa-run-dotcms-node-watch ()
@@ -482,7 +535,7 @@
   (open-or-start-vterm-buffer
    "*vterm* *DOTCMS - Frontend Watch*"
    "/home/trevor/projects/extended_stay/src/frontend/"
-   "./local-startup-node.sh"))
+   ". ./local-startup-node.sh"))
 
 ;;;###autoload
 (defun m/esa:vterm-esa-run-dotcms-node-watch-franchise ()
@@ -490,7 +543,7 @@
   (open-or-start-vterm-buffer
    "*vterm* *DOTCMS Franchise - Frontend Watch*"
    "/home/trevor/projects/extended_stay/src/cms.ms.common"
-   "./local-startup-node.sh"))
+   ". ./local-startup-node.sh"))
 
 (defun m/esa:vterm-esa-run-dotcms-node-serve ()
   (interactive)
@@ -1137,15 +1190,15 @@ POSITION should be either 'start or 'end."
       `(cl:progn (cl:setf (cl:cdr (cl:assoc 'slynk:*string-elision-length* slynk:*slynk-pprint-bindings*)) 200))))
 
 ;;; https://gist.github.com/kristianhellquist/3082383#gistcomment-2373734
-(defun tja-copy-current-line-position-to-clipboard ()
+(defun m/file:copy-current-line-position-to-clipboard ()
   "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
   (interactive)
   (let ((path-with-line-number
-         (concat (buffer-file-name) ":" (number-to-string (line-number-at-pos)))))
+         (concat (buffer-file-name) ":" (number-ring (line-number-at-pos)))))
     (kill-new path-with-line-number)
     (message (concat path-with-line-number " copied to clipboard"))))
 
-(defun my:copy-relative-current-line-position-to-clipboard ()
+(defun m/file:copy-relative-current-line-position-to-clipboard ()
   "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
   (interactive)
   (let ((path-with-line-number
@@ -1153,7 +1206,7 @@ POSITION should be either 'start or 'end."
     (kill-new path-with-line-number)
     (message (concat path-with-line-number " copied to clipboard"))))
 
-(defun my:copy-project-current-line-position-to-clipboard ()
+(defun m/file:copy-project-current-line-position-to-clipboard ()
   "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
   (interactive)
   (cl-flet ((find-git-dir  ()

@@ -1,6 +1,6 @@
 ;; This is borrowed and modified from org-agenda-list and org-clock-get-clocktable in org-agenda.el
 ;; Then modified to print out an org clock report for the day
-(defun my:org/org-clockify-report ()
+(defun m/org:org-clockify-report ()
   "Retrieves the arguments from the Agenda buffer and passes them through to the clockify table builder"
   (interactive)
   (setq args (get-text-property (min (1- (point-max)) (point)) 'org-last-args)
@@ -35,7 +35,7 @@
       (setq p (plist-put p :scope 'agenda))
       (setq p (plist-put p :link nil))
       (setq p (plist-put p :properties '("clockify-project-id")))
-      (setq tbl (apply #'my:org/org-clockify-get-clockify-table p))
+      (setq tbl (apply #'m/org:org-clockify-get-clockify-table p))
       (with-current-buffer (get-buffer-create "*clockify-fns*")
         (erase-buffer)
         (insert tbl)
@@ -43,7 +43,7 @@
         (switch-to-buffer-other-window "*clockify-fns*")
         ))))
 
-(defun my:org/org-clockify-get-clockify-table (&rest props)
+(defun m/org:org-clockify-get-clockify-table (&rest props)
   "Takes props from the input agenda fn, passes them through to an org dblock"
   (setq props (plist-put props :name "clockify-table"))
   (unless (plist-member props :maxlevel)
@@ -174,7 +174,7 @@
 (defun format--clockify-fn (start-time duration-minutes description project-id)
   (let* ((decoded-start-time (decode-time (org-read-date nil t start-time)))
          (end-time (format--decoded-time-to-clockify (increment--dt-minutes decoded-start-time duration-minutes))))
-    (format "(my:clockify/add-entry \"%s\"  \"%s\" \"%s\" \"%s\")" start-time end-time (my:escape-quotes description) project-id)))
+    (format "(m/clockify:add-entry \"%s\"  \"%s\" \"%s\" \"%s\")" start-time end-time (my:escape-quotes description) project-id)))
 
 (defun my:org-clock/clockify-simple-fn-formatter (ipos tables params)
   (let* ((tstart (plist-get params :tstart))
@@ -514,7 +514,7 @@
     total-time))
 
 ;; Dont remember exactly what this was supposed to do.  Removing the interactive for now 01-Jun-2023
-(defun my:org/org-clockify-clock-report (&optional arg)
+(defun m/org:org-clockify-clock-report (&optional arg)
   ;(interactive "P")
   (org-clock-remove-overlays)
   (when arg
@@ -530,7 +530,7 @@
     (start (goto-char start)))
   (org-update-dblock))
 
-(defun my:org-clock/get-clock-time ()
+(defun m/org-clock:get-clock-time ()
   (interactive)
   (let ((re (concat "[ \t]*" org-clock-string
                     " *[[<]\\([^]>]+\\)[]>]\\(-+[[<]\\([^]>]+\\)[]>]"
@@ -580,5 +580,5 @@
       t))))
 
 
-(defun my:org-clock/make-clockify-string (total-time)
-  (concat (format "(my:clockify/esa-add-entry \"2023-05-01\" \"06:55\" \"%d\" \"Test\")" (* 10.0 (fround (/ total-time 10.0))))))
+(defun m/org-clock:make-clockify-string (total-time)
+  (concat (format "(m/clockifyadd-entry \"2023-05-01\" \"06:55\" \"%d\" \"Test\")" (* 10.0 (fround (/ total-time 10.0))))))
