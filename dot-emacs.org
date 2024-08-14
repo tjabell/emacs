@@ -320,6 +320,7 @@ Couldn't find a good shortcut 16-Jun-2023
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x z"))
 #+end_src
+
 * Tempel Snippets
 
 Templates are in ~/.emacs.d/templates
@@ -864,7 +865,6 @@ Learning embark
     (define-key embark-bookmark-map (kbd "3") (my/embark-split-action bookmark-jump split-window-right))
     
     (define-key embark-region-map (kbd "T") 'my:export-region-to-scratch-buffer))
-
 
   ;; Consult users will also want the embark-consult package.
   (use-package embark-consult
@@ -1784,6 +1784,15 @@ https://emacs.stackexchange.com/questions/17064/never-create-frame-in-ediff
   (winner-mode)
 #+end_src
 
+* Html
+
+Use web-mode as the default html mode
+#+begin_src emacs-lisp :results raw
+  (use-package web-mode
+    :straight nil
+    :config
+    (add-to-list 'auto-mode-alist '("\\.html" . web-mode)))
+#+end_src
 * NXML
 
 #+begin_src emacs-lisp
