@@ -321,7 +321,7 @@
 
 (defun m/gsi:vterm-stop-leads-api ()
   (interactive)
-  (my:stop-vterm "*vterm* *LEADS API*"))
+  (m/vterm:stop "*vterm* *LEADS API*"))
 
 ;;;###autoload
 (defun m/gsi:vterm-run-leads-api-unit-test ()
@@ -373,7 +373,8 @@
   (m/gsi:vterm-run-fbp-web)
   ;; Schools api needed for login.  Other local apis can be run as required.
   (m/gsi:vterm-run-schools-api)
-  (m/gsi:vterm-run-authorization-api))
+  (m/gsi:vterm-run-authorization-api)
+  (m/gsi:vterm-run-mock-gsi-servers))
 
 ;;;###autoload
 (defun m/gsi:vterm-run-fbp-for-tours ()
@@ -397,7 +398,8 @@
   (m/vterm:stop "*vterm* *SCHOOLS API*")
   (m/vterm:stop "*vterm* *SCHOOL EVENTS API*")
   (m/vterm:stop "*vterm* *CONTENT API*")
-  (m/vterm:stop "*vterm* *AUTHORIZATION API*"))
+  (m/vterm:stop "*vterm* *AUTHORIZATION API*")
+  (m/vterm:stop "*vterm* *MOCK GSI SERVERS*"))
 
 ;;;###autoload
 (defun m/gsi:vterm-run-fbp-web ()
@@ -906,10 +908,11 @@ same directory as the org-buffer and insert a link to this file."
  ;(azure--session-call "" (format "%s:%s" my/azure-un my/azure-password))
 
 (defun point-in-comment ()
-(let ((syn (syntax-ppss)))
-  (and (nth 8 syn)
-       (not (nth 3 syn)))))
-(defun tja-sql-capitalize-all-sqlserver-keywords (min max)
+  (let ((syn (syntax-ppss)))
+    (and (nth 8 syn)
+         (not (nth 3 syn)))))
+
+(defun m/sql:sql-capitalize-all-sqlserver-keywords (min max)
   (interactive "r")
   (require 'sql)
   (save-excursion
@@ -919,6 +922,42 @@ same directory as the org-buffer and insert a link to this file."
         (unless (or (point-in-comment) (> (point) max))
           (goto-char (match-beginning 0))
           (upcase-word 1))))))
+
+                                        ;https://chatgpt.com/c/6ab254b1-9464-4509-a3a4-3313af1171e9
+(defun m/sql:run-sqlcmd-with-connection (sql-file &optional additional-params)
+  "Run sqlcmd with SQL-FILE as input, using a connection from `sql-connection-alist`.
+If ADDITIONAL-PARAMS is non-nil, it is added to the sqlcmd command."
+  (interactive
+   (let* ((default-file (if (and (buffer-file-name)
+                                 (string-suffix-p ".sql" (buffer-file-name)))
+                            (file-name-nondirectory (buffer-file-name))))
+          (sql-file (read-file-name "SQL File: " nil nil t default-file)))
+     (list sql-file (read-string "Additional sqlcmd parameters: "))))
+  (let* ((connection-name (completing-read "Choose SQL connection: "
+                                           (mapcar #'car sql-connection-alist)))
+         (connection-info (cdr (assoc (intern connection-name) sql-connection-alist)))
+         (user (cadr (assoc 'sql-user connection-info)))
+         (password (cadr (assoc 'sql-password connection-info)))
+         (server (cadr (assoc 'sql-server connection-info)))
+         (database (cadr (assoc 'sql-database connection-info)))
+         (integrated-auth (assoc 'sql-integrated-auth connection-info))
+         (command (format "sqlcmd -S %s %s -d %s -i %s %s"
+                          server
+                          (if integrated-auth "-E" (format "-U %s -P %s" user password))
+                          database
+                          sql-file
+                          additional-params)))
+    (unless (and server database)
+      (error "Server or Database information missing for the selected connection"))
+    (when (y-or-n-p (format "Execute command: %s? " command))
+      (message "Running: %s" command)
+      (let ((output-buffer "*SQLCMD Output*"))
+        (with-current-buffer (get-buffer-create output-buffer)
+          (read-only-mode -1)
+          (erase-buffer)
+          (shell-command command output-buffer)
+          (read-only-mode 1)
+          (display-buffer output-buffer))))))
 
 (defun arrayify (start end quote)
   "Turn strings on newlines into a QUOTEd, comma-separated one-liner."
