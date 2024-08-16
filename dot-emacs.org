@@ -31,6 +31,7 @@ otherwide ⤵ would get converted to bytes when opening this file
 
 #+begin_src emacs-lisp
   (add-to-list 'auto-mode-alist '("\\zshrc$" . sh-mode))
+  (add-to-list 'auto-mode-alist '("\\.csproj$" . nxml-mode))
 #+end_src
 
 ** [Optional] If debugging this may help
@@ -1395,10 +1396,7 @@ The output isn't as rich as even vterm so I'm commenting this out again for now 
 (async-shell-command *cmd* "*dotnet*")
 
 #+begin_src emacs-lisp
-  ;; (use-package dotnet
-  ;;   :hook 
-  ;;   (csharp-ts-mode . dotnet-mode)
-  ;;   (csharp-mode . dotnet-mode))
+  (use-package dotnet)
 #+end_src
 
 Trying Sharper
@@ -1588,7 +1586,8 @@ Add init file as lisp file
 ** Paredit
 #+begin_src emacs-lisp :results raw
   (use-package paredit
-    :hook ((lisp-mode . enable-paredit-mode)))
+    :hook ((lisp-mode . enable-paredit-mode)
+           (emacs-lisp-mode . enable-paredit-mode)))
 #+end_src
 
 ** Lispy
@@ -1953,14 +1952,15 @@ Swap vertico-map with  minibuffer-local-completion-map if not using vertico
 * Clockify
 
 #+begin_src emacs-lisp
-    (use-package clockify
-      :straight '(clockify :host github :repo "mdallastella/clockify.el"
-                           :fork (:host github
-                 :repo "tjabell/clockify.el"))
-    
-      :config
-      (load-file "~/.clockify-secrets.el")
-      (setq m/clockify:*clockify-user-id*  (clockify--user-info)))
+  (use-package clockify
+    :straight '(clockify :host github :repo "mdallastella/clockify.el"
+                         :fork (:host github
+               :repo "tjabell/clockify.el"))
+
+    :config
+    (load-file "~/.clockify-secrets.el")
+    ;(setq m/clockify:*clockify-user-id*  (clockify--user-info))
+    )
 #+end_src
 
 * CSV Mode

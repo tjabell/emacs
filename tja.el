@@ -1023,6 +1023,7 @@ If ADDITIONAL-PARAMS is non-nil, it is added to the sqlcmd command."
                  do (princ (format "%-10d %-10.2f %-10.2f %-10.2f\n" month payment interest-paid principal-paid))))))))
 
 (load-file "/home/trevor/.clockify-secrets.el")
+
 (load-file "/home/trevor/emacs/lisp/my-clockify.el")
 
 (org-babel-load-file "~/projects/extended_stay/esa-elisp.org")

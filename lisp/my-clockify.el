@@ -43,19 +43,6 @@
   (setq m/clockify:*projects* (clockify--projects))
   "Clockify projects initiated")
 
-(setq my:parsus-training-id "5d702b48a3fe2c1b233ea83c")
-
-(setq my:acdhh-project-id "5d6fff262b576659a087efb4")
-
-(setq my:acdhh-public-website-task-id "5d6fffd2a3fe2c1b233e709b")
-
-(setq my:acdhh-cdbms-task-id "5d6fffd72b576659a087f096")
-
-;;(setq my:equinox-project-id "5d6fe70bd162f830901a8df2")
-;;(setq my:equinox-gac-task-id "5d8e74c4a0b06a32d93904da")
-;;(setq my:equinox-rks-task-id "5d8e74bfad3d0067ca648e6b")
-;;(setq my:equinox-wpt-task-id "5d6fff98a3fe2c1b233e704d")
-
 (defun m/clockify:print-projects ()
   (interactive)
   (unless (boundp 'm/clockify:*projects*)
@@ -74,6 +61,3 @@
   (let ((tasks (clockify--tasks project-id)))
     (with-current-buffer (get-buffer-create (concat "*my-tasks-" project-id "*"))
       (seq-map (lambda (i) (cl-prettyprint i)) tasks))))
-
-
-;(m/clockify:init)
