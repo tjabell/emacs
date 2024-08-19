@@ -799,25 +799,25 @@ same directory as the org-buffer and insert a link to this file."
 
 (provide 'tja-ocr)
 
-;; set my/azure-un, my/azure-pw
+;; set Azure UN/PW
 (load-file "~/.azure-secrets.el")
 
-(defun m/gsi/print-ticket-heading (ticket-number)
+(defun m/gsi:print-ticket-heading (ticket-number)
   (interactive "sTicket-number: ")
-  (let* ((obj (m/gsi/get-azure-ticket ticket-number))
-         (info (m/gsi/get-azure-ticket-title-and-id obj)))
+  (let* ((obj (m/gsi:get-azure-ticket ticket-number))
+         (info (m/gsi:get-azure-ticket-title-and-id obj)))
     (insert (format "%s: %s" (car info) (cadr info)))))
 
-(defun m/gsi/get-azure-ticket-title-and-id (obj)
+(defun m/gsi:get-azure-ticket-title-and-id (obj)
   (let* ((props (aref (cdr (cadr obj)) 0))
          (id (cdar props))
          (title (cdr (assoc 'System.Title (assoc 'fields props)))))
     (list id title)))
 
-(defun m/gsi/get-azure-ticket (ticket-number)
+(defun m/gsi:get-azure-ticket (ticket-number)
   (with-temp-buffer ; temp buffer to hold json data
-    (let* ((username my/azure-un)
-           (password my/azure-password)
+    (let* ((username *MY-AZURE-UN*)
+           (password *MY-AZURE-PW*)
            (api-version "7.0")
            (ticket-url (format "https://dev.azure.com/GoddardSystemsIT/_apis/wit/workitems?ids=%s&api-version=%s" ticket-number api-version))
            (url-request-extra-headers
@@ -827,9 +827,9 @@ same directory as the org-buffer and insert a link to this file."
       (url-insert-file-contents ticket-url))
     (json-read)))
 
-(defun m/gsi/get-azure-tickets (wql display-fn)
-  (let* ((username my/azure-un)
-         (password my/azure-password)
+(defun m/gsi:get-azure-tickets (wql display-fn)
+  (let* ((username *MY-AZURE-UN*)
+         (password *MY-AZURE-PW*)
          (api-version "7.1-preview.2")
          (api-url (format "https://dev.azure.com/GoddardSystemsIT/_apis/wit/wiql?api-version=%s" api-version))
          (url-request-extra-headers
@@ -867,7 +867,7 @@ same directory as the org-buffer and insert a link to this file."
   AND [State] <> 'Closed' 
   order by [System.WorkItemType] desc, [Microsoft.VSTS.Common.Priority] asc, [System.CreatedDate] desc")
 
-(defun m/gsi/report-fbp-azure-done-tickets ()
+(defun m/gsi:report-fbp-azure-done-tickets ()
   (interactive)
   (cl-flet ((display-in-new-buffer (data) 
               (let ((buffer (get-buffer-create "*Azure API Response*")))
@@ -880,9 +880,9 @@ same directory as the org-buffer and insert a link to this file."
                   (json-mode)) ; Assuming you have json-mode installed for better readability
                 (display-buffer buffer))))
     (let* ((wql wql-for-done-tickets))
-      (m/gsi/get-azure-tickets wql #'display-in-new-buffer))))
+      (m/gsi:get-azure-tickets wql #'display-in-new-buffer))))
 
-(defun m/gsi/report-fbp-azure-done-tickets-for-changelog ()
+(defun m/gsi:report-fbp-azure-done-tickets-for-changelog ()
   (interactive)
   (cl-flet ((display-id-only-in-new-buffer (data) 
               (let ((work-item-ids (mapcar (lambda (item)
@@ -895,7 +895,7 @@ same directory as the org-buffer and insert a link to this file."
                     (insert (format "%s\n" id)))
                   (display-buffer buffer)))))
     (let* ((wql wql-for-done-tickets))
-      (m/gsi/get-azure-tickets wql #'display-id-only-in-new-buffer))))
+      (m/gsi:get-azure-tickets wql #'display-id-only-in-new-buffer))))
 
 (load-file "~/.azure-secrets.el")
 (defun azure--session-call (path credentials)
@@ -1024,7 +1024,6 @@ If ADDITIONAL-PARAMS is non-nil, it is added to the sqlcmd command."
                  do (princ (format "%-10d %-10.2f %-10.2f %-10.2f\n" month payment interest-paid principal-paid))))))))
 
 (load-file "/home/trevor/.clockify-secrets.el")
-
 (load-file "/home/trevor/emacs/lisp/my-clockify.el")
 
 (org-babel-load-file "~/projects/extended_stay/esa-elisp.org")
