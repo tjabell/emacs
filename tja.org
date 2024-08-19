@@ -422,7 +422,8 @@ tja-compile-leads-api-integration-test
     ;; Schools api needed for login.  Other local apis can be run as required.
     (m/gsi:vterm-run-schools-api)
     (m/gsi:vterm-run-tours-api)
-    (m/gsi:vterm-run-leads-api))
+    (m/gsi:vterm-run-leads-api)
+    (m/gsi:vterm-run-mock-gsi-servers))
 
   ;;;###autoload
   (defun m/gsi:vterm-stop-fbp ()
