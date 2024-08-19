@@ -377,7 +377,7 @@ Templates are in ~/.emacs.d/templates
 #+end_src
 
 * Org mode, org-tempo, org bullets, org-roam, org-ai
- 
+
 ** Main org config
 Org ellipsis has been bugging out tangle a little bit.
    The arrow is 2935: RET ARROW POINTING RIGHTWARDS THEN CURVING DOWNWARDS"
@@ -828,7 +828,7 @@ Learning embark
       (with-current-buffer scratch-buffer
         (fundamental-mode)
         (insert region-content)
-        (switch-to-buffer-other-window scratch-buffer)))) 
+        (switch-to-buffer-other-window scratch-buffer))))
 
   ;; Credit: https://karthinks.com/software/fifteen-ways-to-use-embark/#open-any-buffer-by-splitting-any-window
   (use-package embark
@@ -874,7 +874,7 @@ Learning embark
     (define-key embark-file-map     (kbd "3") (my/embark-split-action find-file split-window-right))
     (define-key embark-buffer-map   (kbd "3") (my/embark-split-action switch-to-buffer split-window-right))
     (define-key embark-bookmark-map (kbd "3") (my/embark-split-action bookmark-jump split-window-right))
-    
+
     (define-key embark-region-map (kbd "T") 'my:export-region-to-scratch-buffer))
 
   ;; Consult users will also want the embark-consult package.
@@ -920,7 +920,7 @@ TBD
     (read-only-mode))
   (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 
-  
+
 #+end_src
 
 #+begin_src emacs-lisp :results raw
@@ -1196,7 +1196,7 @@ Will it interfere with kind-icons?
 ** Tree sitter (experimental)
 Builtin after emacs 29
 #+begin_src emacs-lisp :results raw
-  (use-package treesit 
+  (use-package treesit
     :straight nil
     :config
     (setq treesit-language-source-alist
@@ -1872,7 +1872,7 @@ Use web-mode as the default html mode
       ;;         jiralib2-auth             'basic
       ;;         jiralib2-user-login-name  "TODO"
       ;;         jiralib2-token            "TODO"
-      ;;         ;jiralib2-token            
+      ;;         ;jiralib2-token
 
       ;;         ;; NOTE, this directory needs to be in `org-agenda-files'`
       ;;         ejira-org-directory       "~/jira"
