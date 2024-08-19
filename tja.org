@@ -602,6 +602,43 @@ tja-compile-leads-api-integration-test
       (vterm-send-string ". ./local-startup.sh")
       (vterm-send-return)))
 
+  (defun m/get-wlan-ip-address ()
+    "Retrieve the IP address of the wlan interface."
+    (interactive)
+    (let ((ip-output (shell-command-to-string "ip addr show wlan0 | grep 'inet ' | awk '{print $2}' | cut -d'/' -f1")))
+      (string-trim ip-output)))
+
+  (defun m/sway:check-or-start-wayvnc ()
+    "Check if WayVNC is running, start it if not, and return its PID."
+    (interactive)
+    (let ((wayvnc-pid (shell-command-to-string "pgrep wayvnc"))
+          (ip-to-bind (m/get-wlan-ip-address)))
+      (if (string-empty-p wayvnc-pid)
+          (progn
+            (start-process "wayvnc" "*wayvnc*" "wayvnc"
+                           "--output=HEADLESS-1"
+                           "--max-fps=30"
+                           ip-to-bind
+                           "5900"
+                           "-Ldebug")
+            (message "WayVNC started."))
+        (message "WayVNC is already running with PID: %s" wayvnc-pid)
+        (string-trim wayvnc-pid))))
+
+  (defun m/sway:check-or-create-headless-output ()
+    "Check if a headless output 'HEADLESS-1' exists. If not, create it using swaymsg."
+    (interactive)
+    (let ((output-exists
+           (shell-command-to-string "swaymsg -t get_outputs | grep 'HEADLESS-1'")))
+      (if (string-empty-p (string-trim output-exists))
+          (progn
+            (shell-command
+             "swaymsg create_output HEADLESS-1 resolution '2388x1668'")
+            (shell-command
+             "swaymsg output HEADLESS-1 resolution '2388x1668'")
+            (message "Created headless output 'HEADLESS-1' with resolution 1668x2388."))
+        (message "Headless output 'HEADLESS-1' already exists."))))
+
   (provide 'm/gsi:vterm)
 #+end_src
 
