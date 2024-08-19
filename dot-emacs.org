@@ -315,6 +315,16 @@ Couldn't find a good shortcut 16-Jun-2023
   (pixel-scroll-precision-mode)
 #+end_src
 
+** Alter zap-to-char/zap-up-to-char
+Zap up to char is usually what I want, so use M-z for that,
+Credit: https://irreal.org/blog/?p=1536
+Also Steve Purcell's .emacs.d
+#+begin_src emacs-lisp :results raw
+(autoload 'zap-up-to-char "misc"
+  "Kill up to, but not including ARGth occurrence of CHAR.")
+(global-set-key (kbd "M-z") 'zap-up-to-char)
+(global-set-key (kbd "M-Z") 'zap-to-char)
+#+end_src
 ** Remove unsuspend functionality (Ctl-z)
 
 #+begin_src emacs-lisp :results raw
