@@ -1,4 +1,45 @@
+;; Define a minor mode for read-only navigation
+(defvar read-only-navigation-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "n") 'next-line)
+    (define-key map (kbd "p") 'previous-line)
+    (define-key map (kbd "f") 'forward-char)
+    (define-key map (kbd "b") 'backward-char)
+    (define-key map (kbd "e") 'end-of-line)
+    (define-key map (kbd "a") 'beginning-of-line)
+    (define-key map (kbd "v") 'scroll-up-command)    
+    map)
+  "Keymap for `read-only-navigation-mode`.")
+
+(define-minor-mode read-only-navigation-mode
+  "Minor mode to use simple navigation keys in `read-only-mode`."
+  :lighter " RO-NAV"
+  :keymap read-only-navigation-mode-map)
+
+;; Enable the minor mode when `read-only-mode` is active
+(defun enable-read-only-navigation-mode ()
+  "Enable `read-only-navigation-mode` when in `read-only-mode`."
+  (if buffer-read-only
+      (read-only-navigation-mode 1)
+    (read-only-navigation-mode -1)))
+
+(add-hook 'read-only-mode-hook 'enable-read-only-navigation-mode)
+
 (global-unset-key (kbd "C-x m"))
+
+(defun m/git:check-and-switch-git-branch (dir branch)
+  "Check if the Git repository in DIR is on the specified BRANCH.
+If not, try to switch to that branch. Print a warning if the branch doesn't exist."
+  (let* ((default-directory dir)
+         (current-branch (string-trim (shell-command-to-string "git rev-parse --abbrev-ref HEAD"))))
+    (if (string-equal current-branch branch)
+        (message "Already on branch '%s'." branch)
+      (if (string-match-p (regexp-quote branch)
+                          (shell-command-to-string "git branch --list"))
+          (progn
+            (shell-command (format "git checkout %s" branch))
+            (message "Switched to branch '%s'." branch))
+        (message "Warning: Branch '%s' does not exist in the repository at '%s'." branch dir)))))
 
 ;;; MAGIT EXTENSION FUNCTIONS
 ;;; Note: Converting to just use call process - shouldn't (require magit) anymore

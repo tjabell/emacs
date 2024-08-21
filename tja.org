@@ -4,6 +4,41 @@
 #+STARTUP: show3levels
 #+property: header-args:emacs-lisp  :tangle ~/emacs/tja.el
 
+* Read only mode
+
+#+begin_src emacs-lisp :results raw
+
+  ;; Define a minor mode for read-only navigation
+  (defvar read-only-navigation-mode-map
+    (let ((map (make-sparse-keymap)))
+      (define-key map (kbd "n") 'next-line)
+      (define-key map (kbd "p") 'previous-line)
+      (define-key map (kbd "f") 'forward-char)
+      (define-key map (kbd "b") 'backward-char)
+      (define-key map (kbd "e") 'end-of-line)
+      (define-key map (kbd "a") 'beginning-of-line)
+      (define-key map (kbd "v") 'scroll-up-command)    
+      map)
+    "Keymap for `read-only-navigation-mode`.")
+
+  (define-minor-mode read-only-navigation-mode
+    "Minor mode to use simple navigation keys in `read-only-mode`."
+    :lighter " RO-NAV"
+    :keymap read-only-navigation-mode-map)
+
+  ;; Enable the minor mode when `read-only-mode` is active
+  (defun enable-read-only-navigation-mode ()
+    "Enable `read-only-navigation-mode` when in `read-only-mode`."
+    (if buffer-read-only
+        (read-only-navigation-mode 1)
+      (read-only-navigation-mode -1)))
+
+  (add-hook 'read-only-mode-hook 'enable-read-only-navigation-mode)
+
+
+
+#+end_src
+
 * Mail
 
 Not using mail so let's unset the send-mail key
