@@ -1102,6 +1102,9 @@ Will it interfere with kind-icons?
 #+begin_src emacs-lisp :results raw
   (use-package all-the-icons
     :if (display-graphic-p))
+
+  (use-package all-the-icons-dired
+    :hook ((dired-mode . all-the-icons-dired-mode)))
 #+end_src
 
 * Magit
