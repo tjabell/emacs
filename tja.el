@@ -207,7 +207,7 @@
 ;;;###autoload
 (defun m/gsi:vterm-stop-fbp-api ()
   (interactive)
-  (my:stop-vterm "*vterm* *FBP API*"))
+  (m/vterm:stop "*vterm* *FBP API*"))
 
 ;;;###autoload
 (defun m/gsi:vterm-run-fbp-api-test ()
@@ -281,7 +281,7 @@
 
 (defun m/gsi:vterm-stop-tours-api ()
   (interactive)
-  (my:stop-vterm "*vterm* *TOURS API*"))
+  (m/vterm:stop "*vterm* *TOURS API*"))
 
 ;;;###autoload
 (defun m/gsi:vterm-run-tours-api-test ()
@@ -405,14 +405,17 @@
 ;;;###autoload
 (defun m/gsi:vterm-run-fbp-web ()
   (interactive)
-  (open-or-start-vterm-buffer
-   "*vterm* *FBP Web*"
-   "/home/trevor/projects/goddard/src/FranchiseePortal-Website/"
-   ". ./local-startup.sh"))
+  (let* ((project-dir "/home/trevor/projects/goddard/src/FranchiseePortal-Website/")
+         (custom-branch "custom/local-changes"))
+    (m/git:check-and-switch-git-branch project-dir custom-branch)
+    (open-or-start-vterm-buffer
+     "*vterm* *FBP Web*"
+     project-dir
+     ". ./local-startup.sh")))
 
 (defun m/gsi:vterm-stop-fbp-web ()
   (interactive)
-  (my:stop-vterm "*vterm* *FBP Web*"))
+  (m/vterm:stop "*vterm* *FBP Web*"))
 
 ;;;###autoload
 (defun m/gsi:vterm-run-fbp-web-test ()
@@ -564,17 +567,17 @@
     (vterm-send-string ". ./local-startup.sh")
     (vterm-send-return)))
 
-(defun m/get-wlan-ip-address ()
+(defun m/net:get-wlan-ip-address ()
   "Retrieve the IP address of the wlan interface."
   (interactive)
   (let ((ip-output (shell-command-to-string "ip addr show wlan0 | grep 'inet ' | awk '{print $2}' | cut -d'/' -f1")))
     (string-trim ip-output)))
 
-(defun m/sway:check-or-start-wayvnc ()
+(defun m/wayvnc:check-or-start-wayvnc ()
   "Check if WayVNC is running, start it if not, and return its PID."
   (interactive)
   (let ((wayvnc-pid (shell-command-to-string "pgrep wayvnc"))
-        (ip-to-bind (m/get-wlan-ip-address)))
+        (ip-to-bind (m/net:get-wlan-ip-address)))
     (if (string-empty-p wayvnc-pid)
         (progn
           (start-process "wayvnc" "*wayvnc*" "wayvnc"
@@ -583,8 +586,8 @@
                          ip-to-bind
                          "5900"
                          "-Ldebug")
-          (message "WayVNC started."))
-      (message "WayVNC is already running with PID: %s" wayvnc-pid)
+          (message "WayVNC started on ip %s." ip-to-bind))
+      (message "WayVNC is already running with PID: %s Probably on IP %s" (string-trim wayvnc-pid) ip-to-bind)
       (string-trim wayvnc-pid))))
 
 (defun m/sway:check-or-create-headless-output ()
@@ -894,7 +897,7 @@ same directory as the org-buffer and insert a link to this file."
                     (display-buffer buffer))))))))
 
 
-(defvar wql-for-done-tickets
+(defvar *WQL-FOR-DONE-TICKETS*
  "Select [System.Id], [System.Title], [System.State] From WorkItems 
   Where ([System.WorkItemType] = 'User Story' OR [System.WorkItemType] = 'Bug')
   AND [System.TeamProject] = 'Franchisee Business Portal'
@@ -904,7 +907,7 @@ same directory as the org-buffer and insert a link to this file."
   AND [State] <> 'Closed' 
   order by [System.WorkItemType] desc, [Microsoft.VSTS.Common.Priority] asc, [System.CreatedDate] desc")
 
-(defun m/gsi:report-fbp-azure-done-tickets ()
+(defun m/gsi:azure-report-fbp-done-tickets ()
   (interactive)
   (cl-flet ((display-in-new-buffer (data) 
               (let ((buffer (get-buffer-create "*Azure API Response*")))
@@ -916,10 +919,10 @@ same directory as the org-buffer and insert a link to this file."
                   (json-pretty-print-buffer)
                   (json-mode)) ; Assuming you have json-mode installed for better readability
                 (display-buffer buffer))))
-    (let* ((wql wql-for-done-tickets))
+    (let* ((wql *WQL-FOR-DONE-TICKETS*))
       (m/gsi:get-azure-tickets wql #'display-in-new-buffer))))
 
-(defun m/gsi:report-fbp-azure-done-tickets-for-changelog ()
+(defun m/gsi:azure-report-fbp-done-tickets-for-changelog ()
   (interactive)
   (cl-flet ((display-id-only-in-new-buffer (data) 
               (let ((work-item-ids (mapcar (lambda (item)
@@ -931,7 +934,7 @@ same directory as the org-buffer and insert a link to this file."
                   (dolist (id work-item-ids)
                     (insert (format "%s\n" id)))
                   (display-buffer buffer)))))
-    (let* ((wql wql-for-done-tickets))
+    (let* ((wql *WQL-FOR-DONE-TICKETS*))
       (m/gsi:get-azure-tickets wql #'display-id-only-in-new-buffer))))
 
 (load-file "~/.azure-secrets.el")
@@ -943,7 +946,6 @@ same directory as the org-buffer and insert a link to this file."
                        ("Authorization" . ,(format "Basic %s" credentials)))
             :sync t
             :parser 'json-read)))
- ;(azure--session-call "" (format "%s:%s" my/azure-un my/azure-password))
 
 (defun point-in-comment ()
   (let ((syn (syntax-ppss)))
