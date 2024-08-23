@@ -31,13 +31,13 @@
   "Check if the Git repository in DIR is on the specified BRANCH.
 If not, try to switch to that branch. Print a warning if the branch doesn't exist."
   (let* ((default-directory dir)
-         (current-branch (string-trim (shell-command-to-string "git rev-parse --abbrev-ref HEAD"))))
+         (current-branch (string-trim (shell-command-to-string (format "git -C %s rev-parse --abbrev-ref HEAD" dir)))))
     (if (string-equal current-branch branch)
         (message "Already on branch '%s'." branch)
       (if (string-match-p (regexp-quote branch)
-                          (shell-command-to-string "git branch --list"))
+                          (shell-command-to-string (format "git -C %s branch --list" dir)))
           (progn
-            (shell-command (format "git checkout %s" branch))
+            (shell-command (format "git -C %s checkout %s" dir branch))
             (message "Switched to branch '%s'." branch))
         (message "Warning: Branch '%s' does not exist in the repository at '%s'." branch dir)))))
 
@@ -158,6 +158,9 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
     (compile cmd)))
 
 (require 'vterm)
+
+(defvar *CUSTOM-BRANCH* "custom/local-changes")
+
 (defun open-or-start-vterm-buffer (buf folder startup-script)
   (if (buffer-live-p (get-buffer buf))
       (switch-to-buffer buf)
@@ -240,10 +243,13 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
 ;;;###autoload
 (defun m/gsi:vterm-run-fbp-api ()
   (interactive)
-  (open-or-start-vterm-buffer
-   "*vterm* *FBP API*"
-   "/home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/"
-   ". ./local-startup.sh"))
+  (let* ((project-dir "/home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/")
+         (custom-branch "custom/local-changes"))
+    (m/git:check-and-switch-git-branch project-dir custom-branch)
+    (open-or-start-vterm-buffer
+     "*vterm* *FBP API*"
+     "/home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/"
+     ". ./local-startup.sh")))
 
 ;;;###autoload
 (defun m/gsi:vterm-stop-fbp-api ()
@@ -307,18 +313,24 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
 ;;;###autoload
 (defun m/gsi:vterm-run-tours-api ()
   (interactive)
-  (open-or-start-vterm-buffer
-   "*vterm* *TOURS API*"
-   "/home/trevor/projects/goddard/src/ipaas-tours-api/"
-   ". ./local-startup.sh"))
+  (let ((project-dir "/home/trevor/projects/goddard/src/ipaas-tours-api/")
+        (branch *CUSTOM-BRANCH*))
+    (m/git:check-and-switch-git-branch project-dir branch)
+    (open-or-start-vterm-buffer
+     "*vterm* *TOURS API*"
+     project-dir
+     ". ./local-startup.sh")))
 
 ;;;###autoload
 (defun m/gsi:vterm-run-school-events-api ()
   (interactive)
-  (open-or-start-vterm-buffer
-   "*vterm* *SCHOOL EVENTS API*"
-   "/home/trevor/projects/goddard/src/ipaas-schoolevents-api/"
-   ". ./local-startup.sh"))
+  (let* ((project-dir "/home/trevor/projects/goddard/src/ipaas-schoolevents-api/")
+           (custom-branch "custom/local-changes"))
+      (m/git:check-and-switch-git-branch project-dir custom-branch)
+      (open-or-start-vterm-buffer
+       "*vterm* *SCHOOL EVENTS API*"
+       project-dir
+       ". ./local-startup.sh")))
 
 (defun m/gsi:vterm-stop-tours-api ()
   (interactive)
@@ -335,10 +347,13 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
 ;;;###autoload
 (defun m/gsi:vterm-run-leads-api ()
   (interactive)
-  (open-or-start-vterm-buffer
-   "*vterm* *LEADS API*"
-   "/home/trevor/projects/goddard/src/ipaas-leads-api/"
-   ". ./local-startup.sh"))
+  (let ((project-dir "/home/trevor/projects/goddard/src/ipaas-leads-api/")
+        (branch *CUSTOM-BRANCH*))
+    (m/git:check-and-switch-git-branch project-dir branch)
+    (open-or-start-vterm-buffer
+     "*vterm* *LEADS API*"
+     project-dir
+     ". ./local-startup.sh")))
 
 ;;;###autoload
 (defun m/gsi:vterm-run-recognitions-api ()
@@ -646,6 +661,19 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
       (message "Headless output 'HEADLESS-1' already exists."))))
 
 (provide 'm/gsi:vterm)
+
+(defun m/replace-strings-in-region-with-random (start end)
+  "Parse a list in the region between START and END.
+Replace each string in the list with a random string of the same length."
+  (interactive "r")
+  (save-excursion
+    (goto-char start)
+    (while (re-search-forward "\"\\([^\"]+\\)\"" end t)
+      (let* ((original-string (match-string 1))
+             (random-string (mapconcat (lambda (_) (char-to-string (+ ?a (random 26))))
+                                       (make-list (length original-string) nil)
+                                       "")))
+        (replace-match (concat "\"" random-string "\"") t t)))))
 
 ;; Join Lines from: https://whatacold.io/blog/2023-06-12-emacs-join-lines/
 ;;;###autoload
