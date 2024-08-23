@@ -478,6 +478,21 @@ Org ellipsis has been bugging out tangle a little bit.
     ;; Supposedly not needed after org 9.2 (on 9.6-dev as of this comment)
     (when (version<= "9.2" (org-version))
       (require 'org-tempo))
+  (custom-theme-set-faces
+       'user
+       ;; '(org-block ((t (:inherit fixed-pitch))))
+       ;; '(org-code ((t (:inherit (shadow fixed-pitch)))))
+       ;; '(org-document-info ((t (:foreground "dark orange"))))
+       ;; '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+       ;; '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+       ;; '(org-link ((t (:foreground "royal blue" :underline t))))
+       ;; '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+       ;; '(org-property-value ((t (:inherit fixed-pitch))) t)
+       ;; '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+       '(org-table ((t (:inherit fixed-pitch))) t)
+       ;'(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold))))
+       ;'(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+       )
 #+end_src
 
 #+RESULTS:
