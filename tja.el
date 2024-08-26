@@ -7,7 +7,7 @@
     (define-key map (kbd "b") 'backward-char)
     (define-key map (kbd "e") 'end-of-line)
     (define-key map (kbd "a") 'beginning-of-line)
-    (define-key map (kbd "v") 'scroll-up-command)    
+    (define-key map (kbd "v") 'scroll-up-command)
     map)
   "Keymap for `read-only-navigation-mode`.")
 
@@ -447,7 +447,7 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
 (defun m/gsi:vterm-stop-fbp ()
   (interactive)
   (m/gsi:vterm-stop-fbp-web)
-  (m/gsi:vterm-stop-fbp-api)  
+  (m/gsi:vterm-stop-fbp-api)
   (m/gsi:vterm-stop-tours-api)
   (m/gsi:vterm-stop-leads-api)
   (m/vterm:stop "*vterm* *RECOGNITIONS API*")
@@ -967,18 +967,18 @@ same directory as the org-buffer and insert a link to this file."
 
 
 (defvar *WQL-FOR-DONE-TICKETS*
- "Select [System.Id], [System.Title], [System.State] From WorkItems 
+ "Select [System.Id], [System.Title], [System.State] From WorkItems
   Where ([System.WorkItemType] = 'User Story' OR [System.WorkItemType] = 'Bug')
   AND [System.TeamProject] = 'Franchisee Business Portal'
   AND [System.Tags] Contains Words 'Ready for PROD'
   AND ([System.State] = 'UAT' OR [SYSTEM.STATE] = 'Resolved')
   AND [State] <> 'Removed'
-  AND [State] <> 'Closed' 
+  AND [State] <> 'Closed'
   order by [System.WorkItemType] desc, [Microsoft.VSTS.Common.Priority] asc, [System.CreatedDate] desc")
 
 (defun m/gsi:azure-report-fbp-done-tickets ()
   (interactive)
-  (cl-flet ((display-in-new-buffer (data) 
+  (cl-flet ((display-in-new-buffer (data)
               (let ((buffer (get-buffer-create "*Azure API Response*")))
                 (with-current-buffer buffer
                   (erase-buffer)
@@ -993,7 +993,7 @@ same directory as the org-buffer and insert a link to this file."
 
 (defun m/gsi:azure-report-fbp-done-tickets-for-changelog ()
   (interactive)
-  (cl-flet ((display-id-only-in-new-buffer (data) 
+  (cl-flet ((display-id-only-in-new-buffer (data)
               (let ((work-item-ids (mapcar (lambda (item)
                                              (format "#%d" (alist-get 'id item)))
                                            (alist-get 'workItems data)))
@@ -1018,7 +1018,7 @@ same directory as the org-buffer and insert a link to this file."
 
 (defun m/sql:ef-to-sql ()
   "Convert Entity Framework debug output in the current buffer to an executable SQL statement.
-Example: 
+Example:
 Executed DbCommand (5ms) [Parameters=[@p0='2022-12-07T00:00:00.0000000' (DbType = Date), @p1='14' (Nullable = true)], CommandType='Text', CommandTimeout='30']"
   (interactive)
   (let ((params (make-hash-table :test 'equal))
@@ -1204,7 +1204,7 @@ If ADDITIONAL-PARAMS is non-nil, it is added to the sqlcmd command."
   (replace-regexp-in-string "\"" "\\\\\"" string))
 
 (defun my:escape-quotes-in-string (input)
-  "Escape quotes in the given string INPUT."  
+  "Escape quotes in the given string INPUT."
   (replace-regexp-in-string "\"" "\\\"" input))
 
 (defun my:escape-json-recursively (json-string)
@@ -1374,7 +1374,7 @@ POSITION should be either 'start or 'end."
           (delete-region (line-beginning-position) (line-beginning-position 2))
           ;; End cleanup
 
-          ;; Temporarily set mode 
+          ;; Temporarily set mode
           (sql-mode)
           (display-buffer output-buffer)))))
   (sly-eval-async

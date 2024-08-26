@@ -17,7 +17,7 @@
       (define-key map (kbd "b") 'backward-char)
       (define-key map (kbd "e") 'end-of-line)
       (define-key map (kbd "a") 'beginning-of-line)
-      (define-key map (kbd "v") 'scroll-up-command)    
+      (define-key map (kbd "v") 'scroll-up-command)
       map)
     "Keymap for `read-only-navigation-mode`.")
 
@@ -59,7 +59,7 @@ Installing, creating these
 3. Autoload/provide
 4. (require 'new-package) in dot-emacs.org
 
-* Git   
+* Git
 
 #+begin_src emacs-lisp :results raw
   (defun m/git:check-and-switch-git-branch (dir branch)
@@ -500,7 +500,7 @@ tja-compile-leads-api-integration-test
   (defun m/gsi:vterm-stop-fbp ()
     (interactive)
     (m/gsi:vterm-stop-fbp-web)
-    (m/gsi:vterm-stop-fbp-api)  
+    (m/gsi:vterm-stop-fbp-api)
     (m/gsi:vterm-stop-tours-api)
     (m/gsi:vterm-stop-leads-api)
     (m/vterm:stop "*vterm* *RECOGNITIONS API*")
@@ -1056,18 +1056,18 @@ my:org-move-item-to-top
 
 
   (defvar *WQL-FOR-DONE-TICKETS*
-   "Select [System.Id], [System.Title], [System.State] From WorkItems 
+   "Select [System.Id], [System.Title], [System.State] From WorkItems
     Where ([System.WorkItemType] = 'User Story' OR [System.WorkItemType] = 'Bug')
     AND [System.TeamProject] = 'Franchisee Business Portal'
     AND [System.Tags] Contains Words 'Ready for PROD'
     AND ([System.State] = 'UAT' OR [SYSTEM.STATE] = 'Resolved')
     AND [State] <> 'Removed'
-    AND [State] <> 'Closed' 
+    AND [State] <> 'Closed'
     order by [System.WorkItemType] desc, [Microsoft.VSTS.Common.Priority] asc, [System.CreatedDate] desc")
 
   (defun m/gsi:azure-report-fbp-done-tickets ()
     (interactive)
-    (cl-flet ((display-in-new-buffer (data) 
+    (cl-flet ((display-in-new-buffer (data)
                 (let ((buffer (get-buffer-create "*Azure API Response*")))
                   (with-current-buffer buffer
                     (erase-buffer)
@@ -1082,7 +1082,7 @@ my:org-move-item-to-top
 
   (defun m/gsi:azure-report-fbp-done-tickets-for-changelog ()
     (interactive)
-    (cl-flet ((display-id-only-in-new-buffer (data) 
+    (cl-flet ((display-id-only-in-new-buffer (data)
                 (let ((work-item-ids (mapcar (lambda (item)
                                                (format "#%d" (alist-get 'id item)))
                                              (alist-get 'workItems data)))
@@ -1120,7 +1120,7 @@ my:org-move-item-to-top
 #+begin_src emacs-lisp
   (defun m/sql:ef-to-sql ()
     "Convert Entity Framework debug output in the current buffer to an executable SQL statement.
-  Example: 
+  Example:
   Executed DbCommand (5ms) [Parameters=[@p0='2022-12-07T00:00:00.0000000' (DbType = Date), @p1='14' (Nullable = true)], CommandType='Text', CommandTimeout='30']"
     (interactive)
     (let ((params (make-hash-table :test 'equal))
@@ -1344,7 +1344,7 @@ Print amortization calendar
     (replace-regexp-in-string "\"" "\\\\\"" string))
 
   (defun my:escape-quotes-in-string (input)
-    "Escape quotes in the given string INPUT."  
+    "Escape quotes in the given string INPUT."
     (replace-regexp-in-string "\"" "\\\"" input))
 
   (defun my:escape-json-recursively (json-string)
@@ -1543,7 +1543,7 @@ Print amortization calendar
             (delete-region (line-beginning-position) (line-beginning-position 2))
             ;; End cleanup
 
-            ;; Temporarily set mode 
+            ;; Temporarily set mode
             (sql-mode)
             (display-buffer output-buffer)))))
     (sly-eval-async
