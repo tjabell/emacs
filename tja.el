@@ -1016,6 +1016,49 @@ same directory as the org-buffer and insert a link to this file."
             :sync t
             :parser 'json-read)))
 
+(defun m/sql:ef-to-sql ()
+  "Convert Entity Framework debug output in the current buffer to an executable SQL statement.
+Example: 
+Executed DbCommand (5ms) [Parameters=[@p0='2022-12-07T00:00:00.0000000' (DbType = Date), @p1='14' (Nullable = true)], CommandType='Text', CommandTimeout='30']"
+  (interactive)
+  (let ((params (make-hash-table :test 'equal))
+        (sql-start "SET NOCOUNT ON;")
+        (case-fold-search nil)
+        (param-search-regexp "@\\(p[0-9]+\\)=\\('\\([^']*\\)'\\|NULL\\)\\(,\\| \\((DbType\\|(Nullable\\|(Size\\) = \\([^)]*\\))\\)"))
+    ;; Parse the parameters from the debug output and store them in the hash table
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward param-search-regexp nil t)
+        (puthash
+         (substring-no-properties (match-string 1))
+         (substring-no-properties (match-string 2))
+         params)))
+
+    ;; Find and process the SQL statement block
+    (save-excursion
+      (goto-char (point-min))
+      (when (re-search-forward sql-start nil t)
+        (let ((start (point)))
+          (goto-char (point-max))
+          (let ((sql (buffer-substring start (point))))
+            ;; Replace the placeholders with actual parameter values
+            (maphash
+             (lambda (key value)
+               (setq sql (replace-regexp-in-string (concat "@" key ",") (concat value ",") sql))
+               (setq sql (replace-regexp-in-string (concat "@" key ")") (concat value ")") sql))
+               (setq sql (replace-regexp-in-string (concat "@" key ";") (concat value ";") sql))
+               (setq sql (replace-regexp-in-string (concat "@" key "
+") (concat value "
+") sql))
+               )
+             params)
+            ;; Output the converted SQL
+            (with-current-buffer (get-buffer-create "*EF-SQL*")
+              (erase-buffer)
+              (insert sql)
+              (sql-mode)
+              (display-buffer (current-buffer)))))))))
+
 (defun point-in-comment ()
   (let ((syn (syntax-ppss)))
     (and (nth 8 syn)
