@@ -293,6 +293,15 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
     (vterm-send-return)))
 
 ;;;###autoload
+(defun m/gsi:vterm-run-school-features-api ()
+  (interactive)
+  (with-current-buffer (vterm (concat "*vterm* *SCHOOL FEATURES API*"))
+    (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-schoolfeatures-api/")
+    (vterm-send-return)
+    (vterm-send-string ". ./local-startup.sh")
+    (vterm-send-return)))
+
+;;;###autoload
 (defun m/gsi:vterm-run-authorization-api ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *AUTHORIZATION API*"))
@@ -439,6 +448,7 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
   (m/gsi:vterm-run-fbp-web)
   ;; Schools api needed for login.  Other local apis can be run as required.
   (m/gsi:vterm-run-schools-api)
+  (m/gsi:vterm-run-authorization-api)
   (m/gsi:vterm-run-tours-api)
   (m/gsi:vterm-run-leads-api)
   (m/gsi:vterm-run-mock-gsi-servers))
@@ -1017,74 +1027,87 @@ same directory as the org-buffer and insert a link to this file."
             :parser 'json-read)))
 
 (defun m/sql:ef-to-sql ()
-  "Convert Entity Framework debug output in the current buffer to an executable SQL statement.
-Example:
-Executed DbCommand (5ms) [Parameters=[@p0='2022-12-07T00:00:00.0000000' (DbType = Date), @p1='14' (Nullable = true)], CommandType='Text', CommandTimeout='30']"
-  (interactive)
-  (let ((params (make-hash-table :test 'equal))
-        (sql-start "SET NOCOUNT ON;")
-        (case-fold-search nil)
-        (param-search-regexp "@\\(p[0-9]+\\)=\\('\\([^']*\\)'\\|NULL\\)\\(,\\| \\((DbType\\|(Nullable\\|(Size\\) = \\([^)]*\\))\\)"))
-    ;; Parse the parameters from the debug output and store them in the hash table
+    "Convert Entity Framework debug output in the current buffer to an executable SQL statement.
+  Example:
+  Executed DbCommand (5ms) [Parameters=[@p0='2022-12-07T00:00:00.0000000' (DbType = Date), @p1='14' (Nullable = true)], CommandType='Text', CommandTimeout='30']"
+    (interactive)
+    (let ((params (make-hash-table :test 'equal))
+          (sql-start "SET NOCOUNT ON;")
+          (case-fold-search nil)
+          (param-search-regexp "@\\(p[0-9]+\\)=\\('\\([^']*\\)'\\|NULL\\)\\(,\\| \\((DbType\\|(Nullable\\|(Size\\) = \\([^)]*\\))\\)"))
+      ;; Parse the parameters from the debug output and store them in the hash table
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward param-search-regexp nil t)
+          (puthash
+           (substring-no-properties (match-string 1))
+           (substring-no-properties (match-string 2))
+           params)))
+
+      ;; Find and process the SQL statement block
+      (save-excursion
+        (goto-char (point-min))
+        (when (re-search-forward sql-start nil t)
+          (let ((start (point)))
+            (goto-char (point-max))
+            (let ((sql (buffer-substring start (point))))
+              ;; Replace the placeholders with actual parameter values
+              (maphash
+               (lambda (key value)
+                 (setq sql (replace-regexp-in-string (concat "@" key ",") (concat value ",") sql))
+                 (setq sql (replace-regexp-in-string (concat "@" key ")") (concat value ")") sql))
+                 (setq sql (replace-regexp-in-string (concat "@" key ";") (concat value ";") sql))
+                 (setq sql (replace-regexp-in-string (concat "@" key "
+  ") (concat value "
+  ") sql))
+                 )
+               params)
+              ;; Output the converted SQL
+              (with-current-buffer (get-buffer-create "*EF-SQL*")
+                (erase-buffer)
+                (insert sql)
+                (sql-mode)
+                (display-buffer (current-buffer)))))))))
+
+  (defun point-in-comment ()
+    (let ((syn (syntax-ppss)))
+      (and (nth 8 syn)
+           (not (nth 3 syn)))))
+
+  (defun m/sql:sql-capitalize-all-sqlserver-keywords (min max)
+    (interactive "r")
+    (require 'sql)
     (save-excursion
-      (goto-char (point-min))
-      (while (re-search-forward param-search-regexp nil t)
-        (puthash
-         (substring-no-properties (match-string 1))
-         (substring-no-properties (match-string 2))
-         params)))
+      (dolist (keywords sql-mode-ms-font-lock-keywords)
+        (goto-char min)
+        (while (re-search-forward (car keywords) nil t)
+          (unless (or (point-in-comment) (> (point) max))
+            (goto-char (match-beginning 0))
+            (upcase-word 1))))))
 
-    ;; Find and process the SQL statement block
-    (save-excursion
-      (goto-char (point-min))
-      (when (re-search-forward sql-start nil t)
-        (let ((start (point)))
-          (goto-char (point-max))
-          (let ((sql (buffer-substring start (point))))
-            ;; Replace the placeholders with actual parameter values
-            (maphash
-             (lambda (key value)
-               (setq sql (replace-regexp-in-string (concat "@" key ",") (concat value ",") sql))
-               (setq sql (replace-regexp-in-string (concat "@" key ")") (concat value ")") sql))
-               (setq sql (replace-regexp-in-string (concat "@" key ";") (concat value ";") sql))
-               (setq sql (replace-regexp-in-string (concat "@" key "
-") (concat value "
-") sql))
-               )
-             params)
-            ;; Output the converted SQL
-            (with-current-buffer (get-buffer-create "*EF-SQL*")
-              (erase-buffer)
-              (insert sql)
-              (sql-mode)
-              (display-buffer (current-buffer)))))))))
+(defvar m/sql:last-used-file nil
+    "Stores the last used SQL file.")
 
-(defun point-in-comment ()
-  (let ((syn (syntax-ppss)))
-    (and (nth 8 syn)
-         (not (nth 3 syn)))))
+(defvar m/sql:last-used-parameters nil
+  "Stores the last used parameter values.")
 
-(defun m/sql:sql-capitalize-all-sqlserver-keywords (min max)
-  (interactive "r")
-  (require 'sql)
-  (save-excursion
-    (dolist (keywords sql-mode-ms-font-lock-keywords)
-      (goto-char min)
-      (while (re-search-forward (car keywords) nil t)
-        (unless (or (point-in-comment) (> (point) max))
-          (goto-char (match-beginning 0))
-          (upcase-word 1))))))
 
-                                        ;https://chatgpt.com/c/6ab254b1-9464-4509-a3a4-3313af1171e9
+;;; https://chatgpt.com/c/6ab254b1-9464-4509-a3a4-3313af1171e9
 (defun m/sql:run-sqlcmd-with-connection (sql-file &optional additional-params)
   "Run sqlcmd with SQL-FILE as input, using a connection from `sql-connection-alist`.
-If ADDITIONAL-PARAMS is non-nil, it is added to the sqlcmd command."
+  If ADDITIONAL-PARAMS is non-nil, it is added to the sqlcmd command."
   (interactive
    (let* ((default-file (if (and (buffer-file-name)
                                  (string-suffix-p ".sql" (buffer-file-name)))
-                            (file-name-nondirectory (buffer-file-name))))
-          (sql-file (read-file-name "SQL File: " nil nil t default-file)))
-     (list sql-file (read-string "Additional sqlcmd parameters: "))))
+                            (file-name-nondirectory (buffer-file-name))
+                          (if m/sql:last-used-file
+                              (file-name-nondirectory m/sql:last-used-file))))
+          (default-directory (if m/sql:last-used-file
+                                 (expand-file-name (file-name-directory m/sql:last-used-file))
+                               (expand-file-name (file-name-directory (buffer-file-name)))))
+          (sql-file (read-file-name "SQL File: " default-directory default-file t default-file))
+          (sql-parameters (read-string "Additional sqlcmd parameters: " m/sql:last-used-parameters nil)))
+     (list sql-file sql-parameters)))
   (let* ((connection-name (completing-read "Choose SQL connection: "
                                            (mapcar #'car sql-connection-alist)))
          (connection-info (cdr (assoc (intern connection-name) sql-connection-alist)))
@@ -1097,8 +1120,13 @@ If ADDITIONAL-PARAMS is non-nil, it is added to the sqlcmd command."
                           server
                           (if integrated-auth "-E" (format "-U %s -P %s" user password))
                           database
-                          sql-file
+                          (replace-regexp-in-string " " "\\\\ " sql-file)
                           additional-params)))
+    (when additional-params
+      (setq m/sql:last-used-parameters additional-params))
+    (when sql-file
+      (setq  m/sql:last-used-file sql-file))
+    
     (unless (and server database)
       (error "Server or Database information missing for the selected connection"))
     (when (y-or-n-p (format "Execute command: %s? " command))
