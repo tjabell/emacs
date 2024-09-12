@@ -1282,107 +1282,6 @@ Builtin after emacs 29
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
                  '(vue-mode . ("vls" "--stdio"))))
-  ;;(setq my:csharp-lsp-server "/usr/bin/omnisharp")
-
-     ;;; LSP
-  ;; (use-package lsp-mode
-  ;;   :hook (
-  ;;          (csharp-tree-sitter-mode . lsp-deferred)
-  ;;          (java-mode . lsp-deferred)
-  ;;          )
-  ;;   :init
-  ;;   (setq lsp-keymap-prefix "C-c l")
-  ;;   :commands lsp lsp-deferred
-  ;;   :custom (lsp-csharp-server-path my:csharp-lsp-server))
-
-  ;; (use-package lsp-ui
-  ;;   :after (lsp-mode)
-  ;;   :hook (lsp-mode . lsp-ui-mode)
-  ;;   :custom
-  ;;   (lsp-ui-doc-position 'bottom))
-
-  ;; (use-package eglot
-  ;;   :straight nil
-  ;;   :config
-  ;;   (add-to-list 'eglot-server-programs
-  ;;                `(csharp-tree-sitter-mode . ("/usr/bin/omnisharp" "-lsp")))
-
-  ;;   (defclass eglot-sqls (eglot-lsp-server) () :documentation "SQL's Language Server")
-
-  ;;   (add-to-list 'eglot-server-programs '(sql-mode . (eglot-sqls "/home/trevor/go/sqls/sqls" "--config" "~/.config/sqls/config.yml")))
-
-
-  ;;   (cl-defmethod eglot-execute-command
-  ;;     ((server eglot-sqls) (_cmd (eql switchDatabase)) arguments)
-  ;;     "For switchDatabase."
-  ;;     (let* ((res (jsonrpc-request server :workspace/executeCommand
-  ;;                                  `(:command "showDatabases" :arguments ,arguments :timeout 0.5)))
-  ;;            (menu-items (split-string res "\n"))
-  ;;            (menu `("Eglot code actions:" ("dummy" ,@menu-items)))
-  ;;            (db (if (listp last-nonmenu-event)
-  ;;                    (x-popup-menu last-nonmenu-event menu)
-  ;;                  (completing-read "[eglot] Pick a database: "
-  ;;                                   menu-items nil t
-  ;;                                   nil nil (car menu-items))
-  ;;                  ))
-  ;;            )
-  ;;       (jsonrpc-request server :workspace/executeCommand
-  ;;                        `(:command "switchDatabase" :arguments [,db] :timeout 0.5))
-  ;;       ))
-  ;;   (cl-defmethod eglot-execute-command
-  ;;     ((server eglot-sqls) (command (eql executeQuery)) arguments)
-  ;;     "For executeQuery."
-  ;;     ;; (ignore-errors
-  ;;     (let* ((beg (eglot--pos-to-lsp-position (if (use-region-p) (region-beginning) (point-min))))
-  ;;            (end (eglot--pos-to-lsp-position (if (use-region-p) (region-end) (point-max))))
-  ;;            (res (jsonrpc-request server :workspace/executeCommand
-  ;;                                  `(:command ,(format "%s" command) :arguments ,arguments
-  ;;                                             :timeout 0.5 :range (:start ,beg :end ,end))))
-  ;;            (buffer (generate-new-buffer "*sqls*")))
-  ;;       (with-current-buffer buffer
-  ;;         (eglot--apply-text-edits `[
-  ;;                                    (:range
-  ;;                                     (:start
-  ;;                                      (:line 0 :character 0)
-  ;;                                      :end
-  ;;                                      (:line 0 :character 0))
-  ;;                                     :newText ,res)
-  ;;                                    ]
-  ;;                                  )
-  ;;         (org-mode))
-  ;;       (pop-to-buffer buffer))
-  ;;     )
-  ;;   (cl-defmethod eglot-execute-command
-  ;;     ((server eglot-sqls) (_cmd (eql switchDatabase)) arguments)
-  ;;     "For switchDatabase."
-  ;;     (let* ((res (jsonrpc-request server :workspace/executeCommand
-  ;;                                  `(:command "showDatabases" :arguments ,arguments :timeout 0.5)))
-  ;;            (menu-items (split-string res "\n"))
-  ;;            (menu `("Eglot code actions:" ("dummy" ,@menu-items)))
-  ;;            (db (if (listp last-nonmenu-event)
-  ;;                    (x-popup-menu last-nonmenu-event menu)
-  ;;                  (completing-read "[eglot] Pick an database: "
-  ;;                                   menu-items nil t
-  ;;                                   nil nil (car menu-items))
-  ;;                  ))
-  ;;            )
-  ;;       (jsonrpc-request server :workspace/executeCommand
-  ;;                        `(:command "switchDatabase" :arguments [,db] :timeout 0.5))
-  ;;       ))
-  ;;   :custom
-  ;;   (eglot-confirm-server-initiated-edits nil))
-
-  ;; (add-to-list 'eglot-server-programs
-  ;;              `(csharp-tree-sitter-mode . ("/usr/bin/omnisharp" "-lsp")))
-
-  ;; (setcdr
-  ;;  (assoc '(js-mode typescript-mode) eglot-server-programs)
-  ;;  '("typescript-language-server"
-  ;;    "--stdio"
-  ;;    "--tsserver-path"
-  ;;    "/usr/lib/node_modules/typescript/lib/"
-  ;;                                         ;"~/.nvm/versions/node/v16.16.0/lib/node_modules/typescript/lib/"
-  ;;    ))
 
   (use-package treemacs
     :bind (("<f8>" . treemacs)
@@ -1392,21 +1291,18 @@ Builtin after emacs 29
            ;; https://github.com/Alexander-Miller/treemacs/issues/228
            ([mouse-1] . #'treemacs-single-click-expand-action)))
 
-  ;; (use-package lsp-treemacs
-  ;;   :after lsp)
-
   (use-package treemacs-projectile)
 
 #+end_src
 
 #+RESULTS:
 
-
 ** GCMH
 #+begin_src emacs-lisp :results raw
-  ;install gcmh package to increase the gc value when necessary and decrease it. nice package btw
+  ;install gcmh package to increase the gc value when necessary and decrease it.
   (use-package gcmh)
 #+end_src
+
 ** Speeding up Eglot
 #+begin_src emacs-lisp :results raw
   ;;Copied from:
@@ -2044,8 +1940,7 @@ This file may have dependencies on libraries above
   (require 'm/gsi:vterm)
   (require 'tja-magit)
   (require 'tja-misc)
-  (require 'tja-org)
-  (require 'tja-ocr)
+  (require 'm/ocr)
 #+end_src
 
 * Open this file and personal lisp on startup
@@ -2069,6 +1964,36 @@ This file may have dependencies on libraries above
 
 #+begin_src emacs-lisp :results raw
   (defalias 'edebug-toggle-global-debug-on-error 'toggle-debug-on-error)
+#+end_src
+
+* Elysium
+
+#+begin_src emacs-lisp :results raw
+  (use-package elysium
+    :straight
+    (:host github :repo "lanceberge/elysium" :branch "main" :files ("*.el"))
+    :custom
+    ;; Below are the default values
+    (elysium-window-size 0.33) ; The elysium buffer will be 1/3 your screen
+    (elysium-window-style 'vertical)) ; Can be customized to horizontal
+
+  (use-package gptel
+    :config
+    (defun read-file-contents (file-path)
+      "Read the contents of FILE-PATH and return it as a string."
+      (with-temp-buffer
+        (insert-file-contents file-path)
+        (buffer-string)))
+    (defun anthropic-gptel-api-key ()
+      (read-file-contents "~/.anthropic-secrets"))
+    (gptel-make-anthropic "Claude"
+                      :stream t
+                      :key #'anthropic-gptel-api-key))
+
+  (use-package smerge-mode
+    :straight nil
+    :ensure nil
+    :hook (prog-mode . smerge-mode))
 #+end_src
 
 * Local Variables - sets the after save hook to tangle this org file on save
