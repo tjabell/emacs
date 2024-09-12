@@ -1,3 +1,4 @@
+;; [[file:tja.org::*Read only mode][Read only mode:1]]
 ;; Define a minor mode for read-only navigation
 (defvar read-only-navigation-mode-map
   (let ((map (make-sparse-keymap)))
@@ -24,9 +25,13 @@
     (read-only-navigation-mode -1)))
 
 (add-hook 'read-only-mode-hook 'enable-read-only-navigation-mode)
+;; Read only mode:1 ends here
 
+;; [[file:tja.org::*Mail][Mail:1]]
 (global-unset-key (kbd "C-x m"))
+;; Mail:1 ends here
 
+;; [[file:tja.org::*Git][Git:1]]
 (defun m/git:check-and-switch-git-branch (dir branch)
   "Check if the Git repository in DIR is on the specified BRANCH.
 If not, try to switch to that branch. Print a warning if the branch doesn't exist."
@@ -40,7 +45,9 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
             (shell-command (format "git -C %s checkout %s" dir branch))
             (message "Switched to branch '%s'." branch))
         (message "Warning: Branch '%s' does not exist in the repository at '%s'." branch dir)))))
+;; Git:1 ends here
 
+;; [[file:tja.org::*Magit][Magit:1]]
 ;;; MAGIT EXTENSION FUNCTIONS
 ;;; Note: Converting to just use call process - shouldn't (require magit) anymore
 (require 'magit)
@@ -111,7 +118,9 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
 
 
 (provide 'tja-magit)
+;; Magit:1 ends here
 
+;; [[file:tja.org::*Compile][Compile:1]]
 (setq special-display-buffer-names
       '("*compilation*"))
 
@@ -156,7 +165,9 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
   (interactive "sFilter: ")
   (let ((cmd (my:get-integration-test-command-with-filter "/home/trevor/projects/goddard/src/ipaas-tours-api/Goddard.ToursWebApi.IntegrationTests/Goddard.ToursWebApi.IntegrationTests.csproj" filter)))
     (compile cmd)))
+;; Compile:1 ends here
 
+;; [[file:tja.org::*Vterm][Vterm:1]]
 (require 'vterm)
 
 (defvar *CUSTOM-BRANCH* "custom/local-changes")
@@ -671,7 +682,9 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
       (message "Headless output 'HEADLESS-1' already exists."))))
 
 (provide 'm/gsi:vterm)
+;; Vterm:1 ends here
 
+;; [[file:tja.org::*Misc functions][Misc functions:1]]
 (defun m/replace-strings-in-region-with-random (start end)
   "Parse a list in the region between START and END.
 Replace each string in the list with a random string of the same length."
@@ -837,8 +850,10 @@ definition and running `eval-defun`."
     (run-at-time minutes nil 'notifications-notify :title "Emacs alert" :body body)))
 
 (provide 'tja-misc)
+;; Misc functions:1 ends here
 
-(defun tja-org-insert-image-from-wayland-clipboard ()
+;; [[file:tja.org::*Org screenshot][Org screenshot:1]]
+(defun m/org:insert-org-ocr-image-from-wayland-clipboard ()
   "Take a screenshot into a time stamped unique-named file in the
 same directory as the org-buffer and insert a link to this file."
   (interactive)
@@ -851,11 +866,13 @@ same directory as the org-buffer and insert a link to this file."
   (call-process "wl-paste" nil `(:file ,filename) nil "-t" "image/png")
   (insert (concat "[[" filename "]]"))
   (org-display-inline-images))
+;; Org screenshot:1 ends here
 
-(provide 'tja-org)
-
+;; [[file:tja.org::*Org Clock][Org Clock:1]]
 (load-file "~/emacs/my-org-clockify-report.el")
+;; Org Clock:1 ends here
 
+;; [[file:tja.org::*Org workflow movement][Org workflow movement:1]]
 (defun my:org-meta-move-to-top (&optional _arg)
   "Move the item at point up to the top of the org file just after the first header"
   (interactive "P")
@@ -901,9 +918,11 @@ same directory as the org-buffer and insert a link to this file."
         (setq struct (org-list-swap-items prev-item item struct)))
       (org-list-write-struct struct (org-list-parents-alist struct))
       (org-move-to-column col)))
+;; Org workflow movement:1 ends here
 
+;; [[file:tja.org::*OCR][OCR:1]]
 ;;;###autoload
-(defun tja-ocr-screenshot ()
+(defun m/ocr:screenshot ()
   "Take a screenshot into a time stamped unique-named file in the
 same directory as the org-buffer and insert a link to this file."
   (interactive)
@@ -916,8 +935,10 @@ same directory as the org-buffer and insert a link to this file."
   (call-process "wl-paste" nil `(:file ,filename) nil "-t" "image/png")
   (call-process "tesseract" nil t nil filename "stdout"))
 
-(provide 'tja-ocr)
+(provide 'm/ocr)
+;; OCR:1 ends here
 
+;; [[file:tja.org::*Azure][Azure:1]]
 ;; set Azure UN/PW
 (load-file "~/.azure-secrets.el")
 
@@ -1015,7 +1036,9 @@ same directory as the org-buffer and insert a link to this file."
                   (display-buffer buffer)))))
     (let* ((wql *WQL-FOR-DONE-TICKETS*))
       (m/gsi:get-azure-tickets wql #'display-id-only-in-new-buffer))))
+;; Azure:1 ends here
 
+;; [[file:tja.org::*Azure Devops][Azure Devops:1]]
 (load-file "~/.azure-secrets.el")
 (defun azure--session-call (path credentials)
    "Do a call to PATH with ARGS using current session. Does not check for session validity."
@@ -1025,7 +1048,9 @@ same directory as the org-buffer and insert a link to this file."
                        ("Authorization" . ,(format "Basic %s" credentials)))
             :sync t
             :parser 'json-read)))
+;; Azure Devops:1 ends here
 
+;; [[file:tja.org::*SQL][SQL:1]]
 (defun m/sql:ef-to-sql ()
     "Convert Entity Framework debug output in the current buffer to an executable SQL statement.
   Example:
@@ -1097,15 +1122,15 @@ same directory as the org-buffer and insert a link to this file."
   "Run sqlcmd with SQL-FILE as input, using a connection from `sql-connection-alist`.
   If ADDITIONAL-PARAMS is non-nil, it is added to the sqlcmd command."
   (interactive
-   (let* ((default-file (if (and (buffer-file-name)
+   (let* ((default-file-path (if (and (buffer-file-name)
                                  (string-suffix-p ".sql" (buffer-file-name)))
-                            (file-name-nondirectory (buffer-file-name))
+                                 (buffer-file-name)
                           (if m/sql:last-used-file
-                              (file-name-nondirectory m/sql:last-used-file))))
-          (default-directory (if m/sql:last-used-file
-                                 (expand-file-name (file-name-directory m/sql:last-used-file))
-                               (expand-file-name (file-name-directory (buffer-file-name)))))
-          (sql-file (read-file-name "SQL File: " default-directory default-file t default-file))
+                              m/sql:last-used-file)))
+          (default-file (file-name-nondirectory default-file-path))
+          (default-directory (when default-file-path
+                               (expand-file-name (file-name-directory default-file-path))))
+          (sql-file (read-file-name "SQL File: " default-directory nil t default-file))
           (sql-parameters (read-string "Additional sqlcmd parameters: " m/sql:last-used-parameters nil)))
      (list sql-file sql-parameters)))
   (let* ((connection-name (completing-read "Choose SQL connection: "
@@ -1126,7 +1151,7 @@ same directory as the org-buffer and insert a link to this file."
       (setq m/sql:last-used-parameters additional-params))
     (when sql-file
       (setq  m/sql:last-used-file sql-file))
-    
+
     (unless (and server database)
       (error "Server or Database information missing for the selected connection"))
     (when (y-or-n-p (format "Execute command: %s? " command))
@@ -1138,7 +1163,9 @@ same directory as the org-buffer and insert a link to this file."
           (shell-command command output-buffer)
           (read-only-mode 1)
           (display-buffer output-buffer))))))
+;; SQL:1 ends here
 
+;; [[file:tja.org::*Arrayify][Arrayify:1]]
 (defun arrayify (start end quote)
   "Turn strings on newlines into a QUOTEd, comma-separated one-liner."
   (interactive "r\nMQuote: ")
@@ -1148,7 +1175,9 @@ same directory as the org-buffer and insert a link to this file."
           (split-string (buffer-substring start end)) ", ")))
     (delete-region start end)
     (insert insertion)))
+;; Arrayify:1 ends here
 
+;; [[file:tja.org::*JS Beautify][JS Beautify:1]]
 ;;; js-beautify.el -- beautify some js code
 
 (defgroup js-beautify nil
@@ -1184,7 +1213,9 @@ same directory as the org-buffer and insert a link to this file."
 
 (provide 'js-beautify)
 ;;; js-beautify.el ends here
+;; JS Beautify:1 ends here
 
+;; [[file:tja.org::*Financial][Financial:1]]
 (defun openai/generate-amortization-calendar (principal rate years)
   (interactive "nPrincipal: \nnRate: \nnYears: ")
   "Generate an amortization calendar given the loan PRINCIPAL, annual interest RATE, and total YEARS of the loan."
@@ -1201,12 +1232,18 @@ same directory as the org-buffer and insert a link to this file."
                  for interest-paid = (* balance monthly-rate)
                  for principal-paid = (- payment interest-paid)
                  do (princ (format "%-10d %-10.2f %-10.2f %-10.2f\n" month payment interest-paid principal-paid))))))))
+;; Financial:1 ends here
 
+;; [[file:tja.org::*Clockify][Clockify:1]]
 (load-file "/home/trevor/.clockify-secrets.el")
 (load-file "/home/trevor/emacs/lisp/my-clockify.el")
+;; Clockify:1 ends here
 
+;; [[file:tja.org::*Project specific functions][Project specific functions:1]]
 (org-babel-load-file "~/projects/extended_stay/esa-elisp.org")
+;; Project specific functions:1 ends here
 
+;; [[file:tja.org::*Utility Functions][Utility Functions:1]]
 ;; From chatgpt 2023-06-01
     ;;;###autoload
 
@@ -1277,7 +1314,9 @@ same directory as the org-buffer and insert a link to this file."
 ;;     (dolist (env process-environment)
 ;;       (princ env)
 ;;       (princ "\n"))))
+;; Utility Functions:1 ends here
 
+;; [[file:tja.org::*My keymap][My keymap:1]]
 ;; A Ctl-c u keymap
 ;;   Ctl-c u g for GSI
 ;;   Ctl-c u e for ESA
@@ -1320,7 +1359,9 @@ same directory as the org-buffer and insert a link to this file."
 (define-key my-keymap (kbd "e") esa-keymap)
 
 (global-set-key (kbd "<f5>") '(lambda () (interactive) (find-file "~/projects/extended_stay/todo_esa.org")))
+;; My keymap:1 ends here
 
+;; [[file:tja.org::*Jiralib2][Jiralib2:1]]
 (defun +jiralib2-extract-issue-id (issueKey)
   "Extracts the issue id from the issue key, e.g. ecomm-4952"
   (assoc 'id (jiralib2-get-issue issueKey)))
@@ -1345,7 +1386,9 @@ same directory as the org-buffer and insert a link to this file."
   (funcall-interactively 'my:esa:print-ticket-heading issueKey)
   (let* ((repositoryList (+jiralib2-extract-repository-names issueKey)))
     (insert (format "\n%s" repositoryList))))
+;; Jiralib2:1 ends here
 
+;; [[file:tja.org::*Sly/Common Lisp][Sly/Common Lisp:1]]
 ;; From chatGPT Session https://chatgpt.com/c/90d883ce-9dea-40d5-9809-1486c4146305
 (defun my:add-function-to-package (package-name function-name position)
   "Add FUNCTION-NAME to the export list of PACKAGE-NAME in packages.lisp at the given POSITION.
@@ -1407,7 +1450,9 @@ POSITION should be either 'start or 'end."
           (display-buffer output-buffer)))))
   (sly-eval-async
       `(cl:progn (cl:setf (cl:cdr (cl:assoc 'slynk:*string-elision-length* slynk:*slynk-pprint-bindings*)) 200))))
+;; Sly/Common Lisp:1 ends here
 
+;; [[file:tja.org::*EXPERIMENTAL][EXPERIMENTAL:1]]
 ;;; https://gist.github.com/kristianhellquist/3082383#gistcomment-2373734
 (defun m/file:copy-current-line-position-to-clipboard ()
   "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
@@ -1450,3 +1495,4 @@ POSITION should be either 'start or 'end."
 (defun my:insert-shrug ()
   (interactive)
   (insert "¯\\_(ツ)_/¯"))
+;; EXPERIMENTAL:1 ends here

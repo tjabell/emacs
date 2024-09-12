@@ -2,7 +2,7 @@
 
 #+title: Emacs: New Config in an Org file
 #+STARTUP: show3levels
-#+property: header-args:emacs-lisp  :tangle ~/emacs/tja.el
+#+property: header-args:emacs-lisp  :tangle ~/emacs/tja.el :comments link
 
 * Read only mode
 
@@ -907,7 +907,7 @@ tja-compile-leads-api-integration-test
 
 ** Org screenshot
 #+begin_src emacs-lisp
-  (defun tja-org-insert-image-from-wayland-clipboard ()
+  (defun m/org:insert-org-ocr-image-from-wayland-clipboard ()
     "Take a screenshot into a time stamped unique-named file in the
   same directory as the org-buffer and insert a link to this file."
     (interactive)
@@ -920,9 +920,10 @@ tja-compile-leads-api-integration-test
     (call-process "wl-paste" nil `(:file ,filename) nil "-t" "image/png")
     (insert (concat "[[" filename "]]"))
     (org-display-inline-images))
-
-  (provide 'tja-org)
 #+end_src
+
+#+RESULTS:
+: m/org:insert-org-ocr-image-from-wayland-clipboard
 
 ** Org Clock
 #+begin_src emacs-lisp
@@ -988,7 +989,7 @@ my:org-move-item-to-top
 * OCR
 #+begin_src emacs-lisp
   ;;;###autoload
-  (defun tja-ocr-screenshot ()
+  (defun m/ocr:screenshot ()
     "Take a screenshot into a time stamped unique-named file in the
   same directory as the org-buffer and insert a link to this file."
     (interactive)
@@ -1001,8 +1002,11 @@ my:org-move-item-to-top
     (call-process "wl-paste" nil `(:file ,filename) nil "-t" "image/png")
     (call-process "tesseract" nil t nil filename "stdout"))
 
-  (provide 'tja-ocr)
+  (provide 'm/ocr)
 #+end_src
+
+#+RESULTS:
+: m/ocr
 
 * Azure
 
@@ -1127,8 +1131,8 @@ my:org-move-item-to-top
 
 * SQL
 
-#+begin_src emacs-lisp
-    (defun m/sql:ef-to-sql ()
+#+begin_src emacs-lisp :comments link
+  (defun m/sql:ef-to-sql ()
       "Convert Entity Framework debug output in the current buffer to an executable SQL statement.
     Example:
     Executed DbCommand (5ms) [Parameters=[@p0='2022-12-07T00:00:00.0000000' (DbType = Date), @p1='14' (Nullable = true)], CommandType='Text', CommandTimeout='30']"
@@ -1199,15 +1203,15 @@ my:org-move-item-to-top
     "Run sqlcmd with SQL-FILE as input, using a connection from `sql-connection-alist`.
     If ADDITIONAL-PARAMS is non-nil, it is added to the sqlcmd command."
     (interactive
-     (let* ((default-file (if (and (buffer-file-name)
+     (let* ((default-file-path (if (and (buffer-file-name)
                                    (string-suffix-p ".sql" (buffer-file-name)))
-                              (file-name-nondirectory (buffer-file-name))
+                                   (buffer-file-name)
                             (if m/sql:last-used-file
-                                (file-name-nondirectory m/sql:last-used-file))))
-            (default-directory (if m/sql:last-used-file
-                                   (expand-file-name (file-name-directory m/sql:last-used-file))
-                                 (expand-file-name (file-name-directory (buffer-file-name)))))
-            (sql-file (read-file-name "SQL File: " default-directory default-file t default-file))
+                                m/sql:last-used-file)))
+            (default-file (file-name-nondirectory default-file-path))
+            (default-directory (when default-file-path
+                                 (expand-file-name (file-name-directory default-file-path))))
+            (sql-file (read-file-name "SQL File: " default-directory nil t default-file))
             (sql-parameters (read-string "Additional sqlcmd parameters: " m/sql:last-used-parameters nil)))
        (list sql-file sql-parameters)))
     (let* ((connection-name (completing-read "Choose SQL connection: "
@@ -1228,7 +1232,7 @@ my:org-move-item-to-top
         (setq m/sql:last-used-parameters additional-params))
       (when sql-file
         (setq  m/sql:last-used-file sql-file))
-      
+
       (unless (and server database)
         (error "Server or Database information missing for the selected connection"))
       (when (y-or-n-p (format "Execute command: %s? " command))
