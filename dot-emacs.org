@@ -1327,20 +1327,8 @@ Builtin after emacs 29
 
 ** CSharp/Omnisharp with tree-sitter mode and dotnet
 
-*** Csharp/omnisharp/dotnet
+*** Csharp/dotnet
 
-#+begin_src emacs-lisp
-  ;; (use-package csharp-mode
-  ;;   :config
-  ;;   (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode)))
-#+end_src
-
-#+RESULTS:
-| lsp-deferred |
-
-So this essentially uses async-shell-command and finds the local test or nearest project to run.
-
-The output isn't as rich as even vterm so I'm commenting this out again for now 24-Oct-2023
 
 (setq *cmd* "dotnet test /home/trevor/projects/goddard/src/ipaas-leads-api/Goddard.LeadsApi.IntegrationTests/Goddard.LeadsApi.IntegrationTests.csproj --filter \"InsertLead\"")
 (async-shell-command *cmd* "*dotnet*")
@@ -1349,7 +1337,8 @@ The output isn't as rich as even vterm so I'm commenting this out again for now 
   (use-package dotnet)
 #+end_src
 
-Trying Sharper
+*** CSharp/Sharper
+
 #+begin_src emacs-lisp
   (use-package sharper
     :bind
@@ -1996,6 +1985,34 @@ This file may have dependencies on libraries above
     :hook (prog-mode . smerge-mode))
 #+end_src
 
+* Flymake
+
+#+begin_src emacs-lisp :results raw
+  (use-package flymake
+    :straight nil
+    :bind (:map flymake-mode-map
+                ;; Provide some flycheck-like bindings in flymake mode to ease transition
+                ("C-c ! l" . flymake-show-buffer-diagnostics)
+                ("C-c ! n" . flymake-goto-next-error)
+                ("C-c ! p" . flymake-goto-prev-error)
+                ("C-c ! c" . flymake-start)))
+
+#+end_src
+
+* Tab line mode
+
+#+begin_src emacs-lisp :results raw
+  (use-package tab-line
+    :straight nil
+    :bind
+    (("C-<iso-lefttab>" . tab-line-switch-to-prev-tab)
+     ("C-<tab>" . tab-line-switch-to-next-tab))
+    :config
+    (global-tab-line-mode 1)
+    (setq
+     tab-line-new-button-show nil
+     tab-line-close-button-show nil))
+#+end_src
 * Local Variables - sets the after save hook to tangle this org file on save
 # Local Variables:
 # eval: (add-hook 'after-save-hook 'org-babel-tangle nil t)
