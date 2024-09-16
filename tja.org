@@ -7,7 +7,6 @@
 * Read only mode
 
 #+begin_src emacs-lisp :results raw
-
   ;; Define a minor mode for read-only navigation
   (defvar read-only-navigation-mode-map
     (let ((map (make-sparse-keymap)))
@@ -34,9 +33,6 @@
       (read-only-navigation-mode -1)))
 
   (add-hook 'read-only-mode-hook 'enable-read-only-navigation-mode)
-
-
-
 #+end_src
 
 * Mail
@@ -366,11 +362,10 @@ tja-compile-leads-api-integration-test
   ;;;###autoload
       (defun m/gsi:vterm-run-mock-gsi-servers ()
         (interactive)
-        (with-current-buffer (vterm (concat "*vterm* *MOCK GSI SERVERS*"))
-          (vterm-send-string "cd /home/trevor/projects/goddard/src/mock-crm-server/")
-          (vterm-send-return)
-          (vterm-send-string "./mock-gsi-servers")
-          (vterm-send-return)))
+        (open-or-start-vterm-buffer
+         "*vterm* *MOCK GSI SERVERS*"
+         "/home/trevor/projects/goddard/src/mock-crm-server/"
+         "./mock-gsi-servers"))
 
   ;;;###autoload
   (defun m/gsi:vterm-run-tours-api ()
@@ -630,7 +625,7 @@ tja-compile-leads-api-integration-test
     (m/esa:vterm-esa-run-dotcms-node-watch)
     (m/esa:vterm-esa-run-dotcms-node-serve)
     (m/esa:vterm-run-mock-apis-server)
-    (sleep-for 3)                             ;; Let dotcms spin up on port 80808 before running the booking repo
+    (sleep-for 3)                             ;; Let dotcms spin up on port 8080 before running the booking repo
     (m/esa:vterm-esa-run-booking)
     ;; The dotcms buffer might need sudo, switch to that
     (switch-to-buffer "*vterm* *DOTCMS*"))
@@ -731,7 +726,6 @@ tja-compile-leads-api-integration-test
 
 * Misc functions
 #+begin_src emacs-lisp
-
   (defun m/replace-strings-in-region-with-random (start end)
     "Parse a list in the region between START and END.
   Replace each string in the list with a random string of the same length."
@@ -897,7 +891,6 @@ tja-compile-leads-api-integration-test
       (run-at-time minutes nil 'notifications-notify :title "Emacs alert" :body body)))
 
   (provide 'tja-misc)
-
 #+end_src
 
 #+RESULTS:
@@ -1343,7 +1336,7 @@ Print amortization calendar
 
 * Project specific functions
 #+begin_src emacs-lisp :results raw
-(org-babel-load-file "~/projects/extended_stay/esa-elisp.org")
+  (org-babel-load-file "~/projects/extended_stay/esa-elisp.org")
 #+end_src
 
 #+RESULTS:
@@ -1513,8 +1506,6 @@ Print amortization calendar
     (funcall-interactively 'my:esa:print-ticket-heading issueKey)
     (let* ((repositoryList (+jiralib2-extract-repository-names issueKey)))
       (insert (format "\n%s" repositoryList))))
-
-
 #+end_src
 
 * Sly/Common Lisp
@@ -1585,7 +1576,6 @@ Print amortization calendar
 * EXPERIMENTAL
 
 #+begin_src emacs-lisp
-
   ;;; https://gist.github.com/kristianhellquist/3082383#gistcomment-2373734
   (defun m/file:copy-current-line-position-to-clipboard ()
     "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
@@ -1628,7 +1618,6 @@ Print amortization calendar
   (defun my:insert-shrug ()
     (interactive)
     (insert "¯\\_(ツ)_/¯"))
-
 #+end_src
 
 #+RESULTS:

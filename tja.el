@@ -324,11 +324,10 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
 ;;;###autoload
     (defun m/gsi:vterm-run-mock-gsi-servers ()
       (interactive)
-      (with-current-buffer (vterm (concat "*vterm* *MOCK GSI SERVERS*"))
-        (vterm-send-string "cd /home/trevor/projects/goddard/src/mock-crm-server/")
-        (vterm-send-return)
-        (vterm-send-string "./mock-gsi-servers")
-        (vterm-send-return)))
+      (open-or-start-vterm-buffer
+       "*vterm* *MOCK GSI SERVERS*"
+       "/home/trevor/projects/goddard/src/mock-crm-server/"
+       "./mock-gsi-servers"))
 
 ;;;###autoload
 (defun m/gsi:vterm-run-tours-api ()
@@ -588,7 +587,7 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
   (m/esa:vterm-esa-run-dotcms-node-watch)
   (m/esa:vterm-esa-run-dotcms-node-serve)
   (m/esa:vterm-run-mock-apis-server)
-  (sleep-for 3)                             ;; Let dotcms spin up on port 80808 before running the booking repo
+  (sleep-for 3)                             ;; Let dotcms spin up on port 8080 before running the booking repo
   (m/esa:vterm-esa-run-booking)
   ;; The dotcms buffer might need sudo, switch to that
   (switch-to-buffer "*vterm* *DOTCMS*"))
