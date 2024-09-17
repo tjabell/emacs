@@ -297,11 +297,10 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
 ;;;###autoload
 (defun m/gsi:vterm-run-schools-api ()
   (interactive)
-  (with-current-buffer (vterm (concat "*vterm* *SCHOOLS API*"))
-    (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-schools-api/")
-    (vterm-send-return)
-    (vterm-send-string ". ./local-startup.sh")
-    (vterm-send-return)))
+  (open-or-start-vterm-buffer
+   "*vterm* *SCHOOLS API*"
+   "/home/trevor/projects/goddard/src/ipaas-schools-api/"
+   ". ./local-startup.sh"))
 
 ;;;###autoload
 (defun m/gsi:vterm-run-school-features-api ()
