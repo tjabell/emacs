@@ -448,19 +448,15 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
   ;; Schools api needed for login.  Other local apis can be run as required.
   (m/gsi:vterm-run-schools-api)
   (m/gsi:vterm-run-authorization-api)
-  (m/gsi:vterm-run-mock-gsi-servers))
+  (m/gsi:vterm-run-mock-gsi-servers)
+  (m/gsi:vterm-run-content-api))
 
 ;;;###autoload
 (defun m/gsi:vterm-run-fbp-for-tours ()
   (interactive)
-  (m/gsi:vterm-run-fbp-api)
-  (m/gsi:vterm-run-fbp-web)
-  ;; Schools api needed for login.  Other local apis can be run as required.
-  (m/gsi:vterm-run-schools-api)
-  (m/gsi:vterm-run-authorization-api)
+  (funcall-interactively #'m/gsi:vterm-run-fbp)
   (m/gsi:vterm-run-tours-api)
-  (m/gsi:vterm-run-leads-api)
-  (m/gsi:vterm-run-mock-gsi-servers))
+  (m/gsi:vterm-run-leads-api))
 
 ;;;###autoload
 (defun m/gsi:vterm-stop-fbp ()
