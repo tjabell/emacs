@@ -708,6 +708,7 @@ Using configuration under the vertico section.  Might revisit this...
            ("M-s g" . consult-grep)
            ("M-s G" . consult-git-grep)
            ("M-s r" . consult-ripgrep)
+           ("M-s C-," . consult-ripgrep) ; Alternate keybinding because M-s r doesn't work in all projects
            ("M-s L" . consult-line-multi)
            ("M-s t" . consult-theme)
            ("C-s" . isearch-forward))     ;; Resetting C-s to default isearch
@@ -1277,41 +1278,103 @@ Builtin after emacs 29
   (add-hook 'prog-mode-hook #'mp-remove-treesit-sexp-changes)
 #+end_src
 
-** LSP/Eglot
+** Eglot
 #+begin_src emacs-lisp
+  (use-package eglot
+    :straight nil) ; Need eglot-lsp-server class
+
+  ;;; Adapted from https://github.com/uqix/.emacs.d/blob/master/init.el
+  (defclass eglot-sqls (eglot-lsp-server) ())
+
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
-                 '(vue-mode . ("vls" "--stdio"))))
+                 '(vue-mode . ("vls" "--stdio")))
+    (add-to-list 'eglot-server-programs '(sql-mode . (eglot-sqls "/home/trevor/hacking/sqls/sqls"))))
 
-  (use-package treemacs
-    :bind (("<f8>" . treemacs)
-           :map treemacs-mode-map
-           ;; Bind single left click to open directory/file
-           ;; https://github.com/jwiegley/use-package#binding-within-local-keymaps
-           ;; https://github.com/Alexander-Miller/treemacs/issues/228
-           ([mouse-1] . #'treemacs-single-click-expand-action)))
+  (defvar m/eglot/sqls:current-connection nil)
+  (defvar m/eglot/sqls:current-database nil)
 
-  (use-package treemacs-projectile)
+  (cl-defmethod eglot-execute
+    :around
+    ((server eglot-sqls) action)
 
+    (pcase (plist-get action :command)
+      ("executeQuery"
+       (if (use-region-p)
+           (let* ((begin (region-beginning))
+                  (end (region-end))
+                  (begin-lsp (eglot--pos-to-lsp-position begin))
+                  (end-lsp (eglot--pos-to-lsp-position end))
+                  (action (plist-put action :range `(:start ,begin-lsp :end ,end-lsp)))
+                  (result (cl-call-next-method server action)))
+             (m/eglot/sqls:show-result result))
+         (message "No region")))
+
+      ((or
+        "showConnections"
+        "showDatabases"
+        "showSchemas"
+        "showTables")
+       (m/eglot/sqls:show-result (cl-call-next-method)))
+
+      ("switchConnections"
+       (let* ((connections (eglot--request server :workspace/executeCommand
+                                           '(:command "showConnections")))
+              (collection (split-string connections "\n"))
+              (connection (completing-read "Switch to connection: " collection nil t))
+              (index (number-to-string (string-to-number connection)))
+              (action (plist-put action :arguments (vector index))))
+         (cl-call-next-method server action)
+         (setq m/eglot/sqls:current-connection connection)))
+
+      ("switchDatabase"
+       (let* ((databases (eglot--request server :workspace/executeCommand
+                                         '(:command "showDatabases")))
+              (collection (split-string databases "\n"))
+              (database (completing-read "Switch to database: " collection nil t))
+              (action (plist-put action :arguments (vector database))))
+         (cl-call-next-method server action)
+         (setq m/eglot/sqls:current-database database)))
+
+      (_
+       (cl-call-next-method))))
+
+  (defun m/eglot/sqls:show-result (result)
+    (with-current-buffer (get-buffer-create "*sqls result*")
+      (setq-local header-line-format
+                  '(:eval (m/eglot/sqls:show-result/header-line-format)))
+      (erase-buffer)
+      (insert result)
+      (display-buffer (current-buffer))))
+
+  (defun m/eglot/sqls:show-result/header-line-format ()
+    (let* ((connection (or m/eglot/sqls:current-connection ""))
+           (parts (split-string connection " "))
+           (driver (nth 1 parts))
+           (alias (nth 2 parts))
+           (result (format "[%s] %s/%s"
+                           (or driver "?")
+                           (or alias "?")
+                           (or m/eglot/sqls:current-database "?"))))
+      (propertize result
+                  'face 'm/eglot/sqls:show-result/header-line-face)))
+
+  (defface m/eglot/sqls:show-result/header-line-face
+    '((t (:inherit 'magit-header-line)))
+    "*sqls result* header-line face")
 #+end_src
 
 #+RESULTS:
 
-** GCMH
-#+begin_src emacs-lisp :results raw
-  ;install gcmh package to increase the gc value when necessary and decrease it.
-  (use-package gcmh)
-#+end_src
-
-** Speeding up Eglot
+*** Speeding up Eglot
 #+begin_src emacs-lisp :results raw
   ;;Copied from:
   ;;https://www.reddit.com/r/emacs/comments/16vixg6/how_to_make_lsp_and_eglot_way_faster_like_neovim/
   (fset #'jsonrpc--log-event #'ignore) ;remove laggy typing it probably reduces chatty json from lsp to eglot i guess
 
-  (setq eglot-events-buffer-size 0) ;disabling event logging in eglot
+  (setq eglot-events-buffer-size 1000) ;disabling event logging in eglot
 
-  (setq eglot-sync-connect nil) ;disabling elgot freeze the UI for up to 3s when you open file maybe large one
+  (setq eglot-sync-connect t) ;disabling elgot freeze the UI for up to 3s when you open file maybe large one
 
   ;(add-hook 'focus-out-hook 'garbage-collect) optional, if you don't want to use gcmh package
 
@@ -1323,6 +1386,27 @@ Builtin after emacs 29
 
   (setq company-minimum-prefix-length 1) ;how many characters you want to type before popping up the completion UI obviously 1 right
 
+#+end_src
+
+
+** Treemacs
+
+#+begin_src emacs-lisp :results raw
+  (use-package treemacs
+    :bind (("<f8>" . treemacs)
+           :map treemacs-mode-map
+           ;; Bind single left click to open directory/file
+           ;; https://github.com/jwiegley/use-package#binding-within-local-keymaps
+           ;; https://github.com/Alexander-Miller/treemacs/issues/228
+           ([mouse-1] . #'treemacs-single-click-expand-action)))
+
+  (use-package treemacs-projectile)
+#+end_src
+
+** GCMH
+#+begin_src emacs-lisp :results raw
+  ;install gcmh package to increase the gc value when necessary and decrease it.
+  (use-package gcmh)
 #+end_src
 
 ** CSharp/Omnisharp with tree-sitter mode and dotnet
