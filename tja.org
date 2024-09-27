@@ -1600,6 +1600,23 @@ Print amortization calendar
         (kill-new path-with-line-number)
         (message (concat path-with-line-number " copied to clipboard")))))
 
+  (defun m/code:open-local-files-from-stack-trace (beginning end)
+    "Parse stack trace in current buffer and open local files at specified lines."
+    (interactive "r")
+    (save-excursion
+      (goto-char beginning)
+      (let ((buffer (current-buffer)))
+        (while (re-search-forward "\\(/.+\\):\\(line \\([0-9]+\\)\\)" nil t)
+          (let ((file (match-string 1))
+                (line (string-to-number (match-string 3))))
+
+            (when (file-exists-p file)
+              (save-excursion
+                (find-file-other-window file)
+                (goto-char (point-min))
+                (forward-line (1- line))
+                (recenter))))))))
+
   ;;; ESA Functions to swap environments in URLs
   (defun my:replace-url-with-local ()
     (interactive)
