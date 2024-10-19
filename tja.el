@@ -390,8 +390,16 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
         (ignore-errors
           (vterm-send-string "\C-c")
           (sleep-for 1)  ;; Reduce sleep time if possible
+          ;; Temporarily disable any query functions that might prevent this buffer from being stopped.
+          ;; I.e. we really want to kill it
           (let ((kill-buffer-query-functions nil))
-            (kill-buffer buffer)))))))
+            (kill-buffer buffer))theme7-layout.component.html)))))
+
+;; (defun tmp/stop-tours ()
+;;   (let ((bufname "*vterm* *TOURS API*"))
+;;     (with-current-buffer (get-buffer bufname)
+;;       (let ((kill-buffer-query-functions nil))
+;;         (kill-buffer bufname)))))
 
 (defun m/gsi:vterm-stop-leads-api ()
   (interactive)
@@ -630,6 +638,34 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
    ;; For some reason I put the . in front of the script, so using ; to get around it here
    "; npm run serve-assets"))
 
+;;;###autoload
+(defun m/esa:copy-file-to-dev ()
+  "Copy the current buffer's file to the same relative location on /mnt/dev-dav."
+  (interactive)
+  (when (not (file-directory-p "/mnt/dev-dav/www.extendedstayamerica.com"))
+      (shell-command (concat "echo " (shell-quote-argument (read-passwd "Password? ")) " | sudo -S mount -t davfs -o uid=trevor,gid=trevor https://cms.dev.bws.esa.com/webdav/live/1 /mnt/dev-dav")))
+  (let* ((current-file (buffer-file-name))
+         (project-root (project-root (project-current)))
+         (relative-path (replace-regexp-in-string "src" "application" (file-relative-name current-file project-root)))
+         (target-path (expand-file-name relative-path "/mnt/dev-dav/www.extendedstayamerica.com/")))
+    (make-directory (file-name-directory target-path) t)
+    (copy-file current-file target-path t)
+    (message "File copied to %s" target-path)))
+
+;;;###autoload
+(defun m/esa:copy-file-to-local ()
+  "Copy the current buffer's file to the same relative location on /mnt/dev-dav."
+  (interactive)
+  ;; (when (not (file-directory-p "/mnt/local-dav/www.extendedstayamerica.com"))
+  ;;     (shell-command (concat "echo " (shell-quote-argument (read-passwd "Password? ")) " | sudo -S mount -t davfs -o uid=trevor,gid=trevor http://localhost:8080/webdav/live/1 /mnt/local-dav")))
+  (let* ((current-file (buffer-file-name))
+         (project-root (project-root (project-current)))
+         (relative-path (replace-regexp-in-string "src" "application" (file-relative-name current-file project-root)))
+         (target-path (expand-file-name relative-path "/mnt/local-dav/www.extendedstayamerica.com/")))
+    (make-directory (file-name-directory target-path) t)
+    (copy-file current-file target-path t)
+    (message "File copied to %s" target-path)))
+
 (defun m/mtsinai:vterm-mtsinai-run-prepc ()
   (interactive)
   (with-current-buffer (vterm (concat "*vterm* *PREPC*"))
@@ -670,9 +706,31 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
         (progn
           (shell-command
            "swaymsg create_output HEADLESS-1 resolution '2388x1668'")
+          (m/sway:headless-set-ipad-resolution))
+      (message "Headless output 'HEADLESS-1' already exists."))))
+
+(defun m/sway:headless-set-ipad-resolution ()
+  "Check if a headless output 'HEADLESS-1' exists. If so, set resolution to android pixel 7 pro."
+  (interactive)
+  (let ((output-exists
+         (shell-command-to-string "swaymsg -t get_outputs | grep 'HEADLESS-1'")))
+    (if (not (string-empty-p (string-trim output-exists)))
+        (progn
           (shell-command
            "swaymsg output HEADLESS-1 resolution '2388x1668'")
           (message "Created headless output 'HEADLESS-1' with resolution 1668x2388."))
+      (message "Headless output 'HEADLESS-1' already exists."))))
+
+(defun m/sway:headless-set-android-resolution ()
+  "Check if a headless output 'HEADLESS-1' exists. If so, set resolution to android pixel 7 pro."
+  (interactive)
+  (let ((output-exists
+         (shell-command-to-string "swaymsg -t get_outputs | grep 'HEADLESS-1'")))
+    (if (not (string-empty-p (string-trim output-exists)))
+        (progn
+          (shell-command
+           "swaymsg output HEADLESS-1 resolution '892x412'")
+          (message "Updated headless output 'HEADLESS-1' to resolution 892x412"))
       (message "Headless output 'HEADLESS-1' already exists."))))
 
 (provide 'm/gsi:vterm)
@@ -720,12 +778,19 @@ Note: it depends on s.el."
     (setq w/join-lines--last-separator separator)))
 
 ;;;###autoload
+(defun m/despacify (start end)
+  (interactive "r")
+  (unless (region-active-p)
+    (error "select a region of lines first."))
+  (replace-regexp-in-region "\\s-+" " " start end))
+
+;;;###autoload
 (defun m/straight-open-repository-directory ()
-"Open the Straight.el repository directory."
-(interactive)
-(let ((repository-dir (straight--repos-dir)))
-  (when repository-dir
-    (find-file repository-dir))))
+  "Open the Straight.el repository directory."
+  (interactive)
+  (let ((repository-dir (straight--repos-dir)))
+    (when repository-dir
+      (find-file repository-dir))))
 
 ;;;###autoload
 (defun m/convert-spaces-to-underscores (start end)
@@ -867,7 +932,7 @@ same directory as the org-buffer and insert a link to this file."
 ;; Org Clock:1 ends here
 
 ;; [[file:tja.org::*Org workflow movement][Org workflow movement:1]]
-(defun my:org-meta-move-to-top (&optional _arg)
+(defun m/org:meta-move-to-top (&optional _arg)
   "Move the item at point up to the top of the org file just after the first header"
   (interactive "P")
   (cond
@@ -896,27 +961,32 @@ same directory as the org-buffer and insert a link to this file."
    ((org-at-heading-p) (call-interactively 'org-move-subtree-up))
    ((org-at-item-p) (call-interactively 'org-move-item-up))
    (t (org-drag-element-backward))))
-  (defun my:org-move-item-to-top ()
-    "Move the item at point up to the top of the org file just after the first header"
-    (interactive)
-    (unless (org-at-item-p) (error "Not at an item"))
-    (let* ((col (current-column))
-           (item (line-beginning-position))
-           (struct (org-list-struct))
-           (prevs (org-list-prevs-alist struct))
-           (prev-item (org-list-get-prev-item (line-beginning-position) struct prevs)))
-      (unless (or prev-item org-list-use-circular-motion)
-        (user-error "Cannot move this item further up"))
-      (if (not prev-item)
-          (setq struct (org-list-send-item item 'end struct))
-        (setq struct (org-list-swap-items prev-item item struct)))
-      (org-list-write-struct struct (org-list-parents-alist struct))
-      (org-move-to-column col)))
+
+(defun m/org:move-item-to-top ()
+  "Move the item at point up to the top of the org file just after the first header"
+  (interactive)
+  (unless (org-at-item-p) (error "Not at an item"))
+  (let* ((col (current-column))
+         (item (line-beginning-position))
+         (struct (org-list-struct))
+         (prevs (org-list-prevs-alist struct))
+         (prev-item (org-list-get-prev-item (line-beginning-position) struct prevs)))
+    (unless (or prev-item org-list-use-circular-motion)
+      (user-error "Cannot move this item further up"))
+    (if (not prev-item)
+        (setq struct (org-list-send-item item 'end struct))
+      (setq struct (org-list-swap-items prev-item item struct)))
+    (org-list-write-struct struct (org-list-parents-alist struct))
+    (org-move-to-column col)))
+
+;;; wip
+(defun m/org:generate-todo-report ()
+  'wip)
 ;; Org workflow movement:1 ends here
 
 ;; [[file:tja.org::*OCR][OCR:1]]
 ;;;###autoload
-(defun m/ocr:screenshot ()
+(defun m/ocr:convert-clipboard-screenshot-to-text ()
   "Take a screenshot into a time stamped unique-named file in the
 same directory as the org-buffer and insert a link to this file."
   (interactive)
@@ -1476,13 +1546,19 @@ POSITION should be either 'start or 'end."
       (kill-new path-with-line-number)
       (message (concat path-with-line-number " copied to clipboard")))))
 
+(defun m/code:modify-paths-and-open-files (beginning end)
+  "Modifies all the paths to be local linux paths then opens the files in buffer windows"
+  (interactive "r")
+  (call-interactively 'm/code:replace-windows-path-with-linux)
+  (call-interactively 'm/code:open-local-files-from-stack-trace))
+
 (defun m/code:open-local-files-from-stack-trace (beginning end)
   "Parse stack trace in current buffer and open local files at specified lines."
   (interactive "r")
   (save-excursion
     (goto-char beginning)
     (let ((buffer (current-buffer)))
-      (while (re-search-forward "\\(/.+\\):\\(line \\([0-9]+\\)\\)" nil t)
+      (while (re-search-forward "\\(/.+\\):\\(line \\([0-9]+\\)\\)" nil)
         (let ((file (match-string 1))
               (line (string-to-number (match-string 3))))
 
@@ -1492,6 +1568,18 @@ POSITION should be either 'start or 'end."
               (goto-char (point-min))
               (forward-line (1- line))
               (recenter))))))))
+
+(defun m/code:replace-windows-path-with-linux (beginning end)
+  "Equinox:only - replace the windows c:\ paths with local linux path to project"
+  (interactive "r")
+  (save-excursion
+    (goto-char beginning)
+    (let ((buffer (current-buffer)))
+      (while (re-search-forward "\\\\" nil t)
+        (replace-match "/"))
+      (goto-char beginning)
+      (while (re-search-forward "C:/Users/trevor/source" nil t)
+        (replace-match "/home/trevor/projects/equinox/src")))))
 
 ;;; ESA Functions to swap environments in URLs
 (defun my:replace-url-with-local ()

@@ -1,7 +1,7 @@
 ;;-*- coding: utf-8; lexical-binding: t; -*-
 #+title: Emacs: New Config in an Org file
 #+STARTUP: overview
-#+property: header-args:emacs-lisp  :tangle ~/.emacs.d/init.el :results none
+#+property: header-args:emacs-lisp  :tangle ~/.emacs.d/init.el :results none :comments link
 
 * New Emacs configuration file
 
@@ -25,7 +25,7 @@ otherwide ⤵ would get converted to bytes when opening this file
 
 ** Allow erase-buffer command
 #+begin_src emacs-lisp :results raw
-(put 'erase-buffer 'disabled nil)
+  (put 'erase-buffer 'disabled nil)
 #+end_src
 
 ** Auto mode alist config (dot files)
@@ -45,17 +45,16 @@ otherwide ⤵ would get converted to bytes when opening this file
 #+begin_src emacs-lisp :results raw
   ;;; Some base emacs gc config
   (setq gc-cons-threshold (* 100 1024 1024)
-	read-process-output-max (* 1024 1024 3))
+        read-process-output-max (* 1024 1024 3))
 
   (defun efs/display-startup-time ()
     (message "Emacs loaded in %s with %d garbage collections."
-	     (format "%.2f seconds"
-		     (float-time
-		       (time-subtract after-init-time before-init-time)))
-	     gcs-done))
+             (format "%.2f seconds"
+               (float-time
+                 (time-subtract after-init-time before-init-time)))
+             gcs-done))
 
   (add-hook 'emacs-startup-hook #'efs/display-startup-time)
-
 #+end_src
 
 ** Base bootstrap config for straight.el and use-package replacement
@@ -63,15 +62,15 @@ otherwide ⤵ would get converted to bytes when opening this file
   ;;; Bootstrap Straight.el
   (defvar bootstrap-version)
   (let ((bootstrap-file
-	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-	(bootstrap-version 5))
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+        (bootstrap-version 5))
     (unless (file-exists-p bootstrap-file)
       (with-current-buffer
-	  (url-retrieve-synchronously
-	   "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-	   'silent 'inhibit-cookies)
-	(goto-char (point-max))
-	(eval-print-last-sexp)))
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage))
 
   ;;;;  Effectively replace use-package with straight-use-package
@@ -95,19 +94,17 @@ otherwide ⤵ would get converted to bytes when opening this file
 ** Theme | Disable Menu Bar | Inihibit Startup
 
 #+begin_src emacs-lisp
+  (straight-use-package 'spacemacs-theme)
 
-(straight-use-package 'spacemacs-theme)
+  (if (fboundp 'tool-bar-mode)
+      (progn
+        (tool-bar-mode 0)
+        (scroll-bar-mode 0))
+    nil)
 
-(if (fboundp 'tool-bar-mode)
-    (progn
-      (tool-bar-mode 0)
-      (scroll-bar-mode 0))
-  nil)
+  (menu-bar-mode 0)
 
-(menu-bar-mode 0)
-
-(setq inhibit-startup-screen t)
-
+  (setq inhibit-startup-screen t)
 #+end_src
 
 #+RESULTS:
@@ -142,27 +139,27 @@ Creates a .saves directory and puts backup files in there.
 Shuts off backup creation for remote files
 https://www.gnu.org/software/emacs/manual/html_node/tramp/Auto_002dsave-File-Lock-and-Backup.html
 #+begin_src emacs-lisp
-    ;; Backup settings
-    (setq
-     make-backup-files t
-     backup-by-copying t
-     backup-directory-alist '(("." . "~/.saves"))
-     delete-old-versions t
-     auto-save-mode nil
-     auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
+  ;; Backup settings
+  (setq
+   make-backup-files t
+   backup-by-copying t
+   backup-directory-alist '(("." . "~/.saves"))
+   delete-old-versions t
+   auto-save-mode nil
+   auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
-    ;;; Disable auto-save and auto-backup.
-    ;;; Especially in development directories, we can't have emacs creating random #lockfiles# everywhere
-    (setq create-lockfiles nil)
-    (setq backup-directory-alist
-	  `((".*" . ,temporary-file-directory)))
-    (setq auto-save-file-name-transforms
-	  `((".*" ,temporary-file-directory t)))
-    ;;; End Disable auto-save and auto-backup
+  ;;; Disable auto-save and auto-backup.
+  ;;; Especially in development directories, we can't have emacs creating random #lockfiles# everywhere
+  (setq create-lockfiles nil)
+  (setq backup-directory-alist
+        `((".*" . ,temporary-file-directory)))
+  (setq auto-save-file-name-transforms
+        `((".*" ,temporary-file-directory t)))
+  ;;; End Disable auto-save and auto-backup
 
-    ;;To turn off the backup feature for remote files and stop TRAMP from saving to the backup directory, use this:
-    (add-to-list 'backup-directory-alist
-		 (cons tramp-file-name-regexp nil))
+  ;;To turn off the backup feature for remote files and stop TRAMP from saving to the backup directory, use this:
+  (add-to-list 'backup-directory-alist
+           (cons tramp-file-name-regexp nil))
 #+end_src
 
 #+RESULTS:
@@ -174,7 +171,6 @@ https://www.gnu.org/software/emacs/manual/html_node/tramp/Auto_002dsave-File-Loc
   ;; Eliminate the 'flash/visible-bell' on ctl-g, other misc errors.  It's distracting, though maybe sometimes useful...
   (setq visible-bell nil
         ring-bell-function #'ignore)
-
 #+end_src
 
 ** Other window as M-o is nice, and previous as M-O
@@ -189,14 +185,14 @@ https://www.gnu.org/software/emacs/manual/html_node/tramp/Auto_002dsave-File-Loc
 ** Key chord mode
 #+begin_src emacs-lisp
   (use-package key-chord
-    :init
-    (key-chord-mode 1)
-    :config
-    (progn (key-chord-define-global "qf" 'find-file)
-           (key-chord-define-global "qk" 'kill-this-buffer)
-           (key-chord-define-global "qr" 'next-buffer)
-           ;(key-chord-define-global "qe" 'previous-buffer) ;;02-Aug-2024 - removed because it was interfering with some lisp programming
-))
+      :init
+      (key-chord-mode 1)
+      :config
+      (progn (key-chord-define-global "qf" 'find-file)
+             (key-chord-define-global "qk" 'kill-this-buffer)
+             (key-chord-define-global "qr" 'next-buffer)
+             ;(key-chord-define-global "qe" 'previous-buffer) ;;02-Aug-2024 - removed because it was interfering with some lisp programming
+  ))
 #+end_src
 
 #+RESULTS:
@@ -227,7 +223,12 @@ Found in [[file:/usr/share/emacs/28.0.60/lisp/vc/vc-hooks.el::or (not (eq vc-fol
 or group vc
 
 #+begin_src emacs-lisp
-  (custom-set-variables '(vc-follow-symlinks t))
+  (custom-set-variables
+   ;; custom-set-variables was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(vc-follow-symlinks t))
 #+end_src
 
 ** Enable narrow-to-region
@@ -312,8 +313,8 @@ Couldn't find a good shortcut 16-Jun-2023
 
 ** Long lined files
 #+begin_src emacs-lisp
-(if (version<= "27.1" emacs-version)
-    (global-so-long-mode 1))
+  (if (version<= "27.1" emacs-version)
+      (global-so-long-mode 1))
 #+end_src
 
 ** Pixel scroll precision
@@ -326,16 +327,16 @@ Zap up to char is usually what I want, so use M-z for that,
 Credit: https://irreal.org/blog/?p=1536
 Also Steve Purcell's .emacs.d
 #+begin_src emacs-lisp :results raw
-(autoload 'zap-up-to-char "misc"
-  "Kill up to, but not including ARGth occurrence of CHAR.")
-(global-set-key (kbd "M-z") 'zap-up-to-char)
-(global-set-key (kbd "M-Z") 'zap-to-char)
+  (autoload 'zap-up-to-char "misc"
+    "Kill up to, but not including ARGth occurrence of CHAR.")
+  (global-set-key (kbd "M-z") 'zap-up-to-char)
+  (global-set-key (kbd "M-Z") 'zap-to-char)
 #+end_src
 ** Remove unsuspend functionality (Ctl-z)
 
 #+begin_src emacs-lisp :results raw
-(global-unset-key (kbd "C-z"))
-(global-unset-key (kbd "C-x z"))
+  (global-unset-key (kbd "C-z"))
+  (global-unset-key (kbd "C-x z"))
 #+end_src
 
 * Tempel Snippets
@@ -343,43 +344,43 @@ Also Steve Purcell's .emacs.d
 Templates are in ~/.emacs.d/templates
 
 #+begin_src emacs-lisp
-;; Configure Tempel
-(use-package tempel
-  ;; Require trigger prefix before template name when completing.
-  ;; :custom
-  ;; (tempel-trigger-prefix "<")
+  ;; Configure Tempel
+  (use-package tempel
+    ;; Require trigger prefix before template name when completing.
+    ;; :custom
+    ;; (tempel-trigger-prefix "<")
 
-  :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
-         ("M-*" . tempel-insert))
+    :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
+           ("M-*" . tempel-insert))
 
-  :init
+    :init
 
-  ;; Setup completion at point
-  (defun tempel-setup-capf ()
-    ;; Add the Tempel Capf to `completion-at-point-functions'.
-    ;; `tempel-expand' only triggers on exact matches. Alternatively use
-    ;; `tempel-complete' if you want to see all matches, but then you
-    ;; should also configure `tempel-trigger-prefix', such that Tempel
-    ;; does not trigger too often when you don't expect it. NOTE: We add
-    ;; `tempel-expand' *before* the main programming mode Capf, such
-    ;; that it will be tried first.
-    (setq-local completion-at-point-functions
-                (cons #'tempel-expand
-                      completion-at-point-functions)))
+    ;; Setup completion at point
+    (defun tempel-setup-capf ()
+      ;; Add the Tempel Capf to `completion-at-point-functions'.
+      ;; `tempel-expand' only triggers on exact matches. Alternatively use
+      ;; `tempel-complete' if you want to see all matches, but then you
+      ;; should also configure `tempel-trigger-prefix', such that Tempel
+      ;; does not trigger too often when you don't expect it. NOTE: We add
+      ;; `tempel-expand' *before* the main programming mode Capf, such
+      ;; that it will be tried first.
+      (setq-local completion-at-point-functions
+                  (cons #'tempel-expand
+                        completion-at-point-functions)))
 
-  (add-hook 'conf-mode-hook 'tempel-setup-capf)
-  (add-hook 'prog-mode-hook 'tempel-setup-capf)
-  (add-hook 'text-mode-hook 'tempel-setup-capf)
+    (add-hook 'conf-mode-hook 'tempel-setup-capf)
+    (add-hook 'prog-mode-hook 'tempel-setup-capf)
+    (add-hook 'text-mode-hook 'tempel-setup-capf)
 
-  ;; Optionally make the Tempel templates available to Abbrev,
-  ;; either locally or globally. `expand-abbrev' is bound to C-x '.
-  ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
-  ;; (global-tempel-abbrev-mode)
-)
+    ;; Optionally make the Tempel templates available to Abbrev,
+    ;; either locally or globally. `expand-abbrev' is bound to C-x '.
+    ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
+    ;; (global-tempel-abbrev-mode)
+  )
 
-;; Optional: Add tempel-collection.
-;; The package is young and doesn't have comprehensive coverage.
-(use-package tempel-collection)
+  ;; Optional: Add tempel-collection.
+  ;; The package is young and doesn't have comprehensive coverage.
+  (use-package tempel-collection)
 #+end_src
 
 * Org mode, org-tempo, org bullets, org-roam, org-ai
@@ -393,7 +394,7 @@ Org ellipsis has been bugging out tangle a little bit.
 
 23-Aug-2024 - Hopefully the above is resolved after using org-modern
 #+begin_src emacs-lisp
-    (use-package org
+  (use-package org
       ;; Going back to non-built in because it starts to throw an error in later emacs version
       ;:straight (:type built-in)
       :init (progn
@@ -517,7 +518,7 @@ Org ellipsis has been bugging out tangle a little bit.
 https://github.com/jdormit/ob-graphql
 
 #+begin_src emacs-lisp
-(use-package ob-graphql)
+  (use-package ob-graphql)
 #+end_src
 
 ** Configure org babel languages
@@ -548,15 +549,15 @@ https://github.com/jdormit/ob-graphql
 
 ** Org AI
 #+begin_src emacs-lisp :results raw
-(use-package org-ai
-  :ensure t
-  :commands (org-ai-mode
-             org-ai-global-mode)
-  :init
-  (add-hook 'org-mode-hook #'org-ai-mode) ; enable org-ai in org-mode
-  (org-ai-global-mode) ; installs global keybindings on C-c M-a
-  :config
-  (setq org-ai-default-chat-model "gpt-3.5-turbo")) ; if you are on the gpt-4 beta:
+  (use-package org-ai
+    :ensure t
+    :commands (org-ai-mode
+               org-ai-global-mode)
+    :init
+    (add-hook 'org-mode-hook #'org-ai-mode) ; enable org-ai in org-mode
+    (org-ai-global-mode) ; installs global keybindings on C-c M-a
+    :config
+    (setq org-ai-default-chat-model "gpt-3.5-turbo")) ; if you are on the gpt-4 beta:
 #+end_src
 
 #+begin_src emacs-lisp :results raw
@@ -587,8 +588,6 @@ https://github.com/jdormit/ob-graphql
                 ("C-j" . vertico-insert))
     :init
     (vertico-mode))
-
-  (setq enable-recursive-minibuffers t)
 #+end_src
 
 #+RESULTS:
@@ -631,8 +630,8 @@ uses annotators
     :ensure t
     ;; Marginalia-cycle will switch through different annotators on each file
     :bind (("M-A" . marginalia-cycle)
-	 :map minibuffer-local-map
-	 ("M-A" . marginalia-cycle))
+         :map minibuffer-local-map
+         ("M-A" . marginalia-cycle))
     :init
     (marginalia-mode))
 #+end_src
@@ -646,11 +645,11 @@ uses annotators
   (defun my-face-annotator (cand)
     (when-let (sym (intern-soft cand))
       (concat (propertize " " 'display '(space :align-to center))
-	      (propertize "The quick brown fox jumps over the lazy dog" 'face sym))))
+              (propertize "The quick brown fox jumps over the lazy dog" 'face sym))))
 
   ;; Wire it up in the registry
   (add-to-list 'marginalia-annotator-registry
-	       '(face my-face-annotator marginalia-annotate-face builtin none))
+               '(face my-face-annotator marginalia-annotate-face builtin none))
 #+end_src
 
 #+RESULTS:
@@ -755,9 +754,14 @@ Completion style package.  Uses space separated components to match candidates.
                                      (buffer (styles substring flex)))))
 
 
+  ;;; Configure emacs itself
   (use-package emacs
     :custom
-    (read-buffer-completion-ignore-case t))
+    (read-buffer-completion-ignore-case t)
+    (read-minibuffer-restore-windows nil)
+    (minibuffer-depth-indicate-mode t)
+    (enable-recursive-minibuffers t)
+    )
 
   (defun flex-if-twiddle (pattern _index _total)
     (when (string-suffix-p "~" pattern)
@@ -775,13 +779,13 @@ Completion style package.  Uses space separated components to match candidates.
 
   (setq orderless-matching-styles '(orderless-regexp)
         orderless-style-dispatchers '(flex-if-twiddle
-        			      without-if-bang))
+                                without-if-bang))
 
   (defun my/match-components-literally ()
     "Components match literally for the rest of the session."
     (interactive)
     (setq-local orderless-matching-styles '(orderless-literal)
-        	orderless-style-dispatchers nil))
+          orderless-style-dispatchers nil))
 
   (define-key vertico-map (kbd "M-l")
     #'my/match-components-literally)
@@ -847,6 +851,7 @@ Learning embark
     ;; Optionally replace the key help with a completing-read interface
     ;;(setq prefix-help-command #'embark-prefix-help-command)
 
+    :custom ((embark-quit-after-action nil))
     :config
 
     ;; Hide the mode line of the Embark live/completions buffers
@@ -919,20 +924,18 @@ TBD
     (ansi-color-apply-on-region compilation-filter-start (point))
     (read-only-mode))
   (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
-
-
 #+end_src
 
 #+begin_src emacs-lisp :results raw
-(defun my/parrot-animate-when-compile-success (buffer result)
-  (if (string-match "^finished" result)
-      (parrot-start-animation)))
+  (defun my/parrot-animate-when-compile-success (buffer result)
+    (if (string-match "^finished" result)
+        (parrot-start-animation)))
 
-(use-package parrot
-  :ensure t
-  :config
-  (parrot-mode)
-  (add-to-list 'compilation-finish-functions 'my/parrot-animate-when-compile-success))
+  (use-package parrot
+    :ensure t
+    :config
+    (parrot-mode)
+    (add-to-list 'compilation-finish-functions 'my/parrot-animate-when-compile-success))
 #+end_src
 
 * Which Key
@@ -1006,97 +1009,97 @@ Doesnt activate on startup.  Maybe need to move it down.  What is bound to C-x x
 
 Default Configuration from website
 #+begin_src emacs-lisp
-    (use-package corfu
-      ;; Optional customizations
-      :custom
-      ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-      (corfu-auto t)                 ;; Enable auto completion
-      ;; (corfu-separator ?\s)          ;; Orderless field separator
-      ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-      ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
-      ;; (corfu-preview-current nil)    ;; Disable current candidate preview
-      ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
-      ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-      ;; (corfu-scroll-margin 5)        ;; Use scroll margin
+  (use-package corfu
+    ;; Optional customizations
+    :custom
+    ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+    (corfu-auto t)                 ;; Enable auto completion
+    ;; (corfu-separator ?\s)          ;; Orderless field separator
+    ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+    ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+    ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+    ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
+    ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+    ;; (corfu-scroll-margin 5)        ;; Use scroll margin
 
-      ;; Enable Corfu only for certain modes.
-      ;; :hook ((prog-mode . corfu-mode)
-      ;;        (shell-mode . corfu-mode)
-      ;;        (eshell-mode . corfu-mode))
+    ;; Enable Corfu only for certain modes.
+    ;; :hook ((prog-mode . corfu-mode)
+    ;;        (shell-mode . corfu-mode)
+    ;;        (eshell-mode . corfu-mode))
 
-      ;; Configure corfu-popup
-      (corfu-popupinfo-delay '(1.0 . 1.0))
+    ;; Configure corfu-popup
+    (corfu-popupinfo-delay '(0.5 . 1.0))
 
-      ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
-      ;; be used globally (M-/).  See also the customization variable
-      ;; `global-corfu-modes' to exclude certain modes.
+    ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
+    ;; be used globally (M-/).  See also the customization variable
+    ;; `global-corfu-modes' to exclude certain modes.
 
-      :init
-      (global-corfu-mode)
-      (corfu-popupinfo-mode))
+    :init
+    (global-corfu-mode)
+    (corfu-popupinfo-mode))
 
 
-    (defun my:setup-corfu-prog-mode ()
-        (setq-local corfu-auto-delay  0
-                    corfu-auto-prefix 1))
+  (defun my:setup-corfu-prog-mode ()
+      (setq-local corfu-auto-delay  0
+                  corfu-auto-prefix 1))
 
-    (defun my:setup-corfu-writing-mode ()
-      (setq-local corfu-auto-delay  1
-                  corfu-auto-prefix 3))
+  (defun my:setup-corfu-writing-mode ()
+    (setq-local corfu-auto-delay  1
+                corfu-auto-prefix 5))
 
-    (add-hook 'prog-mode-hook
-              #'my:setup-corfu-prog-mode)
+  (add-hook 'prog-mode-hook
+            #'my:setup-corfu-prog-mode)
 
-    (add-hook 'sql-interactive-mode-hook
-              #'my:setup-corfu-writing-mode)
+  (add-hook 'sql-interactive-mode-hook
+            #'my:setup-corfu-writing-mode)
 
-    (add-hook 'org-mode-hook
-              #'my:setup-corfu-writing-mode)
+  (add-hook 'org-mode-hook
+            #'my:setup-corfu-writing-mode)
 
-    ;; A few more useful configurations...
-    (use-package emacs
-      :init
-      ;; TAB cycle if there are only few candidates
-      ;; (setq completion-cycle-threshold 3)
+  ;; A few more useful configurations...
+  (use-package emacs
+    :init
+    ;; TAB cycle if there are only few candidates
+    ;; (setq completion-cycle-threshold 3)
 
-      ;; Enable indentation+completion using the TAB key.
-      ;; `completion-at-point' is often bound to M-TAB.
-      (setq tab-always-indent 'complete)
+    ;; Enable indentation+completion using the TAB key.
+    ;; `completion-at-point' is often bound to M-TAB.
+    (setq tab-always-indent 'complete)
 
-      ;; Emacs 30 and newer: Disable Ispell completion function. As an alternative,
-      ;; try `cape-dict'.
-      (setq text-mode-ispell-word-completion nil)
+    ;; Emacs 30 and newer: Disable Ispell completion function. As an alternative,
+    ;; try `cape-dict'.
+    (setq text-mode-ispell-word-completion nil)
 
-      ;; Emacs 28 and newer: Hide commands in M-x which do not apply to the current
-      ;; mode.  Corfu commands are hidden, since they a
-      ;; mode.  Corfu commands are hidden, since they are not used via M-x. This
-      ;; setting is useful beyond Corfu.
-      (setq read-extended-command-predicate #'command-completion-default-include-p))
+    ;; Emacs 28 and newer: Hide commands in M-x which do not apply to the current
+    ;; mode.  Corfu commands are hidden, since they a
+    ;; mode.  Corfu commands are hidden, since they are not used via M-x. This
+    ;; setting is useful beyond Corfu.
+    (setq read-extended-command-predicate #'command-completion-default-include-p))
 #+end_src
 
 * Cape (Additional Completion Backends)
 #+begin_src emacs-lisp :results raw
-;; Add extensions
-(use-package cape
-  ;; Bind prefix keymap providing all Cape commands under a mnemonic key.
-  ;; Press C-c p ? to for help.
-  ;:bind ("C-c p" . cape-prefix-map) ;; Alternative keys: M-p, M-+, ...
-  ;; Alternatively bind Cape commands individually.
-  ;; :bind (("C-c p d" . cape-dabbrev)
-  ;;        ("C-c p h" . cape-history)
-  ;;        ("C-c p f" . cape-file)
-  ;;        ...)
-  :init
-  ;; Add to the global default value of `completion-at-point-functions' which is
-  ;; used by `completion-at-point'.  The order of the functions matters, the
-  ;; first function returning a result wins.  Note that the list of buffer-local
-  ;; completion functions takes precedence over the global list.
-  (add-hook 'completion-at-point-functions #'cape-dabbrev)
-  (add-hook 'completion-at-point-functions #'cape-file)
-  (add-hook 'completion-at-point-functions #'cape-elisp-block)
-  ;; (add-hook 'completion-at-point-functions #'cape-history)
-  ;; ...
-)
+  ;; Add extensions
+  (use-package cape
+    ;; Bind prefix keymap providing all Cape commands under a mnemonic key.
+    ;; Press C-c p ? to for help.
+    ;:bind ("C-c p" . cape-prefix-map) ;; Alternative keys: M-p, M-+, ...
+    ;; Alternatively bind Cape commands individually.
+    ;; :bind (("C-c p d" . cape-dabbrev)
+    ;;        ("C-c p h" . cape-history)
+    ;;        ("C-c p f" . cape-file)
+    ;;        ...)
+    :init
+    ;; Add to the global default value of `completion-at-point-functions' which is
+    ;; used by `completion-at-point'.  The order of the functions matters, the
+    ;; first function returning a result wins.  Note that the list of buffer-local
+    ;; completion functions takes precedence over the global list.
+    (add-hook 'completion-at-point-functions #'cape-dabbrev)
+    (add-hook 'completion-at-point-functions #'cape-file)
+    (add-hook 'completion-at-point-functions #'cape-elisp-block)
+    ;; (add-hook 'completion-at-point-functions #'cape-history)
+    ;; ...
+  )
 #+end_src
 
 * Kind icons (for corfu)
@@ -1208,12 +1211,11 @@ Will it interfere with kind-icons?
 #+begin_src emacs-lisp
   (use-package doom-themes)
 
-  (use-package doom-modeline
-    :init (doom-modeline-mode 1))
+    (use-package doom-modeline
+      :init (doom-modeline-mode 1))
 
 
-(load-theme 'doom-dark+ t)
-
+  (load-theme 'doom-dark+ t)
 #+end_src
 
 #+RESULTS:
@@ -1374,7 +1376,7 @@ Builtin after emacs 29
 
   (setq eglot-events-buffer-size 1000) ;disabling event logging in eglot
 
-  (setq eglot-sync-connect t) ;disabling elgot freeze the UI for up to 3s when you open file maybe large one
+  (setq eglot-sync-connect nil) ;disabling elgot freeze the UI for up to 3s when you open file maybe large one
 
   ;(add-hook 'focus-out-hook 'garbage-collect) optional, if you don't want to use gcmh package
 
@@ -1385,7 +1387,6 @@ Builtin after emacs 29
   (setq company-idle-delay 0) ;how long to wait for company mode to wait after it got completion obviously you don't want to wait so just set it to 0
 
   (setq company-minimum-prefix-length 1) ;how many characters you want to type before popping up the completion UI obviously 1 right
-
 #+end_src
 
 
@@ -1458,21 +1459,14 @@ Builtin after emacs 29
 ** DAP Mode
 
 #+begin_src emacs-lisp
-  ;; (use-package dap-java
-  ;;   :straight nil)
-
-  (use-package dap-mode
-    :after (lsp-mode)
-    :functions dap-hydra/nil
-    ;; :config
-    ;; (require 'dap-java)
-    :bind (:map lsp-mode-map
-           ("<f5>" . dap-debug)
-           ("M-<f5>" . dap-hydra))
-    :hook ((dap-mode . dap-ui-mode)
-      (dap-session-created . (lambda (&_rest) (dap-hydra)))
-      (dap-terminated . (lambda (&_rest) (dap-hydra/nil)))))
-
+  (use-package flymake
+    :straight nil
+    :bind (:map flymake-mode-map
+                ;; Provide some flycheck-like bindings in flymake mode to ease transition
+                ("C-c ! l" . flymake-show-buffer-diagnostics)
+                ("C-c ! n" . flymake-goto-next-error)
+                ("C-c ! p" . flymake-goto-prev-error)
+                ("C-c ! c" . flymake-start)))
 #+end_src
 
 DAP netcoredbg
@@ -1483,6 +1477,7 @@ DAP netcoredbg
   ;;   (dap--put-if-absent conf :process-id? (read-string "Process ID:"))
   ;;   (dap--put-if-absent conf :dap-server-path (list (dap-netcore--debugger-locate) "--interpreter=vscode" "--engineLogging=c:/log.dbg")))
 
+  (use-package dap-mode)
   (require 'dap-mode)
   (defun dap-netcore--populate-attach-args (conf)
     "Populate CONF with the attach arguments."
@@ -1575,7 +1570,7 @@ Using apache velocity template langage for ESA
 
 ** Rust
 #+begin_src emacs-lisp
-(use-package rust-mode)
+  (use-package rust-mode)
 #+end_src
 
 ** Bazel Build
@@ -1587,7 +1582,7 @@ Using apache velocity template langage for ESA
 ** Kotlin
 
 #+begin_src emacs-lisp
-(use-package kotlin-mode)
+  (use-package kotlin-mode)
 #+end_src
 
 ** Common Lisp/Slime setup [Deprecating in favor of Sly 06-Mar-2024]
@@ -1603,7 +1598,7 @@ Using apache velocity template langage for ESA
 
 Add init file as lisp file
 #+begin_src emacs-lisp
-;(add-to-list 'auto-mode-alist '("\\.sbclrc$" . lisp-mode))
+  ;(add-to-list 'auto-mode-alist '("\\.sbclrc$" . lisp-mode))
 #+end_src
 
 ** Paredit
@@ -1620,13 +1615,12 @@ Add init file as lisp file
 
 ** Combobulate
 #+begin_src emacs-lisp :results raw
-(use-package combobulate)
+  (use-package combobulate)
 #+end_src
 
 * SQL
 
 #+begin_src emacs-lisp
-
   ;;; Sql Server Setup
   (defcustom sql-ms-program "sqlcmd"
         "Command to start ;osql; (replaced for sqlcmd) by Microsoft.
@@ -1678,10 +1672,10 @@ Add init file as lisp file
 * Multiple cursors
 
 #+begin_src emacs-lisp
-    (use-package multiple-cursors
-    :bind (("C->" . mc/mark-next-like-this)
-           ("C-<" . mc/mark-previous-like-this)
-           ("C-c C-<" . mc/mark-all-like-this)))
+  (use-package multiple-cursors
+  :bind (("C->" . mc/mark-next-like-this)
+         ("C-<" . mc/mark-previous-like-this)
+         ("C-c C-<" . mc/mark-all-like-this)))
 #+end_src
 
 * Additional Org Packages
@@ -1741,15 +1735,15 @@ Configures org roam, dailies, tags, capture templates
 ** Add gutters to org mode
 
 #+begin_src emacs-lisp
-      ;; Seems to mess up org superstar
-      (defun tja-org-mode-visual-fill ()
-        (setq visual-fill-column-width 150
-              visual-fill-column-center-text t)
-        (visual-fill-column-mode t))
+  ;; Seems to mess up org superstar
+  (defun tja-org-mode-visual-fill ()
+    (setq visual-fill-column-width 150
+          visual-fill-column-center-text t)
+    (visual-fill-column-mode t))
 
-      (use-package visual-fill-column
-        :defer t
-        :hook (org-mode . tja-org-mode-visual-fill))
+  (use-package visual-fill-column
+    :defer t
+    :hook (org-mode . tja-org-mode-visual-fill))
 #+end_src
 
 ** Org Transclusion
@@ -1764,13 +1758,13 @@ Configures org roam, dailies, tags, capture templates
 ** Org anki
 
 #+begin_src emacs-lisp
-    (use-package org-anki)
+  (use-package org-anki)
 #+end_src
 
 * Vue JS
 
 #+begin_src emacs-lisp
-(use-package vue-mode)
+  (use-package vue-mode)
 #+end_src
 
 * Simple http server
@@ -1879,48 +1873,48 @@ Use web-mode as the default html mode
 
 * To setup after playing with jiralib2
 #+begin_src emacs-lisp
-    ;; for token auth with JIRA Cloud
-      ;; (use-package ejira
-      ;;   :init
-      ;;   (setq jiralib2-url              "TODO"
-      ;;         jiralib2-auth             'basic
-      ;;         jiralib2-user-login-name  "TODO"
-      ;;         jiralib2-token            "TODO"
-      ;;         ;jiralib2-token
+  ;; for token auth with JIRA Cloud
+    ;; (use-package ejira
+    ;;   :init
+    ;;   (setq jiralib2-url              "TODO"
+    ;;         jiralib2-auth             'basic
+    ;;         jiralib2-user-login-name  "TODO"
+    ;;         jiralib2-token            "TODO"
+    ;;         ;jiralib2-token
 
-      ;;         ;; NOTE, this directory needs to be in `org-agenda-files'`
-      ;;         ejira-org-directory       "~/jira"
-      ;;         ejira-projects            '("ECOMM")
+    ;;         ;; NOTE, this directory needs to be in `org-agenda-files'`
+    ;;         ejira-org-directory       "~/jira"
+    ;;         ejira-projects            '("ECOMM")
 
-      ;;         ejira-priorities-alist    '(("Highest" . ?A)
-      ;;                                     ("High"    . ?B)
-      ;;                                     ("Medium"  . ?C)
-      ;;                                     ("Low"     . ?D)
-      ;;                                     ("Lowest"  . ?E))
-      ;;         ejira-todo-states-alist   '(("To Do"       . 1)
-      ;;                                     ("In Progress" . 2)
-      ;;                                     ("Done"        . 3)))
-      ;;   :config
-      ;;   ;; Tries to auto-set custom fields by looking into /editmeta
-      ;;   ;; of an issue and an epic.
-      ;;   (add-hook 'jiralib2-post-login-hook #'ejira-guess-epic-sprint-fields)
+    ;;         ejira-priorities-alist    '(("Highest" . ?A)
+    ;;                                     ("High"    . ?B)
+    ;;                                     ("Medium"  . ?C)
+    ;;                                     ("Low"     . ?D)
+    ;;                                     ("Lowest"  . ?E))
+    ;;         ejira-todo-states-alist   '(("To Do"       . 1)
+    ;;                                     ("In Progress" . 2)
+    ;;                                     ("Done"        . 3)))
+    ;;   :config
+    ;;   ;; Tries to auto-set custom fields by looking into /editmeta
+    ;;   ;; of an issue and an epic.
+    ;;   (add-hook 'jiralib2-post-login-hook #'ejira-guess-epic-sprint-fields)
 
-      ;;   ;; They can also be set manually if autoconfigure is not used.
-      ;;   ;; (setq ejira-sprint-field       'customfield_10001
-      ;;   ;;       ejira-epic-field         'customfield_10002
-      ;;   ;;       ejira-epic-summary-field 'customfield_10004)
+    ;;   ;; They can also be set manually if autoconfigure is not used.
+    ;;   ;; (setq ejira-sprint-field       'customfield_10001
+    ;;   ;;       ejira-epic-field         'customfield_10002
+    ;;   ;;       ejira-epic-summary-field 'customfield_10004)
 
-      ;;   (require 'ejira-agenda)
+    ;;   (require 'ejira-agenda)
 
-      ;;   ;; Make the issues visisble in your agenda by adding `ejira-org-directory'
-      ;;   ;; into your `org-agenda-files'.
-      ;;   (add-to-list 'org-agenda-files ejira-org-directory)
+    ;;   ;; Make the issues visisble in your agenda by adding `ejira-org-directory'
+    ;;   ;; into your `org-agenda-files'.
+    ;;   (add-to-list 'org-agenda-files ejira-org-directory)
 
-      ;;   ;; Add an agenda view to browse the issues that
-      ;;   (org-add-agenda-custom-command
-      ;;    '("j" "My JIRA issues"
-      ;;      ((ejira-jql "resolution = unresolved and assignee = currentUser()"
-      ;;                  ((org-agenda-overriding-header "Assigned to me")))))))
+    ;;   ;; Add an agenda view to browse the issues that
+    ;;   (org-add-agenda-custom-command
+    ;;    '("j" "My JIRA issues"
+    ;;      ((ejira-jql "resolution = unresolved and assignee = currentUser()"
+    ;;                  ((org-agenda-overriding-header "Assigned to me")))))))
 #+end_src
 
 * MCT mode
@@ -1970,7 +1964,7 @@ Swap vertico-map with  minibuffer-local-completion-map if not using vertico
 
 * Adding org-babel-tangle as a safe form so I don't get bothered every time
 #+begin_src emacs-lisp
-(push '(add-hook 'after-save-hook 'org-babel-tangle nil t) safe-local-eval-forms)
+  (push '(add-hook 'after-save-hook 'org-babel-tangle nil t) safe-local-eval-forms)
 #+end_src
 
 * Clockify
@@ -1989,12 +1983,12 @@ Swap vertico-map with  minibuffer-local-completion-map if not using vertico
 
 * CSV Mode
 #+begin_src emacs-lisp :results raw
-(use-package csv-mode)
+  (use-package csv-mode)
 #+end_src
 
 * Restclient
 #+begin_src emacs-lisp :results raw
-(use-package restclient)
+  (use-package restclient)
 #+end_src
 
 * TJA.el Add my Emacs lisp extensions
@@ -2002,7 +1996,7 @@ This file may have dependencies on libraries above
 
 [[file:lisp/tja.org::*Org file for my private extensions to emacs packages][TJA.org file]]
 #+begin_src emacs-lisp
-(push "~/emacs/lisp/" load-path)
+  (push "~/emacs/lisp/" load-path)
 #+end_src
 
 #+RESULTS:
@@ -2025,7 +2019,7 @@ This file may have dependencies on libraries above
 * Latex
 
 #+begin_src emacs-lisp :results raw
-(use-package cdlatex)
+  (use-package cdlatex)
 #+end_src
 
 * Emacs EDBI
@@ -2097,6 +2091,57 @@ This file may have dependencies on libraries above
      tab-line-new-button-show nil
      tab-line-close-button-show nil))
 #+end_src
+
+* Kite-mini (Experimental)
+
+#+begin_src emacs-lisp :results raw
+  ;(use-package kite-mini)
+#+end_src
+
+* EAF (Experimental)
+
+Trying to get it working on wayland
+
+Following instructions for gnome-shell extensions here:
+https://help.gnome.org/admin/system-admin-guide/stable/extensions-enable.html.en
+
+Still getting an error with dbus for missing service.  So I tried using org.gnome.Shell.Extensions in eaf but I didn't have any success with that.
+
+What is Gnome shell?
+
+How should it be started up?  Can I start it with some other application?
+
+https://en.wikipedia.org/wiki/GNOME_Shell
+
+Also had to symlink refresh or something into the build directory.  Could probably add it into straight, but this isn't working so great with the embedded browser
+#+begin_src emacs-lisp :results raw
+  ;; (use-package eaf
+  ;;   :straight (eaf
+  ;;              :type git
+  ;;              :host github
+  ;;              :repo "emacs-eaf/emacs-application-framework"           
+  ;;              :files ("*.el" "*.py" "core" "app" "*.json")
+  ;;              :includes (eaf-pdf-viewer eaf-browser) ; Straight won't try to search for these packages when we make further use-package invocations for them
+  ;;              :pre-build (("python" "install-eaf.py" "--install" "pdf-viewer" "browser" "--ignore-sys-deps"))
+  ;;              )
+  ;;   ;; :custom
+  ;;   ;;; See https://github.com/emacs-eaf/emacs-application-framework/wiki/Customization
+  ;;   ;; (eaf-browser-continue-where-left-off t)
+  ;;   ;; (eaf-browser-enable-adblocker t)
+  ;;   ;; (browse-url-browser-function 'eaf-open-browser)
+  ;;   ;; :config
+  ;;   ;; (defalias 'browse-web #'eaf-open-browser)
+  ;;   ;; (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
+  ;;   ;; (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
+  ;;   ;; (eaf-bind-key take_photo "p" eaf-camera-keybinding)
+  ;;   ;; (eaf-bind-key nil "M-q" eaf-browser-keybinding)
+  ;;   )
+
+  ;; (require 'eaf-browser)
+  ;; (require 'eaf-pdf-viewer)               
+  ;;(require 'eaf-vue-tailwindcss)
+#+end_src
+
 * Local Variables - sets the after save hook to tangle this org file on save
 # Local Variables:
 # eval: (add-hook 'after-save-hook 'org-babel-tangle nil t)
