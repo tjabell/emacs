@@ -1,3 +1,22 @@
+;; [[file:tja.org::*Window Management][Window Management:1]]
+(defun m/windows:save-window-configuration-to-file (filepath)
+  "Save the current window configuration to the specified FILEPATH."
+  (interactive "FSave window configuration to file: ")
+  (with-temp-file filepath
+    (prin1 (window-state-get (frame-root-window) t) (current-buffer)))
+  (message "Window configuration saved to %s" filepath))
+
+(defun m/windows:load-window-configuration-from-file (filepath)
+  "Load the window configuration from the specified FILEPATH."
+  (interactive "fLoad window configuration from file: ")
+  (when (file-exists-p filepath)
+    (with-temp-buffer
+      (insert-file-contents filepath)
+      (let ((config (read (current-buffer))))
+        (window-state-put config (frame-root-window))))
+    (message "Window configuration loaded from %s" filepath)))
+;; Window Management:1 ends here
+
 ;; [[file:tja.org::*Read only mode][Read only mode:1]]
 ;; Define a minor mode for read-only navigation
 (defvar read-only-navigation-mode-map
@@ -389,7 +408,7 @@ If not, try to switch to that branch. Print a warning if the branch doesn't exis
                  (get-buffer-process buffer))
         (ignore-errors
           (vterm-send-string "\C-c")
-          (sleep-for 1)  ;; Reduce sleep time if possible
+          ;(sleep-for 1)  ;; Reduce sleep time if possible
           ;; Temporarily disable any query functions that might prevent this buffer from being stopped.
           ;; I.e. we really want to kill it
           (let ((kill-buffer-query-functions nil))
@@ -903,7 +922,7 @@ definition and running `eval-defun`."
 (require 'notifications)
 
 ;;;###autoload
-(defun tja-remind-me-in (minutes body)
+(defun m/notify:remind-me-in (minutes body)
   (interactive "sMinutes:\nsBody:")
   (let ((minutes (concat minutes " min")))
     (run-at-time minutes nil 'notifications-notify :title "Emacs alert" :body body)))
@@ -1444,10 +1463,10 @@ same directory as the org-buffer and insert a link to this file."
   (let* ((repositoryList (+jiralib2-extract-repository-names issueKey)))
     (insert (format "%s" repositoryList))))
 
-(defun my:esa:print-ticket-with-dependencies (issueKey)
+(defun m/esa:print-ticket-with-dependencies (issueKey)
   "Extracts issue name and dependencies."
   (interactive "sIssue Key: ")
-  (funcall-interactively 'my:esa:print-ticket-heading issueKey)
+  (funcall-interactively 'm/esa:print-ticket-heading issueKey)
   (let* ((repositoryList (+jiralib2-extract-repository-names issueKey)))
     (insert (format "\n%s" repositoryList))))
 ;; Jiralib2:1 ends here
@@ -1578,8 +1597,10 @@ POSITION should be either 'start or 'end."
       (while (re-search-forward "\\\\" nil t)
         (replace-match "/"))
       (goto-char beginning)
-      (while (re-search-forward "C:/Users/trevor/source" nil t)
-        (replace-match "/home/trevor/projects/equinox/src")))))
+      ;; find the matching 
+      (while (re-search-forward "C:/\\(.*?\\)/" nil t)
+        (let ((project (downcase (match-string 1))))
+          (replace-match (format "/home/trevor/projects/%s/src/" project)))))))
 
 ;;; ESA Functions to swap environments in URLs
 (defun my:replace-url-with-local ()

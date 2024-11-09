@@ -825,68 +825,81 @@ Everything goes through `embark-act`
 Learning embark
 
 #+begin_src emacs-lisp
-  (defun my:export-region-to-scratch-buffer (start end)
-    "Export the selected region to a temporary scratch buffer in fundamental mode."
-    (interactive "r")
-    (let ((region-content (buffer-substring-no-properties start end))
-          (scratch-buffer (generate-new-buffer "*Temporary Scratch*")))
-      (with-current-buffer scratch-buffer
-        (fundamental-mode)
-        (insert region-content)
-        (switch-to-buffer-other-window scratch-buffer))))
+            (defun my:export-region-to-scratch-buffer (start end)
+              "Export the selected region to a temporary scratch buffer in fundamental mode."
+              (interactive "r")
+              (let ((region-content (buffer-substring-no-properties start end))
+                    (scratch-buffer (generate-new-buffer "*Temporary Scratch*")))
+                (with-current-buffer scratch-buffer
+                  (fundamental-mode)
+                  (insert region-content)
+                  (switch-to-buffer-other-window scratch-buffer))))
 
-  ;; Credit: https://karthinks.com/software/fifteen-ways-to-use-embark/#open-any-buffer-by-splitting-any-window
-  (use-package embark
-    :ensure t
+            ;; Credit: https://karthinks.com/software/fifteen-ways-to-use-embark/#open-any-buffer-by-splitting-any-window
+            (use-package embark
+              :ensure t
 
-    :bind
-    (("C-." . embark-act)         ;; pick some comfortable binding
-             ;;; Right now this is jump to definition.  I need to find a good key for this
-             ;;;("C-;" . embark-dwim)        ;; good alternative: M-.
-             ;;; Right now this is jump to definition.  I need to find a good key for this
-             ;;;("M-." . embark-dwim)        ;;
-             ;;;("C-h B" . embark-bindings) ;; alternative for `describe-bindings'
-     )
-    ;;:init
+              :bind
+              (("C-." . embark-act)         ;; pick some comfortable binding
+                       ;;; Right now this is jump to definition.  I need to find a good key for this
+                       ;;;("C-;" . embark-dwim)        ;; good alternative: M-.
+                       ;;; Right now this is jump to definition.  I need to find a good key for this
+                       ;;;("M-." . embark-dwim)        ;;
+                       ;;;("C-h B" . embark-bindings) ;; alternative for `describe-bindings'
+               )
+              ;;:init
 
-    ;; Optionally replace the key help with a completing-read interface
-    ;;(setq prefix-help-command #'embark-prefix-help-command)
+              ;; Optionally replace the key help with a completing-read interface
+              ;;(setq prefix-help-command #'embark-prefix-help-command)
 
-    :custom ((embark-quit-after-action nil))
-    :config
+              :custom ((embark-quit-after-action nil))
+              :config
 
-    ;; Hide the mode line of the Embark live/completions buffers
-    (add-to-list 'display-buffer-alist
-                 '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                   nil
-                   (window-parameters (mode-line-format . none))))
+              ;; Hide the mode line of the Embark live/completions buffers
+              (add-to-list 'display-buffer-alist
+                           '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                             nil
+                             (window-parameters (mode-line-format . none))))
 
-    ;; Is this the right place for this?  It works but when is config running and should this be run at 'compile time' here?
-    (eval-when-compile
-      (defmacro my/embark-split-action (fn split-type)
-        `(defun ,(intern (concat "my/embark-"
-                                 (symbol-name fn)
-                                 "-"
-                                 (car (last  (split-string
-                                              (symbol-name split-type) "-"))))) ()
-           (interactive)
-           (funcall #',split-type)
-           (call-interactively #',fn))))
+              ;; Is this the right place for this?  It works but when is config running and should this be run at 'compile time' here?
+              (eval-when-compile
+                (defmacro my/embark-split-action (fn split-type)
+                  `(defun ,(intern (concat "my/embark-"
+                                           (symbol-name fn)
+                                           "-"
+                                           (car (last  (split-string
+                                                        (symbol-name split-type) "-"))))) ()
+                     (interactive)
+                     (funcall #',split-type)
+                     (call-interactively #',fn))))
 
-    (define-key embark-file-map     (kbd "2") (my/embark-split-action find-file split-window-below))
-    (define-key embark-buffer-map   (kbd "2") (my/embark-split-action switch-to-buffer split-window-below))
-    (define-key embark-bookmark-map (kbd "2") (my/embark-split-action bookmark-jump split-window-below))
+              (define-key embark-file-map     (kbd "2") (my/embark-split-action find-file split-window-below))
+              (define-key embark-buffer-map   (kbd "2") (my/embark-split-action switch-to-buffer split-window-below))
+              (define-key embark-bookmark-map (kbd "2") (my/embark-split-action bookmark-jump split-window-below))
 
-    (define-key embark-file-map     (kbd "3") (my/embark-split-action find-file split-window-right))
-    (define-key embark-buffer-map   (kbd "3") (my/embark-split-action switch-to-buffer split-window-right))
-    (define-key embark-bookmark-map (kbd "3") (my/embark-split-action bookmark-jump split-window-right))
+              (define-key embark-file-map     (kbd "3") (my/embark-split-action find-file split-window-right))
+              (define-key embark-buffer-map   (kbd "3") (my/embark-split-action switch-to-buffer split-window-right))
+              (define-key embark-bookmark-map (kbd "3") (my/embark-split-action bookmark-jump split-window-right))
 
-    (define-key embark-region-map (kbd "T") 'my:export-region-to-scratch-buffer))
+              (define-key embark-region-map (kbd "T") 'my:export-region-to-scratch-buffer)
 
-  ;; Consult users will also want the embark-consult package.
-  (use-package embark-consult
-    :ensure t
-    :after (embark consult))
+              (defvar-keymap embark-eglot-keymap
+                :doc "Keymap for Embark Eglot/LSP actions."
+                "r" #'eglot-rename
+                "c" #'eglot-code-actions)
+              (define-key embark-identifier-map (kbd "C-l") embark-eglot-keymap)
+              (define-key embark-flymake-map (kbd "C-l") embark-eglot-keymap)
+
+              (push 'embark--allow-edit
+                    (alist-get 'eglot-rename embark-target-injection-hooks))
+              (push 'embark--allow-edit
+                    (alist-get 'eglot-code-actions embark-target-injection-hooks))
+          )
+
+            ;; Consult users will also want the embark-consult package.
+            (use-package embark-consult
+              :ensure t
+              :after (embark consult))
 #+end_src
 
 #+RESULTS:
@@ -1190,8 +1203,12 @@ Will it interfere with kind-icons?
 * Vterm | vterm-toggle
 #+begin_src emacs-lisp
   (use-package vterm
+    :bind
+    (:map vterm-mode-map ("<f12>" .  vterm-toggle))
     :init (setq vterm-max-scrollback 16000))
+
   (use-package vterm-toggle
+    :custom ((vterm-toggle-reset-window-configration-after-exit nil))
     :bind
     ("<f12>" . vterm-toggle)
     ("C-<f12>" . vterm-toggle-cd))
@@ -1389,7 +1406,6 @@ Builtin after emacs 29
 
   (setq company-minimum-prefix-length 1) ;how many characters you want to type before popping up the completion UI obviously 1 right
 #+end_src
-
 
 ** Treemacs
 
@@ -1625,6 +1641,32 @@ Add init file as lisp file
   (use-package combobulate)
 #+end_src
 
+** Racket
+
+#+begin_src emacs-lisp :results raw
+    (use-package racket-mode
+      :mode "\\.rkt$"
+      :hook ((racket-mode . enable-paredit-mode)))
+#+end_src
+
+** Scribble
+Racket's documentation uses the scribble language I think
+#+begin_src emacs-lisp :results raw
+(use-package scribble-mode)
+#+end_src
+** Geiser
+
+#+begin_src emacs-lisp :results raw
+      (use-package geiser
+        :hook (racket-mode . geiser-mode))
+      (use-package geiser-racket)
+    #+end_src
+** Clojure
+
+#+begin_src emacs-lisp :results raw
+;(use-package cider)
+#+end_src
+
 * SQL
 
 #+begin_src emacs-lisp
@@ -1651,6 +1693,17 @@ Add init file as lisp file
 
 #+RESULTS:
 : t
+
+* EL-easydraw
+
+#+begin_src emacs-lisp :results raw
+  ;; (use-package el-easydraw
+  ;;   :straight (:host github :repo "misohena/el-easydraw" :branch "master" :files ("*.el")))
+
+  ;; (with-eval-after-load 'org
+  ;;   (require 'edraw-org)
+  ;;   (edraw-org-setup-default))
+#+end_src
 
 * Pass and org-password for password management
 
