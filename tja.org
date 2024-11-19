@@ -4,6 +4,15 @@
 #+STARTUP: show3levels
 #+property: header-args:emacs-lisp  :tangle ~/emacs/tja.el :comments link
 
+* EShell
+
+#+begin_src emacs-lisp :results raw
+  (defun eshell/mkcd (dir)
+    "Create DIR and change into it."
+    (make-directory dir t)
+    (eshell/cd dir))
+#+end_src
+
 * Window Management
 #+begin_src emacs-lisp :results raw
   (defun m/windows:save-window-configuration-to-file (filepath)
@@ -23,6 +32,7 @@
           (window-state-put config (frame-root-window))))
       (message "Window configuration loaded from %s" filepath)))
 #+end_src
+
 * Read only mode
 
 #+begin_src emacs-lisp :results raw
@@ -327,29 +337,23 @@ tja-compile-leads-api-integration-test
   ;;;###autoload
   (defun m/gsi:vterm-run-fbp-api-test ()
     (interactive)
-    (with-current-buffer (vterm (concat "*vterm* *FBP API Tests*"))
-      (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/")
-      (vterm-send-return)
-      (vterm-send-string ". ./local-startup-tests.sh")
-      (vterm-send-return)))
+    (open-or-start-vterm-buffer "*vterm* *FBP API Tests*"
+                                "/home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/"
+                                ". ./local-startup-tests.sh"))
 
   ;;;###autoload
   (defun m/gsi:vterm-run-schools-api-test ()
     (interactive)
-    (with-current-buffer (vterm (concat "*vterm* *FBP Schools API Tests*"))
-      (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-schools-api/")
-      (vterm-send-return)
-      (vterm-send-string ". ./local-startup-tests.sh")
-      (vterm-send-return)))
+    (open-or-start-vterm-buffer "*vterm* *FBP Schools API Tests*"
+                                "/home/trevor/projects/goddard/src/ipaas-schools-api/"
+                                ". ./local-startup-tests.sh"))
 
   ;;;###autoload
   (defun m/gsi:vterm-run-faculty-api ()
     (interactive)
-    (with-current-buffer (vterm (concat "*vterm* *FACULTY API*"))
-      (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-faculty-api/")
-      (vterm-send-return)
-      (vterm-send-string ". ./local-startup.sh")
-      (vterm-send-return)))
+    (open-or-start-vterm-buffer "*vterm* *FACULTY API*"
+                                "/home/trevor/projects/goddard/src/ipaas-faculty-api/"
+                                ". ./local-startup.sh"))
 
   ;;;###autoload
   (defun m/gsi:vterm-run-schools-api ()
@@ -362,20 +366,17 @@ tja-compile-leads-api-integration-test
   ;;;###autoload
   (defun m/gsi:vterm-run-school-features-api ()
     (interactive)
-    (with-current-buffer (vterm (concat "*vterm* *SCHOOL FEATURES API*"))
-      (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-schoolfeatures-api/")
-      (vterm-send-return)
-      (vterm-send-string ". ./local-startup.sh")
-      (vterm-send-return)))
+    (open-or-start-vterm-buffer
+     "*vterm* *SCHOOL FEATURES API*"
+     "/home/trevor/projects/goddard/src/ipaas-schoolfeatures-api/"
+     ". ./local-startup.sh"))
 
   ;;;###autoload
   (defun m/gsi:vterm-run-authorization-api ()
     (interactive)
-    (with-current-buffer (vterm (concat "*vterm* *AUTHORIZATION API*"))
-      (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-authorization-api/")
-      (vterm-send-return)
-      (vterm-send-string ". ./local-startup.sh")
-      (vterm-send-return)))
+    (open-or-start-vterm-buffer "*vterm* *AUTHORIZATION API*"
+                                "/home/trevor/projects/goddard/src/ipaas-authorization-api/"
+                                ". ./local-startup.sh"))
 
   ;;;###autoload
       (defun m/gsi:vterm-run-mock-gsi-servers ()
@@ -473,11 +474,9 @@ tja-compile-leads-api-integration-test
   ;;;###autoload
   (defun m/gsi:vterm-run-content-api ()
     (interactive)
-    (with-current-buffer (vterm (concat "*vterm* *CONTENT API*"))
-      (vterm-send-string "cd /home/trevor/projects/goddard/src/ipaas-content-api/")
-      (vterm-send-return)
-      (vterm-send-string ". ./local-startup.sh")
-      (vterm-send-return)))
+    (open-or-start-vterm-buffer "*vterm* *CONTENT API*"
+                                "/home/trevor/projects/goddard/src/ipaas-content-api/"
+                                ". ./local-startup.sh"))
 
   (require 'json-mode)
 
@@ -705,6 +704,20 @@ tja-compile-leads-api-integration-test
            (project-root (project-root (project-current)))
            (relative-path (replace-regexp-in-string "src" "application" (file-relative-name current-file project-root)))
            (target-path (expand-file-name relative-path "/mnt/dev-dav/www.extendedstayamerica.com/")))
+      (make-directory (file-name-directory target-path) t)
+      (copy-file current-file target-path t)
+      (message "File copied to %s" target-path)))
+
+  ;;;###autoload
+  (defun m/esa:copy-file-to-qa ()
+    "Copy the current buffer's file to the same relative location on /mnt/dev-dav."
+    (interactive)
+    (when (not (file-directory-p "/mnt/qa-dav/www.extendedstayamerica.com"))
+        (shell-command (concat "echo " (shell-quote-argument (read-passwd "Password? ")) " | sudo -S mount -t davfs -o uid=trevor,gid=trevor https://cms.qa.bws.esa.com/webdav/live/1 /mnt/qa-dav")))
+    (let* ((current-file (buffer-file-name))
+           (project-root (project-root (project-current)))
+           (relative-path (replace-regexp-in-string "src" "application" (file-relative-name current-file project-root)))
+           (target-path (expand-file-name relative-path "/mnt/qa-dav/www.extendedstayamerica.com/")))
       (make-directory (file-name-directory target-path) t)
       (copy-file current-file target-path t)
       (message "File copied to %s" target-path)))
