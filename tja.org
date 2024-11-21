@@ -100,10 +100,65 @@ Installing, creating these
               (shell-command (format "git -C %s checkout %s" dir branch))
               (message "Switched to branch '%s'." branch))
           (message "Warning: Branch '%s' does not exist in the repository at '%s'." branch dir)))))
+
+  (defun m/git:list-remote-branches-matching (dir ticket)
+    (let* ((default-directory dir)
+                (backend (vc-responsible-backend default-directory))
+                (branches (vc-call-backend backend 'branches))
+                (output (with-output-to-string
+                                   (with-current-buffer standard-output
+                                     (vc-git-command standard-output 0 nil "branch" "-r"))))
+                (remote-branches  (split-string output "\n" t "[ \t]+"))
+                (filtered-branches (cl-remove-if-not (lambda (b) (string-match-p (regexp-quote ticket) b)) remote-branches)))
+           filtered-branches))
+
+  (defun m/git:checkout-branch (dir branch)
+    (let* ((default-directory dir))
+      (vc-git-command nil 0 nil "checkout" branch)))
+
+  (defun m/git:checkout-new-branch (dir new-branch origin-branch)
+    (let* ((default-directory dir))
+      (vc-git-command nil 0 nil "checkout" "-b" new-branch origin-branch)))
+
+  (defun m/git:merge-branch (dir branch)
+    (let* ((default-directory dir))
+      (vc-git-command nil 0 nil "merge" "--no-ff" branch)))
+
+  (defun m/git:push-branch (dir branch)
+    (let* ((default-directory dir))
+      (vc-git-command nil 0 nil "push" "origin" branch)))
 #+end_src
 
 #+RESULTS:
 m/git:check-and-switch-git-branch
+
+* Markdown/Templating
+
+#+begin_src emacs-lisp :results raw
+  (defun m/changelog:generate-release-markdown (date version items)
+    "Generate a Markdown entry for a release.
+  DATE is a string formatted as 'yyyy-mm-dd'.
+  VERSION is the version string.
+  ITEMS is a list of item numbers, e.g., '(1 2 3 4)."
+    (interactive
+     (list
+      (format-time-string "%Y-%m-%d" (org-read-date nil t nil "Select a date"))
+      (read-string "Enter version string: ")
+      (let ((input (read-string "Enter item numbers (space-separated): ")))
+        (mapcar #'string-to-number (split-string input " ")))))
+    (let ((header (format "## [%s] - %s\n" version date))
+          (schedule "Release Scheduled: 9:00PM ET\n")
+          (completed "Release Completed: \n")
+          (change-request "Change Request: [TBD]()\n\n")
+          (tickets-header "### Tickets\n")
+          (ticket-list (mapconcat (lambda (item) (format "#%d" item)) items "\n"))
+          (release-plan "\n### Release Plan\n1. \n")
+          (rollback-plan "\n### Rollback Plan\n1. \n"))
+      (with-current-buffer (generate-new-buffer "*Release Markdown*")
+        (insert header schedule completed change-request tickets-header ticket-list release-plan rollback-plan)
+        (markdown-mode)
+        (pop-to-buffer (current-buffer)))))
+#+end_src
 
 * Magit
 
@@ -614,127 +669,6 @@ tja-compile-leads-api-integration-test
   (defun m/gsi:vterm-log-aem-publish-qa-error ()
     (interactive)
     (my:-log-aem-dev "qa" "publish" "aemerror"))
-
-  ;;;###autoload
-  (defun m/esa:vterm-esa-run-dotcms-server ()
-    (interactive)
-    (open-or-start-vterm-buffer
-     "*vterm* *DOTCMS*"
-     "/home/trevor/projects/extended_stay/src/frontend/"
-     ". ./local-startup.sh"))
-
-  ;;;###autoload
-  (defun m/esa:vterm-esa-run-dotcms-server-franchise-site ()
-    (interactive)
-    (open-or-start-vterm-buffer
-     "*vterm* *DOTCMS - FRANCHISE*"
-     "/home/trevor/projects/extended_stay/src/cms.ms.common"
-     ". ./local-startup.sh"))
-
-  (defun m/esa:vterm-run-mock-apis-server ()
-    (interactive)
-    (open-or-start-vterm-buffer
-     "*vterm* *DOTCMS - MOCK APIS*"
-     "/home/trevor/projects/extended_stay/src/esa-cl-server/"
-     "./start-mock-apis-server"))
-
-  ;;;###autoload
-  (defun m/esa:vterm-esa-run-dotcms ()
-    "Runs dotcms, node, and booking repos"
-    (interactive)
-    (m/esa:vterm-esa-run-dotcms-server)
-    (m/esa:vterm-esa-run-dotcms-node-watch)
-    (m/esa:vterm-esa-run-dotcms-node-serve)
-    (m/esa:vterm-run-mock-apis-server)
-    (sleep-for 3)                             ;; Let dotcms spin up on port 8080 before running the booking repo
-    (m/esa:vterm-esa-run-booking)
-    ;; The dotcms buffer might need sudo, switch to that
-    (switch-to-buffer "*vterm* *DOTCMS*"))
-
-  ;;;###autoload
-  (defun m/esa:vterm-esa-stop-dotcms ()
-      "Runs dotcms, node, and booking repos"
-      (interactive)
-      (m/vterm:stop "*vterm* *DOTCMS - FRANCHISE*")
-      (m/vterm:stop "*vterm* *DOTCMS*")
-      (m/vterm:stop "*vterm* *DOTCMS - Frontend Watch*")
-      (m/vterm:stop "*vterm* *DOTCMS - Frontend Serve*")
-      (m/vterm:stop "*vterm* *ESA Booking Repo*")
-      (m/vterm:stop "*vterm* *DOTCMS - MOCK APIS*"))
-
-  ;;;###autoload
-  (defun m/esa:vterm-esa-run-booking ()
-    (interactive)
-    (open-or-start-vterm-buffer
-     "*vterm* *ESA Booking Repo*"
-     "/home/trevor/projects/extended_stay/src/booking/"
-     ". ./local-startup.sh"))
-
-  ;;;###autoload
-  (defun m/esa:vterm-esa-run-dotcms-node-watch ()
-    (interactive)
-    (open-or-start-vterm-buffer
-     "*vterm* *DOTCMS - Frontend Watch*"
-     "/home/trevor/projects/extended_stay/src/frontend/"
-     ". ./local-startup-node.sh"))
-
-  ;;;###autoload
-  (defun m/esa:vterm-esa-run-dotcms-node-watch-franchise ()
-    (interactive)
-    (open-or-start-vterm-buffer
-     "*vterm* *DOTCMS Franchise - Frontend Watch*"
-     "/home/trevor/projects/extended_stay/src/cms.ms.common"
-     ". ./local-startup-node.sh"))
-
-  (defun m/esa:vterm-esa-run-dotcms-node-serve ()
-    (interactive)
-    (open-or-start-vterm-buffer
-     "*vterm* *DOTCMS - Frontend Serve*"
-     "/home/trevor/projects/extended_stay/src/frontend/"
-     ;; For some reason I put the . in front of the script, so using ; to get around it here
-     "; npm run serve-assets"))
-
-  ;;;###autoload
-  (defun m/esa:copy-file-to-dev ()
-    "Copy the current buffer's file to the same relative location on /mnt/dev-dav."
-    (interactive)
-    (when (not (file-directory-p "/mnt/dev-dav/www.extendedstayamerica.com"))
-        (shell-command (concat "echo " (shell-quote-argument (read-passwd "Password? ")) " | sudo -S mount -t davfs -o uid=trevor,gid=trevor https://cms.dev.bws.esa.com/webdav/live/1 /mnt/dev-dav")))
-    (let* ((current-file (buffer-file-name))
-           (project-root (project-root (project-current)))
-           (relative-path (replace-regexp-in-string "src" "application" (file-relative-name current-file project-root)))
-           (target-path (expand-file-name relative-path "/mnt/dev-dav/www.extendedstayamerica.com/")))
-      (make-directory (file-name-directory target-path) t)
-      (copy-file current-file target-path t)
-      (message "File copied to %s" target-path)))
-
-  ;;;###autoload
-  (defun m/esa:copy-file-to-qa ()
-    "Copy the current buffer's file to the same relative location on /mnt/dev-dav."
-    (interactive)
-    (when (not (file-directory-p "/mnt/qa-dav/www.extendedstayamerica.com"))
-        (shell-command (concat "echo " (shell-quote-argument (read-passwd "Password? ")) " | sudo -S mount -t davfs -o uid=trevor,gid=trevor https://cms.qa.bws.esa.com/webdav/live/1 /mnt/qa-dav")))
-    (let* ((current-file (buffer-file-name))
-           (project-root (project-root (project-current)))
-           (relative-path (replace-regexp-in-string "src" "application" (file-relative-name current-file project-root)))
-           (target-path (expand-file-name relative-path "/mnt/qa-dav/www.extendedstayamerica.com/")))
-      (make-directory (file-name-directory target-path) t)
-      (copy-file current-file target-path t)
-      (message "File copied to %s" target-path)))
-
-  ;;;###autoload
-  (defun m/esa:copy-file-to-local ()
-    "Copy the current buffer's file to the same relative location on /mnt/dev-dav."
-    (interactive)
-    ;; (when (not (file-directory-p "/mnt/local-dav/www.extendedstayamerica.com"))
-    ;;     (shell-command (concat "echo " (shell-quote-argument (read-passwd "Password? ")) " | sudo -S mount -t davfs -o uid=trevor,gid=trevor http://localhost:8080/webdav/live/1 /mnt/local-dav")))
-    (let* ((current-file (buffer-file-name))
-           (project-root (project-root (project-current)))
-           (relative-path (replace-regexp-in-string "src" "application" (file-relative-name current-file project-root)))
-           (target-path (expand-file-name relative-path "/mnt/local-dav/www.extendedstayamerica.com/")))
-      (make-directory (file-name-directory target-path) t)
-      (copy-file current-file target-path t)
-      (message "File copied to %s" target-path)))
 
   (defun m/mtsinai:vterm-mtsinai-run-prepc ()
     (interactive)
@@ -1596,13 +1530,6 @@ Print amortization calendar
     (interactive "sIssue Key: ")
     (let* ((repositoryList (+jiralib2-extract-repository-names issueKey)))
       (insert (format "%s" repositoryList))))
-
-  (defun m/esa:print-ticket-with-dependencies (issueKey)
-    "Extracts issue name and dependencies."
-    (interactive "sIssue Key: ")
-    (funcall-interactively 'm/esa:print-ticket-heading issueKey)
-    (let* ((repositoryList (+jiralib2-extract-repository-names issueKey)))
-      (insert (format "\n%s" repositoryList))))
 #+end_src
 
 * Sly/Common Lisp
