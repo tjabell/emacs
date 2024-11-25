@@ -1372,7 +1372,6 @@ Print amortization calendar
 
 #+RESULTS:
 
-
 * Utility Functions
 
 #+begin_src emacs-lisp
