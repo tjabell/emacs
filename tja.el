@@ -59,45 +59,52 @@
 
 ;; [[file:tja.org::*Git][Git:1]]
 (defun m/git:check-and-switch-git-branch (dir branch)
-  "Check if the Git repository in DIR is on the specified BRANCH.
-If not, try to switch to that branch. Print a warning if the branch doesn't exist."
-  (let* ((default-directory dir)
-         (current-branch (string-trim (shell-command-to-string (format "git -C %s rev-parse --abbrev-ref HEAD" dir)))))
-    (if (string-equal current-branch branch)
-        (message "Already on branch '%s'." branch)
-      (if (string-match-p (regexp-quote branch)
-                          (shell-command-to-string (format "git -C %s branch --list" dir)))
-          (progn
-            (shell-command (format "git -C %s checkout %s" dir branch))
-            (message "Switched to branch '%s'." branch))
-        (message "Warning: Branch '%s' does not exist in the repository at '%s'." branch dir)))))
+    "Check if the Git repository in DIR is on the specified BRANCH.
+  If not, try to switch to that branch. Print a warning if the branch doesn't exist."
+    (let* ((default-directory dir)
+           (current-branch (string-trim (shell-command-to-string (format "git -C %s rev-parse --abbrev-ref HEAD" dir)))))
+      (if (string-equal current-branch branch)
+          (message "Already on branch '%s'." branch)
+        (if (string-match-p (regexp-quote branch)
+                            (shell-command-to-string (format "git -C %s branch --list" dir)))
+            (progn
+              (shell-command (format "git -C %s checkout %s" dir branch))
+              (message "Switched to branch '%s'." branch))
+          (message "Warning: Branch '%s' does not exist in the repository at '%s'." branch dir)))))
 
-(defun m/git:list-remote-branches-matching (dir ticket)
-  (let* ((default-directory dir)
-              (backend (vc-responsible-backend default-directory))
-              (branches (vc-call-backend backend 'branches))
-              (output (with-output-to-string
-                                 (with-current-buffer standard-output
-                                   (vc-git-command standard-output 0 nil "branch" "-r"))))
-              (remote-branches  (split-string output "\n" t "[ \t]+"))
-              (filtered-branches (cl-remove-if-not (lambda (b) (string-match-p (regexp-quote ticket) b)) remote-branches)))
-         filtered-branches))
+  (defun m/git:list-remote-branches-matching (dir ticket)
+    (let* ((default-directory dir)
+                (backend (vc-responsible-backend default-directory))
+                (branches (vc-call-backend backend 'branches))
+                (output (with-output-to-string
+                                   (with-current-buffer standard-output
+                                     (vc-git-command standard-output 0 nil "branch" "-r"))))
+                (remote-branches  (split-string output "\n" t "[ \t]+"))
+                (filtered-branches (cl-remove-if-not (lambda (b) (string-match-p (regexp-quote ticket) b)) remote-branches)))
+           filtered-branches))
 
-(defun m/git:checkout-branch (dir branch)
-  (let* ((default-directory dir))
-    (vc-git-command nil 0 nil "checkout" branch)))
+  (defun m/git:checkout-branch (dir branch)
+    (let* ((default-directory dir))
+      (vc-git-command nil 0 nil "checkout" branch)))
 
-(defun m/git:checkout-new-branch (dir new-branch origin-branch)
-  (let* ((default-directory dir))
-    (vc-git-command nil 0 nil "checkout" "-b" new-branch origin-branch)))
+  (defun m/git:checkout-new-branch (dir new-branch origin-branch)
+    (let* ((default-directory dir))
+      (vc-git-command nil 0 nil "checkout" "-b" new-branch origin-branch)))
 
-(defun m/git:merge-branch (dir branch)
-  (let* ((default-directory dir))
-    (vc-git-command nil 0 nil "merge" "--no-ff" branch)))
+  (defun m/git:merge-branch (dir branch)
+    (let* ((default-directory dir))
+      (vc-git-command nil 0 nil "merge" "--no-ff" branch)))
 
-(defun m/git:push-branch (dir branch)
-  (let* ((default-directory dir))
-    (vc-git-command nil 0 nil "push" "origin" branch)))
+  (defun m/git:push-branch (dir branch)
+    (let* ((default-directory dir))
+      (vc-git-command nil 0 nil "push" "origin" branch)))
+
+  (defun m/git:tag-branch (dir branch tag-name tag-desc)
+    (let* ((default-directory dir))
+      (vc-git-command nil 0 nil "tag" "-a" tag-name "-m" tag-desc branch)))
+
+(defun m/git:make-date-version-number ()
+         (format "v%s" (format-todays-date)))
 ;; Git:1 ends here
 
 ;; [[file:tja.org::*Markdown/Templating][Markdown/Templating:1]]
@@ -249,7 +256,7 @@ ITEMS is a list of item numbers, e.g., '(1 2 3 4)."
 ;; [[file:tja.org::*Vterm][Vterm:1]]
 (require 'vterm)
 
-(defvar *CUSTOM-BRANCH* "custom/local-changes")
+(defvar *CUSTOM-BRANCH* "custom/local")
 
 (defun open-or-start-vterm-buffer (buf folder startup-script)
   (if (buffer-live-p (get-buffer buf))
@@ -1264,10 +1271,6 @@ same directory as the org-buffer and insert a link to this file."
 (load-file "/home/trevor/emacs/lisp/my-clockify.el")
 ;; Clockify:1 ends here
 
-;; [[file:tja.org::*Project specific functions][Project specific functions:1]]
-(org-babel-load-file "~/projects/extended_stay/esa-elisp.org")
-;; Project specific functions:1 ends here
-
 ;; [[file:tja.org::*Utility Functions][Utility Functions:1]]
 ;; From chatgpt 2023-06-01
     ;;;###autoload
@@ -1469,6 +1472,10 @@ POSITION should be either 'start or 'end."
   (sly-eval-async
       `(cl:progn (cl:setf (cl:cdr (cl:assoc 'slynk:*string-elision-length* slynk:*slynk-pprint-bindings*)) 200))))
 ;; Sly/Common Lisp:1 ends here
+
+;; [[file:tja.org::*Project specific functions][Project specific functions:1]]
+(org-babel-load-file "~/projects/extended_stay/esa-elisp.org")
+;; Project specific functions:1 ends here
 
 ;; [[file:tja.org::*EXPERIMENTAL][EXPERIMENTAL:1]]
 ;;; https://gist.github.com/kristianhellquist/3082383#gistcomment-2373734
