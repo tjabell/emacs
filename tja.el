@@ -59,52 +59,66 @@
 
 ;; [[file:tja.org::*Git][Git:1]]
 (defun m/git:check-and-switch-git-branch (dir branch)
-    "Check if the Git repository in DIR is on the specified BRANCH.
-  If not, try to switch to that branch. Print a warning if the branch doesn't exist."
-    (let* ((default-directory dir)
-           (current-branch (string-trim (shell-command-to-string (format "git -C %s rev-parse --abbrev-ref HEAD" dir)))))
-      (if (string-equal current-branch branch)
-          (message "Already on branch '%s'." branch)
-        (if (string-match-p (regexp-quote branch)
-                            (shell-command-to-string (format "git -C %s branch --list" dir)))
-            (progn
-              (shell-command (format "git -C %s checkout %s" dir branch))
-              (message "Switched to branch '%s'." branch))
-          (message "Warning: Branch '%s' does not exist in the repository at '%s'." branch dir)))))
+  "Check if the Git repository in DIR is on the specified BRANCH.
+If not, try to switch to that branch. Return a status symbol:
+- 'already-on-branch if already on the branch.
+- 'switched-to-branch if switched successfully.
+- 'branch-does-not-exist if the branch doesn't exist.
+- 'not-a-git-repo if DIR is not a Git repository."
+  (let ((default-directory dir))
+    (condition-case nil
+        (let* ((current-branch (string-trim
+                                (shell-command-to-string "git rev-parse --abbrev-ref HEAD"))))
+          (if (string-equal current-branch branch)
+              (progn
+                (message "Already on branch '%s'." branch)
+                'already-on-branch)
+            (if (zerop (call-process "git" nil nil nil "show-ref" "--verify" (format "refs/heads/%s" branch)))
+                (progn
+                  (shell-command (format "git checkout %s" branch))
+                  (message "Switched to branch '%s'." branch)
+                  'switched-to-branch)
+              (progn
+                (message "Warning: Branch '%s' does not exist in the repository at '%s'." branch dir)
+                'branch-does-not-exist))))
+      (error
+       (message "Error: '%s' is not a Git repository." dir)
+       'not-a-git-repo))))
 
-  (defun m/git:list-remote-branches-matching (dir ticket)
-    (let* ((default-directory dir)
-                (backend (vc-responsible-backend default-directory))
-                (branches (vc-call-backend backend 'branches))
-                (output (with-output-to-string
-                                   (with-current-buffer standard-output
-                                     (vc-git-command standard-output 0 nil "branch" "-r"))))
-                (remote-branches  (split-string output "\n" t "[ \t]+"))
-                (filtered-branches (cl-remove-if-not (lambda (b) (string-match-p (regexp-quote ticket) b)) remote-branches)))
-           filtered-branches))
 
-  (defun m/git:checkout-branch (dir branch)
-    (let* ((default-directory dir))
-      (vc-git-command nil 0 nil "checkout" branch)))
+(defun m/git:list-remote-branches-matching (dir ticket)
+  (let* ((default-directory dir)
+         (backend (vc-responsible-backend default-directory))
+         (branches (vc-call-backend backend 'branches))
+         (output (with-output-to-string
+                   (with-current-buffer standard-output
+                     (vc-git-command standard-output 0 nil "branch" "-r"))))
+         (remote-branches  (split-string output "\n" t "[ \t]+"))
+         (filtered-branches (cl-remove-if-not (lambda (b) (string-match-p (regexp-quote ticket) b)) remote-branches)))
+    filtered-branches))
 
-  (defun m/git:checkout-new-branch (dir new-branch origin-branch)
-    (let* ((default-directory dir))
-      (vc-git-command nil 0 nil "checkout" "-b" new-branch origin-branch)))
+(defun m/git:checkout-branch (dir branch)
+  (let* ((default-directory dir))
+    (vc-git-command nil 0 nil "checkout" branch)))
 
-  (defun m/git:merge-branch (dir branch)
-    (let* ((default-directory dir))
-      (vc-git-command nil 0 nil "merge" "--no-ff" branch)))
+(defun m/git:checkout-new-branch (dir new-branch origin-branch)
+  (let* ((default-directory dir))
+    (vc-git-command nil 0 nil "checkout" "-b" new-branch origin-branch)))
 
-  (defun m/git:push-branch (dir branch)
-    (let* ((default-directory dir))
-      (vc-git-command nil 0 nil "push" "origin" branch)))
+(defun m/git:merge-branch (dir branch)
+  (let* ((default-directory dir))
+    (vc-git-command nil 0 nil "merge" "--no-ff" branch)))
 
-  (defun m/git:tag-branch (dir branch tag-name tag-desc)
-    (let* ((default-directory dir))
-      (vc-git-command nil 0 nil "tag" "-a" tag-name "-m" tag-desc branch)))
+(defun m/git:push-branch (dir branch)
+  (let* ((default-directory dir))
+    (vc-git-command nil 0 nil "push" "origin" branch)))
+
+(defun m/git:tag-branch (dir branch tag-name tag-desc)
+  (let* ((default-directory dir))
+    (vc-git-command nil 0 nil "tag" "-a" tag-name "-m" tag-desc branch)))
 
 (defun m/git:make-date-version-number ()
-         (format "v%s" (format-todays-date)))
+  (format "v%s" (format-todays-date)))
 ;; Git:1 ends here
 
 ;; [[file:tja.org::*Markdown/Templating][Markdown/Templating:1]]
@@ -1393,6 +1407,20 @@ same directory as the org-buffer and insert a link to this file."
 (defun +jiralib2-extract-issue-id (issueKey)
   "Extracts the issue id from the issue key, e.g. ecomm-4952"
   (assoc 'id (jiralib2-get-issue issueKey)))
+
+(defun +jiralib2-get-issue-id (issueKey)
+  "Extracts the issue id from the issue key, e.g. ecomm-4952"
+  (assoc 'id (jiralib2-get-issue issueKey)))
+
+(defun +jiralib2-get-issue-detail (issue-or-key)
+  (let ((issue)
+        (id))
+    (if (stringp issue-or-key)
+        (setq issue (jiralib2-get-issue issue-or-key))
+      (setq issue (issue-or-key)))
+
+    (setq id )
+    (assoc 'detail issue)))
 
 (defun +jiralib2-extract-repository-names (issueKey)
   "Extracts repository names from the given DATA."
