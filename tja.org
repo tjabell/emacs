@@ -1540,10 +1540,13 @@ Print amortization calendar
           (id))
       (if (stringp issue-or-key)
           (setq issue (jiralib2-get-issue issue-or-key))
-        (setq issue (issue-or-key)))
+        (setq issue issue-or-key))
 
-      (setq id )
-      (assoc 'detail issue)))
+      (setq id (cdr (assoc 'id issue)))
+      (jiralib2-session-call (concat "/rest/dev-status/1.0/issue/detail?issueId=" id "&applicationType=bitbucket&dataType=pullrequest"))))
+
+  (defun +jiralib2-get-branches (issue-detail)
+    (caar (cdr (assoc 'detail *issue-detail*))))
 
   (defun +jiralib2-extract-repository-names (issueKey)
     "Extracts repository names from the given DATA."
@@ -1627,7 +1630,9 @@ Print amortization calendar
 
 * Project specific functions
 #+begin_src emacs-lisp :results raw
-  (org-babel-load-file "~/projects/extended_stay/esa-elisp.org")
+  (load "~/projects/extended_stay/esa-elisp.el")
+  (load "~/projects/extended_stay/esa-jira.el")
+  (load "~/projects/extended_stay/esa-merge-helper.el")
 #+end_src
 
 #+RESULTS:
@@ -1702,7 +1707,7 @@ Print amortization calendar
             (replace-match (format "/home/trevor/projects/%s/src/" project)))))))
 
   ;;; ESA Functions to swap environments in URLs
-  (defun my:replace-url-with-local ()
+  (defun m:replace-url-with-local ()
     (interactive)
     (let ((regex "http\[s\]*://.*?/")
           (replacement "http://localhost:8080/"))
@@ -1711,7 +1716,7 @@ Print amortization calendar
 
 
   ;;; ¯\_(ツ)_/¯
-  (defun my:insert-shrug ()
+  (defun m:insert-shrug ()
     (interactive)
     (insert "¯\\_(ツ)_/¯"))
 #+end_src

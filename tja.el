@@ -1417,10 +1417,13 @@ same directory as the org-buffer and insert a link to this file."
         (id))
     (if (stringp issue-or-key)
         (setq issue (jiralib2-get-issue issue-or-key))
-      (setq issue (issue-or-key)))
+      (setq issue issue-or-key))
 
-    (setq id )
-    (assoc 'detail issue)))
+    (setq id (cdr (assoc 'id issue)))
+    (jiralib2-session-call (concat "/rest/dev-status/1.0/issue/detail?issueId=" id "&applicationType=bitbucket&dataType=pullrequest"))))
+
+(defun +jiralib2-get-branches (issue-detail)
+  (caar (cdr (assoc 'detail *issue-detail*))))
 
 (defun +jiralib2-extract-repository-names (issueKey)
   "Extracts repository names from the given DATA."
@@ -1502,7 +1505,9 @@ POSITION should be either 'start or 'end."
 ;; Sly/Common Lisp:1 ends here
 
 ;; [[file:tja.org::*Project specific functions][Project specific functions:1]]
-(org-babel-load-file "~/projects/extended_stay/esa-elisp.org")
+(load "~/projects/extended_stay/esa-elisp.el")
+(load "~/projects/extended_stay/esa-jira.el")
+(load "~/projects/extended_stay/esa-merge-helper.el")
 ;; Project specific functions:1 ends here
 
 ;; [[file:tja.org::*EXPERIMENTAL][EXPERIMENTAL:1]]
@@ -1573,7 +1578,7 @@ POSITION should be either 'start or 'end."
           (replace-match (format "/home/trevor/projects/%s/src/" project)))))))
 
 ;;; ESA Functions to swap environments in URLs
-(defun my:replace-url-with-local ()
+(defun m:replace-url-with-local ()
   (interactive)
   (let ((regex "http\[s\]*://.*?/")
         (replacement "http://localhost:8080/"))
@@ -1582,7 +1587,7 @@ POSITION should be either 'start or 'end."
 
 
 ;;; ¯\_(ツ)_/¯
-(defun my:insert-shrug ()
+(defun m:insert-shrug ()
   (interactive)
   (insert "¯\\_(ツ)_/¯"))
 ;; EXPERIMENTAL:1 ends here
