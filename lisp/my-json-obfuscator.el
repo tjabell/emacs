@@ -14,11 +14,11 @@
 (defun m/json:random-value (original-value)
 "Generate a random value based on the type of ORIGINAL-VALUE."
   (cond
-   ((stringp original-value) (random-string 10))
+   ((stringp original-value) (m/json:random-string 10))
    ((numberp original-value) (random 10000))
    ((or (booleanp original-value) (equal :false original-value)) original-value)
    ((equal :null original-value) :null)
-   (t (random-string 10))))  ; Default case for unexpected types
+   (t (m/json:random-string 10))))  ; Default case for unexpected types
 
 (defun m/json:obfuscate-json (json-data)
   "Recursively obfuscate values in JSON-DATA."
