@@ -21,6 +21,10 @@
 Ended up putting -*- coding: utf-8 -*- on top of the file
 otherwide ⤵ would get converted to bytes when opening this file
 
+* Elisp
+#+begin_src emacs-lisp :results raw
+  (use-package memoize)
+#+end_src
 * System config and some basic keys and programming packages
 
 ** Allow erase-buffer command
