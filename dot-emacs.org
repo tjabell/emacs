@@ -21,10 +21,6 @@
 Ended up putting -*- coding: utf-8 -*- on top of the file
 otherwide ⤵ would get converted to bytes when opening this file
 
-* Elisp
-#+begin_src emacs-lisp :results raw
-  (use-package memoize)
-#+end_src
 * System config and some basic keys and programming packages
 
 ** Allow erase-buffer command
@@ -2154,6 +2150,12 @@ This file may have dependencies on libraries above
     (setq
      tab-line-new-button-show nil
      tab-line-close-button-show nil))
+#+end_src
+
+* Elisp
+Had to move this to the bottom of the file, it was throwing an error at the top of the file :/ 09-Dec-2024
+#+begin_src emacs-lisp :results raw
+  (use-package memoize)
 #+end_src
 
 * Kite-mini (Experimental)
