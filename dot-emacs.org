@@ -761,7 +761,6 @@ Completion style package.  Uses space separated components to match candidates.
     (read-minibuffer-restore-windows nil)
     (minibuffer-depth-indicate-mode t)
     (enable-recursive-minibuffers t)
-
     )
 
   (defun flex-if-twiddle (pattern _index _total)
@@ -2113,9 +2112,14 @@ This file may have dependencies on libraries above
         (buffer-string)))
     (defun anthropic-gptel-api-key ()
       (read-file-contents "~/.anthropic-secrets"))
+    (defun gemini-gptel-api-key ()
+      (read-file-contents "~/.google-secrets"))
     (gptel-make-anthropic "Claude"
-                      :stream t
-                      :key #'anthropic-gptel-api-key))
+      :stream t
+      :key #'anthropic-gptel-api-key)
+    (gptel-make-gemini "Gemini"
+      :stream t
+      :key #'gemini-gptel-api-key))
 
   (use-package smerge-mode
     :straight nil

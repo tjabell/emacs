@@ -1396,8 +1396,8 @@ same directory as the org-buffer and insert a link to this file."
 
 (defvar esa-keymap (make-sparse-keymap))
 (define-key esa-keymap (kbd "a") 'm/esa:insert-dev-search-api)
-(define-key esa-keymap (kbd "d") 'my:esa:vterm-run-dotcms)
-(define-key esa-keymap (kbd "f") 'tja-vterm-esa-run-dotcms-node)
+(define-key esa-keymap (kbd "d") 'm/esa:vterm-run-dotcms)
+(define-key esa-keymap (kbd "f") #'m/esa:vterm-run-dotcms-node)
 (define-key my-keymap (kbd "e") esa-keymap)
 
 (global-set-key (kbd "<f5>") '(lambda () (interactive) (find-file "~/projects/extended_stay/todo_esa.org")))
@@ -1509,6 +1509,54 @@ POSITION should be either 'start or 'end."
 (load "~/projects/extended_stay/esa-jira.el")
 (load "~/projects/extended_stay/esa-merge-helper.el")
 ;; Project specific functions:1 ends here
+
+;; [[file:tja.org::*Hideshow Extension][Hideshow Extension:1]]
+(defun hs-cycle (&optional level)
+  (interactive "p")
+  (let (message-log-max
+        (inhibit-message t))
+    (if (= level 1)
+        (pcase last-command
+          ('hs-cycle
+           (hs-hide-level 1)
+           (setq this-command 'hs-cycle-children))
+          ('hs-cycle-children
+           ;; TODO: Fix this case. `hs-show-block' needs to be
+           ;; called twice to open all folds of the parent
+           ;; block.
+           (save-excursion (hs-show-block))
+           (hs-show-block)
+           (setq this-command 'hs-cycle-subtree))
+          ('hs-cycle-subtree
+           (hs-hide-block))
+          (_
+           (if (not (hs-already-hidden-p))
+               (hs-hide-block)
+             (hs-hide-level 1)
+             (setq this-command 'hs-cycle-children))))
+      (hs-hide-level level)
+      (setq this-command 'hs-hide-level))))
+
+(defun hs-global-cycle ()
+  (interactive)
+  (pcase last-command
+    ('hs-global-cycle
+     (save-excursion (hs-show-all))
+     (setq this-command 'hs-global-show))
+    (_ (hs-hide-all))))
+
+(use-package hideshow
+  :bind (("C-S-<tab>" . hs-global-cycle)
+         ("C-c <tab>" . hs-toggle-hiding)))
+;; Hideshow Extension:1 ends here
+
+;; [[file:tja.org::*My helper functions][My helper functions:1]]
+(defun m/startup/display:enable-sway-and-wayvnc-headless-display ()
+  (interactive)
+  (m/sway:check-or-create-headless-output)
+  (m/sway:headless-set-ipad-resolution)
+  (m/wayvnc:check-or-start-wayvnc))
+;; My helper functions:1 ends here
 
 ;; [[file:tja.org::*EXPERIMENTAL][EXPERIMENTAL:1]]
 ;;; https://gist.github.com/kristianhellquist/3082383#gistcomment-2373734
