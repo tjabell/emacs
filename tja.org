@@ -153,51 +153,6 @@ Installing, creating these
 #+RESULTS:
 m/git:check-and-switch-git-branch
 
-* Markdown/Templating
-
-#+begin_src emacs-lisp :results raw
-  ;; Helper function (same as before):
-  (defun m/gsi/emacs:changelog:insert-release ()
-    "Insert a new release entry into the changelog file, fetching tickets from Azure DevOps."
-    (interactive)
-    (let* ((date (format-time-string "%Y-%m-%d" (org-read-date nil t nil "Select a date")))
-           (version (read-string "Enter version string: "))
-           (azure-tickets (m/gsi:azure-get-done-tickets-for-changelog))
-           (tickets (if (and azure-tickets (alist-get 'workItems azure-tickets))
-                        (mapcar (lambda (item) (number-to-string (alist-get 'id item))) (alist-get 'workItems azure-tickets))
-                      (split-string (read-string "Enter ticket numbers (space-separated, or leave blank if fetched from Azure): ") " ")))
-           (change-request (read-string "Enter Change Request (or leave blank): "))
-           (release-plan (read-string "Enter Release Plan items (newline separated, or leave blank): "))
-           (rollback-plan (read-string "Enter Rollback Plan items (newline separated, or leave blank): "))
-           (release-markdown (concat
-                              (format "## [%s] - %s\n" version date)
-                              (format "Release Scheduled: 9:00PM ET\n")
-                              (format "Release Completed: \n")
-                              (if (string-empty-p change-request)
-                                  (format "Change Request: TBD\n\n")
-                                (format "Change Request: [%s]()\n\n" change-request))
-                              (format "### Tickets\n")
-                              (mapconcat (lambda (ticket) (format "#%s\n" ticket)) tickets "") ; Add newline after each ticket
-                              (if (string-empty-p release-plan)
-                                  (format "\n### Release Plan\n1. \n")
-                                (format "\n### Release Plan\n%s" (mapconcat 'identity (split-string release-plan "\n") "\n")))
-                              (if (string-empty-p rollback-plan)
-                                  (format "\n### Rollback Plan\n1. \n")
-                                (format "\n### Rollback Plan\n%s" (mapconcat 'identity (split-string rollback-plan "\n") "\n"))))))
-
-
-      (goto-char (point-min))             ; Go to beginning of buffer
-      (search-forward "Canonical URL:") ; Find the canonical URL line (more robust anchor)
-      (forward-line 3)         ; Skip three lines after "Canonical URL:"
-
-
-      (insert release-markdown)        ; Insert the new release markdown
-
-      ;; Optional: Reformat the buffer (e.g., using markdown-mode if available)
-      (if (fboundp 'markdown-mode)
-          (markdown-mode))))
-#+end_src
-
 * Magit
 
 #+begin_src emacs-lisp
@@ -1076,11 +1031,74 @@ my:org-move-item-to-top
   ;; set Azure UN/PW
   (load-file "~/.azure-secrets.el")
 
+  (defun m/gsi:get-azure-tickets (wql)
+    (let* ((username *MY-AZURE-UN*)
+           (password *MY-AZURE-PW*)
+           (api-version "7.1-preview.2")
+           (api-url (format "https://dev.azure.com/GoddardSystemsIT/_apis/wit/wiql?api-version=%s" api-version))
+           (url-request-extra-headers
+            `(("Content-Type" . "application/json")
+              ("Authorization" . ,(concat "Basic "
+                                          (base64-encode-string
+                                           (concat username ":" password) t))))))
+      (request
+        api-url
+        :type "POST"
+        :sync t
+        :data (json-encode `((query . ,wql)))
+        :headers url-request-extra-headers
+        :parser 'json-read
+        :success (cl-function
+                  (lambda (&key data &allow-other-keys)
+                    data))
+        :error (cl-function
+                (lambda (&key symbol-status data error-thrown &allow-other-keys&rest _)
+                  (let ((buffer (get-buffer-create "*Example.org Response*")))
+                    (with-current-buffer buffer
+                      (erase-buffer)
+                      (insert (format "Error:\n%s" error-thrown))
+                      (display-buffer buffer))))))))
+
   (defun m/gsi:print-ticket-heading (ticket-number)
     (interactive "sTicket-number: ")
     (let* ((obj (m/gsi:get-azure-ticket ticket-number))
            (info (m/gsi:get-azure-ticket-title-and-id obj)))
       (insert (format "%s: %s" (car info) (cadr info)))))
+
+  (defvar *WQL-FOR-TICKET-DEPENDENCIES*
+    "SELECT [System.Id], [System.Tags] 
+     FROM WorkItems
+     WHERE [System.Id] IN (%s)
+     ORDER BY [System.Id]")
+
+
+  (defun m/gsi:get-ticket-dependencies (ticket-ids)
+    "Retrieve dependencies for the specified ticket IDs from Azure DevOps."
+    (let* ((formatted-ids (mapconcat 'number-to-string ticket-ids ","))
+           (wql (format *WQL-FOR-TICKET-DEPENDENCIES* formatted-ids))
+           (response (m/gsi:get-azure-tickets wql)))
+      (if (request-ex-response-success-p response)
+          (let ((data (request-response-data response)))
+            (if (alist-get 'workItems data)
+                (alist-get 'workItems data)
+              (error "No 'workItems' found in Azure API response")))
+        (error "Azure DevOps API request failed: %s" (request-response-data response)))))
+
+
+  (defun m/gsi/emacs:get-and-print-dependencies (ticket-ids)
+    "Retrieve and print dependencies for the given ticket IDs."
+    (let ((dependencies (m/gsi:get-ticket-dependencies ticket-ids)))
+      (if dependencies
+          (dolist (item dependencies)
+            (let ((id (alist-get 'id item))
+                  (tags (alist-get 'fields item)))
+              (if tags
+                (let ((tag-string (cdr (assoc "System.Tags" tags))))
+                   (if tag-string
+                     (dolist (tag (split-string tag-string "; "))
+                        (if (string-prefix-p "deps-" tag)
+                           (message "Ticket %s: Dependency: %s" id tag)))))))))
+         (message "No dependencies found.")))
 
   (defun m/gsi:azure-get-done-tickets-for-changelog ()
     (let* ((wql *WQL-FOR-DONE-TICKETS*)
@@ -1110,34 +1128,6 @@ my:org-move-item-to-top
                                              (concat username ":" password) t))))))
         (url-insert-file-contents ticket-url))
       (json-read)))
-
-  (defun m/gsi:get-azure-tickets (wql)
-    (let* ((username *MY-AZURE-UN*)
-           (password *MY-AZURE-PW*)
-           (api-version "7.1-preview.2")
-           (api-url (format "https://dev.azure.com/GoddardSystemsIT/_apis/wit/wiql?api-version=%s" api-version))
-           (url-request-extra-headers
-            `(("Content-Type" . "application/json")
-              ("Authorization" . ,(concat "Basic "
-                                          (base64-encode-string
-                                           (concat username ":" password) t))))))
-      (request
-        api-url
-        :type "POST"
-        :sync t
-        :data (json-encode `((query . ,wql)))
-        :headers url-request-extra-headers
-        :parser 'json-read
-        :success (cl-function
-                  (lambda (&key data &allow-other-keys)
-                    data))
-        :error (cl-function
-                (lambda (&key symbol-status data error-thrown &allow-other-keys&rest _)
-                  (let ((buffer (get-buffer-create "*Example.org Response*")))
-                    (with-current-buffer buffer
-                      (erase-buffer)
-                      (insert (format "Error:\n%s" error-thrown))
-                      (display-buffer buffer))))))))
 
 
   (defvar *WQL-FOR-DONE-TICKETS*
@@ -1183,7 +1173,7 @@ my:org-move-item-to-top
 #+end_src
 
 #+RESULTS:
-: m/gsi/get-azure-ticket
+: m/gsi/emacs:azure-report-fbp-done-tickets-for-changelog
 
 * Azure Devops
 
@@ -1754,6 +1744,52 @@ https://karthinks.com/software/simple-folding-with-hideshow/
     (m/sway:headless-set-ipad-resolution)
     (m/wayvnc:check-or-start-wayvnc))
 #+end_src
+
+* Changelog Generation
+
+#+begin_src emacs-lisp :results raw
+  ;; Helper function (same as before):
+  (defun m/gsi/emacs:changelog:insert-release ()
+    "Insert a new release entry into the changelog file, fetching tickets from Azure DevOps."
+    (interactive)
+    (let* ((date (format-time-string "%Y-%m-%d" (org-read-date nil t nil "Select a date")))
+           (version (read-string "Enter version string: "))
+           (azure-tickets (m/gsi:azure-get-done-tickets-for-changelog))
+           (tickets (if (and azure-tickets (alist-get 'workItems azure-tickets))
+                        (mapcar (lambda (item) (number-to-string (alist-get 'id item))) (alist-get 'workItems azure-tickets))
+                      (split-string (read-string "Enter ticket numbers (space-separated, or leave blank if fetched from Azure): ") " ")))
+           (change-request (read-string "Enter Change Request (or leave blank): "))
+           (release-plan (read-string "Enter Release Plan items (newline separated, or leave blank): "))
+           (rollback-plan (read-string "Enter Rollback Plan items (newline separated, or leave blank): "))
+           (release-markdown (concat
+                              (format "## [%s] - %s\n" version date)
+                              (format "Release Scheduled: 9:00PM ET\n")
+                              (format "Release Completed: \n")
+                              (if (string-empty-p change-request)
+                                  (format "Change Request: TBD\n\n")
+                                (format "Change Request: [%s]()\n\n" change-request))
+                              (format "### Tickets\n")
+                              (mapconcat (lambda (ticket) (format "#%s\n" ticket)) tickets "") ; Add newline after each ticket
+                              (if (string-empty-p release-plan)
+                                  (format "\n### Release Plan\n1. \n")
+                                (format "\n### Release Plan\n%s" (mapconcat 'identity (split-string release-plan "\n") "\n")))
+                              (if (string-empty-p rollback-plan)
+                                  (format "\n### Rollback Plan\n1. \n")
+                                (format "\n### Rollback Plan\n%s" (mapconcat 'identity (split-string rollback-plan "\n") "\n"))))))
+
+
+      (goto-char (point-min))             ; Go to beginning of buffer
+      (search-forward "Canonical URL:") ; Find the canonical URL line (more robust anchor)
+      (forward-line 3)         ; Skip three lines after "Canonical URL:"
+
+
+      (insert release-markdown)        ; Insert the new release markdown
+
+      ;; Optional: Reformat the buffer (e.g., using markdown-mode if available)
+      (if (fboundp 'markdown-mode)
+          (markdown-mode))))
+#+end_src
+
 * EXPERIMENTAL
 
 #+begin_src emacs-lisp
