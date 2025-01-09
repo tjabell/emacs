@@ -3,6 +3,7 @@
 (require 'request)
 (require 'clockify)
 
+(defvar clockify--init nil)
 (defun clockify--post (endpoint data)
   "Retrieve user information."
   (let ((response (request-response-data
@@ -28,29 +29,19 @@
                     ))))
       (clockify--post endpoint data)))
 
-(defun m/clockify:init ()
-  (interactive)
-;;; Need this to initialize clockify api I guess
-  (setq m/clockify:*clockify-user-id* (clockify--user-info))
-
-  ;; (setq my:ws (clockify--workspaces-endpoint))
-
-  ;; (setq my:ws:id (cdar (aref my:ws 0)) )
-
-  (setq clockify--active-workspace-id "5d6de2a927f8c341bd8fc10d")
-
-  (setq my:esa-project-id "5ec8372146cf2748cd6a77c6")
-  (setq m/clockify:*projects* (clockify--projects))
-  "Clockify projects initiated")
+(defun clockify--init-api ()
+  "Initialize clockify user info. Which sets the workspace and user id"
+  (clockify--user-info)
+  (setq clockify--init t))
 
 (defun m/clockify:print-projects ()
   (interactive)
-  (unless (boundp 'm/clockify:*projects*)
-    (setq m/clockify:*projects* (clockify--projects)))
+  (unless (not clockify--init)
+    (clockify--init-api))
   (with-current-buffer (get-buffer-create "*clockify-projects*")
     (erase-buffer)
     (let ((fields (mapcar (lambda (p) (list (assoc 'id p) (assoc 'name p) (assoc 'clientName p))) 
-                          m/clockify:*projects*)))
+                          (clockify--projects))))
       (dolist (field fields)
         (insert (format "id: %s, name: %s, clientName: %s\n"
                         (cdr (nth 0 field))
