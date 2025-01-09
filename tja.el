@@ -122,17 +122,16 @@ If not, try to switch to that branch. Return a status symbol:
 ;; Git:1 ends here
 
 ;; [[file:tja.org::*Markdown/Templating][Markdown/Templating:1]]
-
 ;; Helper function (same as before):
 (defun m/gsi:azure-get-done-tickets-for-changelog ()
   (let* ((wql *WQL-FOR-DONE-TICKETS*)
-         (response (m/gsi:get-azure-tickets wql 'format))) ; Assuming m/gsi:get-azure-tickets returns the raw JSON response
-    (if (request-success-p response)
-        (let ((data (json-read-from-string (request-response-data response))))
-          (if (alist-get 'workItems data)
-              data
-            (error "No 'workItems' found in Azure API response")))
-      (error "Azure DevOps API request failed: %s" (request-response-data response)))))
+         (response (m/gsi:get-azure-tickets wql))
+         (data (request-response-data response)))
+    (if (request-ex-response-success-p response)
+        (if (alist-get 'workItems data)
+            data
+          (error "No 'workItems' found in Azure API response"))
+      (error "Azure DevOps API request failed: %s" (response)))))
 
 (defun m/gsi/emacs:changelog:insert-release ()
   "Insert a new release entry into the changelog file, fetching tickets from Azure DevOps."
@@ -173,30 +172,6 @@ If not, try to switch to that branch. Return a status symbol:
     ;; Optional: Reformat the buffer (e.g., using markdown-mode if available)
     (if (fboundp 'markdown-mode)
         (markdown-mode))))
-
-;; (defun m/changelog:generate-release-markdown (date version items)
-;;   "Generate a Markdown entry for a release.
-;; DATE is a string formatted as 'yyyy-mm-dd'.
-;; VERSION is the version string.
-;; ITEMS is a list of item numbers, e.g., '(1 2 3 4)."
-;;   (interactive
-;;    (list
-;;     (format-time-string "%Y-%m-%d" (org-read-date nil t nil "Select a date"))
-;;     (read-string "Enter version string: ")
-;;     (let ((input (read-string "Enter item numbers (space-separated): ")))
-;;       (mapcar #'string-to-number (split-string input " ")))))
-;;   (let ((header (format "## [%s] - %s\n" version date))
-;;         (schedule "Release Scheduled: 9:00PM ET\n")
-;;         (completed "Release Completed: \n")
-;;         (change-request "Change Request: [TBD]()\n\n")
-;;         (tickets-header "### Tickets\n")
-;;         (ticket-list (mapconcat (lambda (item) (format "#%d" item)) items "\n"))
-;;         (release-plan "\n### Release Plan\n1. \n")
-;;         (rollback-plan "\n### Rollback Plan\n1. \n"))
-;;     (with-current-buffer (generate-new-buffer "*Release Markdown*")
-;;       (insert header schedule completed change-request tickets-header ticket-list release-plan rollback-plan)
-;;       (markdown-mode)
-;;       (pop-to-buffer (current-buffer)))))
 ;; Markdown/Templating:1 ends here
 
 ;; [[file:tja.org::*Magit][Magit:1]]
@@ -1065,7 +1040,7 @@ same directory as the org-buffer and insert a link to this file."
       (url-insert-file-contents ticket-url))
     (json-read)))
 
-(defun m/gsi:get-azure-tickets (wql display-fn)
+(defun m/gsi:get-azure-tickets (wql)
   (let* ((username *MY-AZURE-UN*)
          (password *MY-AZURE-PW*)
          (api-version "7.1-preview.2")
@@ -1084,8 +1059,7 @@ same directory as the org-buffer and insert a link to this file."
       :parser 'json-read
       :success (cl-function
                 (lambda (&key data &allow-other-keys)
-                  (message (format "successfully retrieved from %s" api-url))
-                  (funcall display-fn data)))
+                  data))
       :error (cl-function
               (lambda (&key symbol-status data error-thrown &allow-other-keys&rest _)
                 (let ((buffer (get-buffer-create "*Example.org Response*")))
