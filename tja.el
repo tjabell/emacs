@@ -123,16 +123,6 @@ If not, try to switch to that branch. Return a status symbol:
 
 ;; [[file:tja.org::*Markdown/Templating][Markdown/Templating:1]]
 ;; Helper function (same as before):
-(defun m/gsi:azure-get-done-tickets-for-changelog ()
-  (let* ((wql *WQL-FOR-DONE-TICKETS*)
-         (response (m/gsi:get-azure-tickets wql))
-         (data (request-response-data response)))
-    (if (request-ex-response-success-p response)
-        (if (alist-get 'workItems data)
-            data
-          (error "No 'workItems' found in Azure API response"))
-      (error "Azure DevOps API request failed: %s" (response)))))
-
 (defun m/gsi/emacs:changelog:insert-release ()
   "Insert a new release entry into the changelog file, fetching tickets from Azure DevOps."
   (interactive)
@@ -1020,6 +1010,16 @@ same directory as the org-buffer and insert a link to this file."
   (let* ((obj (m/gsi:get-azure-ticket ticket-number))
          (info (m/gsi:get-azure-ticket-title-and-id obj)))
     (insert (format "%s: %s" (car info) (cadr info)))))
+
+(defun m/gsi:azure-get-done-tickets-for-changelog ()
+  (let* ((wql *WQL-FOR-DONE-TICKETS*)
+         (response (m/gsi:get-azure-tickets wql))
+         (data (request-response-data response)))
+    (if (request-ex-response-success-p response)
+        (if (alist-get 'workItems data)
+            data
+          (error "No 'workItems' found in Azure API response"))
+      (error "Azure DevOps API request failed: %s" (response)))))
 
 (defun m/gsi:get-azure-ticket-title-and-id (obj)
   (let* ((props (aref (cdr (cadr obj)) 0))
