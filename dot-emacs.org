@@ -5,6 +5,8 @@
 
 * New Emacs configuration file
 
+Writing in in literate org mode.
+
 * Native compilation
 
 #+begin_src emacs-lisp

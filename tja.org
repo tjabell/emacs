@@ -1117,14 +1117,15 @@ my:org-move-item-to-top
   (defvar *WQL-FOR-DONE-TICKETS*
    "Select [System.Id], [System.Title], [System.State] From WorkItems
     Where ([System.WorkItemType] = 'User Story' OR [System.WorkItemType] = 'Bug')
-    AND [System.TeamProject] = 'Franchisee Business Portal'
-    AND [System.Tags] Contains Words 'Ready for PROD'
-    AND ([System.State] = 'UAT' OR [SYSTEM.STATE] = 'Resolved')
+    AND [System.TeamProject] = 'GTS Elevate and Ignite'
+    AND [System.BoardColumnDone] = true
+    AND [System.AssignedTo] = 'Parsus-TA@GoddardSystems.com'
+    AND ([System.State] = 'UAT')
     AND [State] <> 'Removed'
     AND [State] <> 'Closed'
     order by [System.WorkItemType] desc, [Microsoft.VSTS.Common.Priority] asc, [System.CreatedDate] desc")
 
-  (defun m/gsi:azure-report-fbp-done-tickets ()
+  (defun m/gsi/emacs:azure-report-fbp-done-tickets ()
     (interactive)
     (cl-flet ((display-in-new-buffer (data)
                 (let ((buffer (get-buffer-create "*Azure API Response*")))
@@ -1139,7 +1140,7 @@ my:org-move-item-to-top
       (let* ((wql *WQL-FOR-DONE-TICKETS*))
         (m/gsi:get-azure-tickets wql #'display-in-new-buffer))))
 
-  (defun m/gsi:azure-report-fbp-done-tickets-for-changelog ()
+  (defun m/gsi/emacs:azure-report-fbp-done-tickets-for-changelog ()
     (interactive)
     (cl-flet ((display-id-only-in-new-buffer (data)
                 (let ((work-item-ids (mapcar (lambda (item)
@@ -1170,6 +1171,46 @@ my:org-move-item-to-top
                          ("Authorization" . ,(format "Basic %s" credentials)))
               :sync t
               :parser 'json-read)))
+  (require 'request)
+  (defun request-ex-response-success-p (response)
+    (equal (request-response-status-code response) 200))
+
+  (defun azure-devops-list-projects (organization)
+    "List all Azure DevOps projects in the specified organization."
+    (let* ((url (format "https://dev.azure.com/%s/_apis/projects?api-version=7.0" organization))
+           (auth  (base64-encode-string
+                   (concat *MY-AZURE-UN* ":" *MY-AZURE-PW*) t))
+           (headers `(("Authorization" . ,(format "Basic %s" auth))
+                      ("Content-Type" . "application/json")))
+           (response (request url :headers headers :sync t :parser 'json-read)))
+      (if (request-ex-response-success-p response)
+          (request-response-data response)
+        (error "Azure DevOps API request failed: %s" (request-response-data response)))))
+
+  (defun azure-devops-pretty-print-projects ()
+    "Pretty print Azure DevOps project names in a new buffer."
+    (interactive)
+    (let* ((org "GoddardSystemsIT")
+           (projects-data (azure-devops-list-projects org))
+           (projects (cdr (assoc "value" projects-data)))  ;; Extract the project list
+           (buffer-name "*Azure DevOps Projects*")
+           (buffer (get-buffer-create buffer-name)))
+      (with-current-buffer buffer
+        (erase-buffer)
+        (insert "Azure DevOps Projects:\n\n")
+        (if projects
+            (dolist (project projects)
+              (insert (format "%s\n" (cdr (assoc "name" project)))))
+          (insert "No projects found.\n"))
+        (goto-char (point-min))  ; Move cursor to the beginning
+        (display-buffer buffer-name))))  ; Display the buffer
+
+  ;; Example usage:
+  ;; (let ((organization "your_organization_name")
+  ;;       (pat "your_pat"))
+  ;;   (azure-devops-print-projects organization pat))
+
+  (defun )
    #+end_src
 
 #+RESULTS:
@@ -1178,47 +1219,47 @@ my:org-move-item-to-top
 
 #+begin_src emacs-lisp :comments link
   (defun m/sql:ef-to-sql ()
-      "Convert Entity Framework debug output in the current buffer to an executable SQL statement.
+    "Convert Entity Framework debug output in the current buffer to an executable SQL statement.
     Example:
     Executed DbCommand (5ms) [Parameters=[@p0='2022-12-07T00:00:00.0000000' (DbType = Date), @p1='14' (Nullable = true)], CommandType='Text', CommandTimeout='30']"
-      (interactive)
-      (let ((params (make-hash-table :test 'equal))
-            (sql-start "SET NOCOUNT ON;")
-            (case-fold-search nil)
-            (param-search-regexp "@\\(p[0-9]+\\)=\\('\\([^']*\\)'\\|NULL\\)\\(,\\| \\((DbType\\|(Nullable\\|(Size\\) = \\([^)]*\\))\\)"))
-        ;; Parse the parameters from the debug output and store them in the hash table
-        (save-excursion
-          (goto-char (point-min))
-          (while (re-search-forward param-search-regexp nil t)
-            (puthash
-             (substring-no-properties (match-string 1))
-             (substring-no-properties (match-string 2))
-             params)))
+    (interactive)
+    (let ((params (make-hash-table :test 'equal))
+          (sql-start "SET NOCOUNT ON;")
+          (case-fold-search nil)
+          (param-search-regexp "@\\(p[0-9]+\\)=\\('\\([^']*\\)'\\|NULL\\)\\(,\\| \\((DbType\\|(Nullable\\|(Size\\) = \\([^)]*\\))\\)"))
+      ;; Parse the parameters from the debug output and store them in the hash table
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward param-search-regexp nil t)
+          (puthash
+           (substring-no-properties (match-string 1))
+           (substring-no-properties (match-string 2))
+           params)))
 
-        ;; Find and process the SQL statement block
-        (save-excursion
-          (goto-char (point-min))
-          (when (re-search-forward sql-start nil t)
-            (let ((start (point)))
-              (goto-char (point-max))
-              (let ((sql (buffer-substring start (point))))
-                ;; Replace the placeholders with actual parameter values
-                (maphash
-                 (lambda (key value)
-                   (setq sql (replace-regexp-in-string (concat "@" key ",") (concat value ",") sql))
-                   (setq sql (replace-regexp-in-string (concat "@" key ")") (concat value ")") sql))
-                   (setq sql (replace-regexp-in-string (concat "@" key ";") (concat value ";") sql))
-                   (setq sql (replace-regexp-in-string (concat "@" key "
+      ;; Find and process the SQL statement block
+      (save-excursion
+        (goto-char (point-min))
+        (when (re-search-forward sql-start nil t)
+          (let ((start (point)))
+            (goto-char (point-max))
+            (let ((sql (buffer-substring start (point))))
+              ;; Replace the placeholders with actual parameter values
+              (maphash
+               (lambda (key value)
+                 (setq sql (replace-regexp-in-string (concat "@" key ",") (concat value ",") sql))
+                 (setq sql (replace-regexp-in-string (concat "@" key ")") (concat value ")") sql))
+                 (setq sql (replace-regexp-in-string (concat "@" key ";") (concat value ";") sql))
+                 (setq sql (replace-regexp-in-string (concat "@" key "
     ") (concat value "
     ") sql))
-                   )
-                 params)
-                ;; Output the converted SQL
-                (with-current-buffer (get-buffer-create "*EF-SQL*")
-                  (erase-buffer)
-                  (insert sql)
-                  (sql-mode)
-                  (display-buffer (current-buffer)))))))))
+                 )
+               params)
+              ;; Output the converted SQL
+              (with-current-buffer (get-buffer-create "*EF-SQL*")
+                (erase-buffer)
+                (insert sql)
+                (sql-mode)
+                (display-buffer (current-buffer)))))))))
 
     (defun point-in-comment ()
       (let ((syn (syntax-ppss)))
