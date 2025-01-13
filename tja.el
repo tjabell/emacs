@@ -428,6 +428,30 @@ If not, try to switch to that branch. Return a status symbol:
    ". ./local-startup-tests.sh"))
 
 ;;;###autoload
+(defun m/gsi:vterm-run-online-meetings-api ()
+  (interactive)
+  (let ((project-dir "/home/trevor/projects/goddard/src/ipaas-online-meeting-api/")
+        (branch *CUSTOM-BRANCH*))
+    (m/git:check-and-switch-git-branch project-dir branch)
+    (open-or-start-vterm-buffer
+     "*vterm* *ONLINE-MEETING API*"
+     project-dir
+     ". ./local-startup.sh")))
+
+;;;###autoload
+(defun m/gsi:vterm-stop-online-meetings-api ()
+  (interactive)
+  (m/vterm:stop "*vterm* *ONLINE-MEETINGS API*"))
+
+;;;###autoload
+(defun m/gsi:vterm-run-online-meetings-api-test ()
+  (interactive)
+  (open-or-start-vterm-buffer
+   "*vterm* *FBP ONLINE-MEETINGS API Tests*"
+   "/home/trevor/projects/goddard/src/ipaas-online-meetings-api/"
+   ". ./local-startup-tests.sh"))
+
+;;;###autoload
 (defun m/gsi:vterm-run-leads-api ()
   (interactive)
   (let ((project-dir "/home/trevor/projects/goddard/src/ipaas-leads-api/")
@@ -1047,18 +1071,21 @@ same directory as the org-buffer and insert a link to this file."
          (title (cdr (assoc 'System.Title (assoc 'fields props)))))
     (list id title)))
 
-(defun m/gsi:get-azure-ticket (ticket-number)
-  (with-temp-buffer ; temp buffer to hold json data
-    (let* ((username *MY-AZURE-UN*)
-           (password *MY-AZURE-PW*)
-           (api-version "7.0")
-           (ticket-url (format "https://dev.azure.com/GoddardSystemsIT/_apis/wit/workitems?ids=%s&api-version=%s" ticket-number api-version))
-           (url-request-extra-headers
-            `(("Authorization" . ,(concat "Basic "
-                                          (base64-encode-string
-                                           (concat username ":" password) t))))))
-      (url-insert-file-contents ticket-url))
-    (json-read)))
+
+(defun m/gsi:get-azure-ticket-details (ticket-numbers)
+  "Retrieves a ticket or tickets of details from the workitems api"
+  (interactive)
+  (let* ((username *MY-AZURE-UN*)
+         (password *MY-AZURE-PW*)
+         (api-version "7.0")
+         (ticket-url (format "https://dev.azure.com/GoddardSystemsIT/_apis/wit/workitems?ids=%s&api-version=%s" (if (listp ticket-numbers) (s-join "," (mapcar #'number-to-string ticket-numbers)) ticket-numbers) api-version))
+         (url-request-extra-headers
+          `(("Authorization" . ,(concat "Basic "
+                                        (base64-encode-string
+                                         (concat username ":" password) t))))))
+    (url-insert-file-contents ticket-url))
+  (json-read))
+
 
 
 (defvar *WQL-FOR-DONE-TICKETS*
@@ -1151,8 +1178,6 @@ same directory as the org-buffer and insert a link to this file."
 ;; (let ((organization "your_organization_name")
 ;;       (pat "your_pat"))
 ;;   (azure-devops-print-projects organization pat))
-
-(defun )
 ;; Azure Devops:1 ends here
 
 ;; [[file:tja.org::*SQL][SQL:1]]

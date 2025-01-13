@@ -469,6 +469,30 @@ tja-compile-leads-api-integration-test
      ". ./local-startup-tests.sh"))
 
   ;;;###autoload
+  (defun m/gsi:vterm-run-online-meetings-api ()
+    (interactive)
+    (let ((project-dir "/home/trevor/projects/goddard/src/ipaas-online-meeting-api/")
+          (branch *CUSTOM-BRANCH*))
+      (m/git:check-and-switch-git-branch project-dir branch)
+      (open-or-start-vterm-buffer
+       "*vterm* *ONLINE-MEETING API*"
+       project-dir
+       ". ./local-startup.sh")))
+
+  ;;;###autoload
+  (defun m/gsi:vterm-stop-online-meetings-api ()
+    (interactive)
+    (m/vterm:stop "*vterm* *ONLINE-MEETINGS API*"))
+
+  ;;;###autoload
+  (defun m/gsi:vterm-run-online-meetings-api-test ()
+    (interactive)
+    (open-or-start-vterm-buffer
+     "*vterm* *FBP ONLINE-MEETINGS API Tests*"
+     "/home/trevor/projects/goddard/src/ipaas-online-meetings-api/"
+     ". ./local-startup-tests.sh"))
+
+  ;;;###autoload
   (defun m/gsi:vterm-run-leads-api ()
     (interactive)
     (let ((project-dir "/home/trevor/projects/goddard/src/ipaas-leads-api/")
@@ -1031,7 +1055,7 @@ my:org-move-item-to-top
   ;; set Azure UN/PW
   (load-file "~/.azure-secrets.el")
 
-  (defun m/gsi:get-azure-tickets (wql)
+   (defun m/gsi:get-azure-tickets (wql)
     (let* ((username *MY-AZURE-UN*)
            (password *MY-AZURE-PW*)
            (api-version "7.1-preview.2")
@@ -1116,18 +1140,21 @@ my:org-move-item-to-top
            (title (cdr (assoc 'System.Title (assoc 'fields props)))))
       (list id title)))
 
-  (defun m/gsi:get-azure-ticket (ticket-number)
-    (with-temp-buffer ; temp buffer to hold json data
-      (let* ((username *MY-AZURE-UN*)
-             (password *MY-AZURE-PW*)
-             (api-version "7.0")
-             (ticket-url (format "https://dev.azure.com/GoddardSystemsIT/_apis/wit/workitems?ids=%s&api-version=%s" ticket-number api-version))
-             (url-request-extra-headers
-              `(("Authorization" . ,(concat "Basic "
-                                            (base64-encode-string
-                                             (concat username ":" password) t))))))
-        (url-insert-file-contents ticket-url))
-      (json-read)))
+
+  (defun m/gsi:get-azure-ticket-details (ticket-numbers)
+    "Retrieves a ticket or tickets of details from the workitems api"
+    (interactive)
+    (let* ((username *MY-AZURE-UN*)
+           (password *MY-AZURE-PW*)
+           (api-version "7.0")
+           (ticket-url (format "https://dev.azure.com/GoddardSystemsIT/_apis/wit/workitems?ids=%s&api-version=%s" (if (listp ticket-numbers) (s-join "," (mapcar #'number-to-string ticket-numbers)) ticket-numbers) api-version))
+           (url-request-extra-headers
+            `(("Authorization" . ,(concat "Basic "
+                                          (base64-encode-string
+                                           (concat username ":" password) t))))))
+      (url-insert-file-contents ticket-url))
+    (json-read))
+
 
 
   (defvar *WQL-FOR-DONE-TICKETS*
@@ -1225,8 +1252,6 @@ my:org-move-item-to-top
   ;; (let ((organization "your_organization_name")
   ;;       (pat "your_pat"))
   ;;   (azure-devops-print-projects organization pat))
-
-  (defun )
    #+end_src
 
 #+RESULTS:
