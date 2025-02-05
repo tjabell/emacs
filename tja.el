@@ -329,7 +329,7 @@ If not, try to switch to that branch. Return a status symbol:
 (defun m/gsi:vterm-run-fbp-api ()
   (interactive)
   (let* ((project-dir "/home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/")
-         (custom-branch "custom/local-changes"))
+         (custom-branch "custom/local"))
     (m/git:check-and-switch-git-branch project-dir custom-branch)
     (open-or-start-vterm-buffer
      "*vterm* *FBP API*"
@@ -572,7 +572,7 @@ If not, try to switch to that branch. Return a status symbol:
 (defun m/gsi:vterm-run-fbp-web ()
   (interactive)
   (let* ((project-dir "/home/trevor/projects/goddard/src/FranchiseePortal-Website/")
-         (custom-branch "custom/local-changes"))
+         (custom-branch "custom/local"))
     (m/git:check-and-switch-git-branch project-dir custom-branch)
     (open-or-start-vterm-buffer
      "*vterm* *FBP Web*"
@@ -986,7 +986,7 @@ same directory as the org-buffer and insert a link to this file."
 ;; set Azure UN/PW
 (load-file "~/.azure-secrets.el")
 
- (defun m/gsi:get-azure-tickets (wql)
+(defun m/gsi:get-azure-tickets (wql)
   (let* ((username *MY-AZURE-UN*)
          (password *MY-AZURE-PW*)
          (api-version "7.1-preview.2")
@@ -1022,10 +1022,23 @@ same directory as the org-buffer and insert a link to this file."
 
 (defvar *WQL-FOR-TICKET-DEPENDENCIES*
   "SELECT [System.Id], [System.Tags] 
-   FROM WorkItems
-   WHERE [System.Id] IN (%s)
-   ORDER BY [System.Id]")
+     FROM WorkItems
+     WHERE [System.Id] IN (%s)
+     ORDER BY [System.Id]")
 
+
+(defun m/gsi:get-azure-ticket (ticket-number)
+  (with-temp-buffer ; temp buffer to hold json data
+    (let* ((username *MY-AZURE-UN*)
+           (password *MY-AZURE-PW*)
+           (api-version "7.0")
+           (ticket-url (format "https://dev.azure.com/GoddardSystemsIT/_apis/wit/workitems?ids=%s&api-version=%s" ticket-number api-version))
+           (url-request-extra-headers
+            `(("Authorization" . ,(concat "Basic "
+                                          (base64-encode-string
+                                           (concat username ":" password) t))))))
+      (url-insert-file-contents ticket-url))
+    (json-read)))
 
 (defun m/gsi:get-ticket-dependencies (ticket-ids)
   "Retrieve dependencies for the specified ticket IDs from Azure DevOps."
@@ -1048,12 +1061,12 @@ same directory as the org-buffer and insert a link to this file."
           (let ((id (alist-get 'id item))
                 (tags (alist-get 'fields item)))
             (if tags
-              (let ((tag-string (cdr (assoc "System.Tags" tags))))
-                 (if tag-string
-                   (dolist (tag (split-string tag-string "; "))
-                      (if (string-prefix-p "deps-" tag)
-                         (message "Ticket %s: Dependency: %s" id tag)))))))))
-       (message "No dependencies found.")))
+                (let ((tag-string (cdr (assoc "System.Tags" tags))))
+                  (if tag-string
+                      (dolist (tag (split-string tag-string "; "))
+                        (if (string-prefix-p "deps-" tag)
+                            (message "Ticket %s: Dependency: %s" id tag)))))))))
+    (message "No dependencies found.")))
 
 (defun m/gsi:azure-get-done-tickets-for-changelog ()
   (let* ((wql *WQL-FOR-DONE-TICKETS*)
@@ -1083,21 +1096,20 @@ same directory as the org-buffer and insert a link to this file."
           `(("Authorization" . ,(concat "Basic "
                                         (base64-encode-string
                                          (concat username ":" password) t))))))
-    (url-insert-file-contents ticket-url))
-  (json-read))
+    (url-insert-file-contents ticket-url)))
 
 
 
 (defvar *WQL-FOR-DONE-TICKETS*
- "Select [System.Id], [System.Title], [System.State] From WorkItems
-  Where ([System.WorkItemType] = 'User Story' OR [System.WorkItemType] = 'Bug')
-  AND [System.TeamProject] = 'GTS Elevate and Ignite'
-  AND [System.BoardColumnDone] = true
-  AND [System.AssignedTo] = 'Parsus-TA@GoddardSystems.com'
-  AND ([System.State] = 'UAT')
-  AND [State] <> 'Removed'
-  AND [State] <> 'Closed'
-  order by [System.WorkItemType] desc, [Microsoft.VSTS.Common.Priority] asc, [System.CreatedDate] desc")
+  "Select [System.Id], [System.Title], [System.State] From WorkItems
+    Where ([System.WorkItemType] = 'User Story' OR [System.WorkItemType] = 'Bug')
+    AND [System.TeamProject] = 'GTS Elevate and Ignite'
+    AND [System.BoardColumnDone] = true
+    AND [System.AssignedTo] = 'Parsus-TA@GoddardSystems.com'
+    AND ([System.State] = 'UAT')
+    AND [State] <> 'Removed'
+    AND [State] <> 'Closed'
+    order by [System.WorkItemType] desc, [Microsoft.VSTS.Common.Priority] asc, [System.CreatedDate] desc")
 
 (defun m/gsi/emacs:azure-report-fbp-done-tickets ()
   (interactive)
