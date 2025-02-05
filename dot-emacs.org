@@ -1234,7 +1234,7 @@ Will it interfere with kind-icons?
       :init (doom-modeline-mode 1))
 
 
-  (load-theme 'doom-dark+ t)
+  (load-theme 'modus-vivendi t)
 #+end_src
 
 #+RESULTS:
