@@ -240,7 +240,7 @@ m/git:check-and-switch-git-branch
           (get-buffer-window buffer 0)))
 
   ;;;###autoload
-  (defun tja-compile-leads-api-unit-tests ()
+  (defun m/gsi:compile-leads-api-unit-tests ()
     (interactive)
     (compile "dotnet test /home/trevor/projects/goddard/src/ipaas-leads-api/Goddard.LeadsApi.UnitTests/Goddard.LeadsApi.UnitTests.csproj"))
 
@@ -1218,14 +1218,30 @@ my:org-move-item-to-top
 
 #+begin_src emacs-lisp :results raw :wrap
   (load-file "~/.azure-secrets.el")
+
+  ;;; TODO: Create workitem/story?
+  (defun azure--add-user-story (title description)
+    ;; Not sure if there is an API for this, maybe only for updating work items
+    ;; https://learn.microsoft.com/en-us/rest/api/azure/devops/wit/work-items/create?view=azure-devops-rest-7.1&tabs=HTTP
+    ;;   POST https://dev.azure.com/fabrikam/GoddardSystemsIT/_apis/wit/workitems/story?api-version=7.1
+  ;;   POST https://dev.azure.com/fabrikam/{project}/_apis/wit/workitems/${type}?api-version=7.1
+  ;; [
+  ;;   {
+  ;;     "op": "add",
+  ;;     "path": "/fields/System.Title",
+  ;;     "from": null,
+  ;;     "value": "Sample task"
+  ;;   }
+  ;; ]
+    )
   (defun azure--session-call (path credentials)
-     "Do a call to PATH with ARGS using current session. Does not check for session validity."
-     (let ((azure-devops-v6-url "https://dev.azure.com/GoddardSystemsIT/_apis/wit/workitems?ids=12697&api-version=6.1-preview.3"))
-       (apply #'request (concat azure-devops-v6-url path)
-              :headers `(("Content-Type" . "application/json")
-                         ("Authorization" . ,(format "Basic %s" credentials)))
-              :sync t
-              :parser 'json-read)))
+    "Do a call to PATH with ARGS using current session. Does not check for session validity."
+    (let ((azure-devops-v6-url "https://dev.azure.com/GoddardSystemsIT/_apis/wit/workitems?ids=12697&api-version=6.1-preview.3"))
+      (apply #'request (concat azure-devops-v6-url path)
+             :headers `(("Content-Type" . "application/json")
+                        ("Authorization" . ,(format "Basic %s" credentials)))
+             :sync t
+             :parser 'json-read)))
   (require 'request)
   (defun request-ex-response-success-p (response)
     (equal (request-response-status-code response) 200))
@@ -1659,6 +1675,27 @@ Print amortization calendar
 
 * Sly/Common Lisp
 #+begin_src emacs-lisp :results raw
+
+  ;;; WIP, getting some errors.  I think I want to use this from a sly-scratch buffer but thinking about it still
+  (defun m/sly:eval-and-print-to-temp-buffer (string)
+           (interactive (list (sly-last-expression)))
+           (let ((temp-buffer (get-buffer-create "*sly-temp-output*")))
+             (with-current-buffer temp-buffer
+               (erase-buffer)
+               (sly-eval-async `(slynk:eval-and-grab-output ,form)
+                 (lambda (result)
+                   (cl-destructuring-bind (output value) result
+                     (push-mark)
+                     (let* ((start (point))
+                            (ppss (syntax-ppss))
+                            (string-or-comment-p (or (nth 3 ppss) (nth 4 ppss))))
+                       (insert output (if string-or-comment-p
+                                          ""
+                                        " => ") value)
+                       (unless string-or-comment-p
+                         (comment-region start (point) 1))))))
+               (display-buffer temp-buffer))))
+
   ;; From chatGPT Session https://chatgpt.com/c/90d883ce-9dea-40d5-9809-1486c4146305
   (defun my:add-function-to-package (package-name function-name position)
     "Add FUNCTION-NAME to the export list of PACKAGE-NAME in packages.lisp at the given POSITION.
