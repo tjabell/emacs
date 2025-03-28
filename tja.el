@@ -222,6 +222,14 @@ If not, try to switch to that branch. Return a status symbol:
     (compile cmd)))
 
 ;;;###autoload
+(defun m/gsi:compile-content-api-integration-tests (filter)
+  (interactive "sFilter: ")
+  (let ((cmd (my:get-integration-test-command-with-filter
+              "/home/trevor/projects/goddard/src/ipaas-content-api/src/Goddard.ContentWebApiTests/Goddard.ContentWebApiTests.csproj"
+              filter)))
+    (compile cmd)))
+
+;;;###autoload
 (defun my:compile-recognitions-api-integration-tests (filter)
   (interactive "sFilter: ")
   (let ((cmd (my:get-integration-test-command-with-filter
@@ -1559,7 +1567,7 @@ same directory as the org-buffer and insert a link to this file."
          (let ((temp-buffer (get-buffer-create "*sly-temp-output*")))
            (with-current-buffer temp-buffer
              (erase-buffer)
-             (sly-eval-async `(slynk:eval-and-grab-output ,form)
+             (sly-eval-async `(slynk:eval-and-grab-output ,string)
                (lambda (result)
                  (cl-destructuring-bind (output value) result
                    (push-mark)
