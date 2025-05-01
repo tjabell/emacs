@@ -210,15 +210,15 @@ If not, try to switch to that branch. Return a status symbol:
   (interactive)
   (compile "dotnet test /home/trevor/projects/goddard/src/ipaas-leads-api/Goddard.LeadsApi.UnitTests/Goddard.LeadsApi.UnitTests.csproj"))
 
-(defun my:get-integration-test-command-with-filter (testcmd filter)
+(defun m/compile:get-integration-test-command-with-filter (testcmd filter)
   (let* ((cmd (concat "dotnet test --logger='console;verbosity=detailed' " testcmd))
          (cmd (if (> (length filter) 0) (concat cmd " --filter \"" filter "\"") cmd)))
     cmd))
 
     ;;;###autoload
-(defun my:compile-leads-api-integration-tests (filter)
+(defun m/gsi:compile-leads-api-integration-tests (filter)
   (interactive "sFilter: ")
-  (let ((cmd (my:get-integration-test-command-with-filter
+  (let ((cmd (m/compile:get-integration-test-command-with-filter
               "/home/trevor/projects/goddard/src/ipaas-leads-api/Goddard.LeadsApi.IntegrationTests/Goddard.LeadsApi.IntegrationTests.csproj"
               filter)))
     (compile cmd)))
@@ -226,7 +226,7 @@ If not, try to switch to that branch. Return a status symbol:
     ;;;###autoload
 (defun m/gsi:compile-content-api-integration-tests (filter)
   (interactive "sFilter: ")
-  (let ((cmd (my:get-integration-test-command-with-filter
+  (let ((cmd (m/compile:get-integration-test-command-with-filter
               "/home/trevor/projects/goddard/src/ipaas-content-api/src/Goddard.ContentWebApiTests/Goddard.ContentWebApiTests.csproj"
               filter)))
     (compile cmd)))
@@ -234,7 +234,7 @@ If not, try to switch to that branch. Return a status symbol:
     ;;;###autoload
 (defun my:compile-recognitions-api-integration-tests (filter)
   (interactive "sFilter: ")
-  (let ((cmd (my:get-integration-test-command-with-filter
+  (let ((cmd (m/compile:get-integration-test-command-with-filter
               "/home/trevor/projects/goddard/src/ipaas-recognitions-api/GoddardRecognitions.IntegrationTests/GoddardRecognitions.IntegrationTests.csproj"
               filter)))
     (compile cmd)))
@@ -250,7 +250,7 @@ If not, try to switch to that branch. Return a status symbol:
     ;;;###autoload
 (defun m/gsi:compile-tours-api-integration-tests (filter)
   (interactive "sFilter: ")
-  (let ((cmd (my:get-integration-test-command-with-filter "/home/trevor/projects/goddard/src/ipaas-tours-api/Goddard.ToursWebApi.IntegrationTests/Goddard.ToursWebApi.IntegrationTests.csproj" filter)))
+  (let ((cmd (m/compile:get-integration-test-command-with-filter "/home/trevor/projects/goddard/src/ipaas-tours-api/Goddard.ToursWebApi.IntegrationTests/Goddard.ToursWebApi.IntegrationTests.csproj" filter)))
     (compile cmd)))
 ;; Compile:1 ends here
 
