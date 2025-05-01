@@ -205,7 +205,7 @@ If not, try to switch to that branch. Return a status symbol:
       (lambda (buffer &optional args)
         (get-buffer-window buffer 0)))
 
-    ;;;###autoload
+;;;###autoload
 (defun m/gsi:compile-leads-api-unit-tests ()
   (interactive)
   (compile "dotnet test /home/trevor/projects/goddard/src/ipaas-leads-api/Goddard.LeadsApi.UnitTests/Goddard.LeadsApi.UnitTests.csproj"))
@@ -215,7 +215,7 @@ If not, try to switch to that branch. Return a status symbol:
          (cmd (if (> (length filter) 0) (concat cmd " --filter \"" filter "\"") cmd)))
     cmd))
 
-    ;;;###autoload
+;;;###autoload
 (defun m/gsi:compile-leads-api-integration-tests (filter)
   (interactive "sFilter: ")
   (let ((cmd (m/compile:get-integration-test-command-with-filter
@@ -223,7 +223,7 @@ If not, try to switch to that branch. Return a status symbol:
               filter)))
     (compile cmd)))
 
-    ;;;###autoload
+;;;###autoload
 (defun m/gsi:compile-content-api-integration-tests (filter)
   (interactive "sFilter: ")
   (let ((cmd (m/compile:get-integration-test-command-with-filter
@@ -231,7 +231,7 @@ If not, try to switch to that branch. Return a status symbol:
               filter)))
     (compile cmd)))
 
-    ;;;###autoload
+;;;###autoload
 (defun my:compile-recognitions-api-integration-tests (filter)
   (interactive "sFilter: ")
   (let ((cmd (m/compile:get-integration-test-command-with-filter
@@ -239,18 +239,23 @@ If not, try to switch to that branch. Return a status symbol:
               filter)))
     (compile cmd)))
 
-    ;;;###autoload
+;;;###autoload
 (defun m/gsi:compile-tours-api-unit-tests ()
   (interactive)
   (compile "dotnet test /home/trevor/projects/goddard/src/ipaas-tours-api/Goddard.ToursWebApi.UnitTests/Goddard.ToursWebApi.UnitTests.csproj"))
-    ;;;###autoload
+;;;###autoload
 (defun m/gsi:compile-franchisee-portal-api-unit-tests ()
   (interactive)
   (compile "dotnet test /home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/test/FranchiseePortal.Tests/FranchiseePortal.Tests.csproj"))
-    ;;;###autoload
+;;;###autoload
 (defun m/gsi:compile-tours-api-integration-tests (filter)
   (interactive "sFilter: ")
   (let ((cmd (m/compile:get-integration-test-command-with-filter "/home/trevor/projects/goddard/src/ipaas-tours-api/Goddard.ToursWebApi.IntegrationTests/Goddard.ToursWebApi.IntegrationTests.csproj" filter)))
+    (compile cmd)))
+;;;###autoload
+(defun m/gsi:compile-schools-api-unit-tests (filter)
+  (interactive "sFilter: ")
+  (let ((cmd (m/compile:get-integration-test-command-with-filter "/home/trevor/projects/goddard/src/ipaas-schools-api/Goddard.SchoolsWebApi.Tests/Goddard.SchoolsWebApi.Tests.csproj" filter)))
     (compile cmd)))
 ;; Compile:1 ends here
 
@@ -1418,8 +1423,7 @@ same directory as the org-buffer and insert a link to this file."
 
 ;; [[file:tja.org::*Utility Functions][Utility Functions:1]]
 ;; From chatgpt 2023-06-01
-    ;;;###autoload
-
+;;;###autoload
 (defun my:escape-elisp-string (string)
   "Escapes special characters in the given STRING for reading as an Emacs Lisp string."
   (replace-regexp-in-string "[\"\\\\\a\b\f\n\r\t\v]"
