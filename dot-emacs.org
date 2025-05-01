@@ -7,6 +7,12 @@
 
 Writing in in literate org mode.
 
+* Enable lexical binding
+
+#+begin_src emacs-lisp :comments no
+;;; ...  -*- lexical-binding: t; -*-
+#+end_src
+
 * Native compilation
 
 #+begin_src emacs-lisp

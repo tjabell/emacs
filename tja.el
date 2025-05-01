@@ -1,3 +1,5 @@
+;;; ...  -*- lexical-binding: t; -*-
+
 ;; [[file:tja.org::*EShell][EShell:1]]
 (defun eshell/mkcd (dir)
   "Create DIR and change into it."
@@ -203,7 +205,7 @@ If not, try to switch to that branch. Return a status symbol:
       (lambda (buffer &optional args)
         (get-buffer-window buffer 0)))
 
-;;;###autoload
+    ;;;###autoload
 (defun m/gsi:compile-leads-api-unit-tests ()
   (interactive)
   (compile "dotnet test /home/trevor/projects/goddard/src/ipaas-leads-api/Goddard.LeadsApi.UnitTests/Goddard.LeadsApi.UnitTests.csproj"))
@@ -213,7 +215,7 @@ If not, try to switch to that branch. Return a status symbol:
          (cmd (if (> (length filter) 0) (concat cmd " --filter \"" filter "\"") cmd)))
     cmd))
 
-;;;###autoload
+    ;;;###autoload
 (defun my:compile-leads-api-integration-tests (filter)
   (interactive "sFilter: ")
   (let ((cmd (my:get-integration-test-command-with-filter
@@ -221,7 +223,7 @@ If not, try to switch to that branch. Return a status symbol:
               filter)))
     (compile cmd)))
 
-;;;###autoload
+    ;;;###autoload
 (defun m/gsi:compile-content-api-integration-tests (filter)
   (interactive "sFilter: ")
   (let ((cmd (my:get-integration-test-command-with-filter
@@ -229,7 +231,7 @@ If not, try to switch to that branch. Return a status symbol:
               filter)))
     (compile cmd)))
 
-;;;###autoload
+    ;;;###autoload
 (defun my:compile-recognitions-api-integration-tests (filter)
   (interactive "sFilter: ")
   (let ((cmd (my:get-integration-test-command-with-filter
@@ -237,12 +239,15 @@ If not, try to switch to that branch. Return a status symbol:
               filter)))
     (compile cmd)))
 
-;;;###autoload
+    ;;;###autoload
 (defun m/gsi:compile-tours-api-unit-tests ()
   (interactive)
   (compile "dotnet test /home/trevor/projects/goddard/src/ipaas-tours-api/Goddard.ToursWebApi.UnitTests/Goddard.ToursWebApi.UnitTests.csproj"))
-
-;;;###autoload
+    ;;;###autoload
+(defun m/gsi:compile-franchisee-portal-api-unit-tests ()
+  (interactive)
+  (compile "dotnet test /home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/test/FranchiseePortal.Tests/FranchiseePortal.Tests.csproj"))
+    ;;;###autoload
 (defun m/gsi:compile-tours-api-integration-tests (filter)
   (interactive "sFilter: ")
   (let ((cmd (my:get-integration-test-command-with-filter "/home/trevor/projects/goddard/src/ipaas-tours-api/Goddard.ToursWebApi.IntegrationTests/Goddard.ToursWebApi.IntegrationTests.csproj" filter)))
@@ -368,6 +373,12 @@ If not, try to switch to that branch. Return a status symbol:
   (interactive)
   (open-or-start-vterm-buffer "*vterm* *FACULTY API*"
                               "/home/trevor/projects/goddard/src/ipaas-faculty-api/"
+                              ". ./local-startup.sh"))
+;;;###autoload
+(defun m/gsi:vterm-run-testimonials-api ()
+  (interactive)
+  (open-or-start-vterm-buffer "*vterm* *TESTIMONIALS API*"
+                              "/home/trevor/projects/goddard/src/ipaas-testimonials-api/"
                               ". ./local-startup.sh"))
 
 ;;;###autoload

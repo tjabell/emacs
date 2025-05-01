@@ -4,6 +4,12 @@
 #+STARTUP: show3levels
 #+property: header-args:emacs-lisp  :tangle ~/emacs/tja.el :comments link
 
+* Enable lexical binding
+
+#+begin_src emacs-lisp :comments no
+;;; ...  -*- lexical-binding: t; -*-
+#+end_src
+
 * EShell
 
 #+begin_src emacs-lisp :results raw
@@ -239,7 +245,7 @@ m/git:check-and-switch-git-branch
         (lambda (buffer &optional args)
           (get-buffer-window buffer 0)))
 
-  ;;;###autoload
+      ;;;###autoload
   (defun m/gsi:compile-leads-api-unit-tests ()
     (interactive)
     (compile "dotnet test /home/trevor/projects/goddard/src/ipaas-leads-api/Goddard.LeadsApi.UnitTests/Goddard.LeadsApi.UnitTests.csproj"))
@@ -249,7 +255,7 @@ m/git:check-and-switch-git-branch
            (cmd (if (> (length filter) 0) (concat cmd " --filter \"" filter "\"") cmd)))
       cmd))
 
-  ;;;###autoload
+      ;;;###autoload
   (defun my:compile-leads-api-integration-tests (filter)
     (interactive "sFilter: ")
     (let ((cmd (my:get-integration-test-command-with-filter
@@ -257,7 +263,7 @@ m/git:check-and-switch-git-branch
                 filter)))
       (compile cmd)))
 
-  ;;;###autoload
+      ;;;###autoload
   (defun m/gsi:compile-content-api-integration-tests (filter)
     (interactive "sFilter: ")
     (let ((cmd (my:get-integration-test-command-with-filter
@@ -265,7 +271,7 @@ m/git:check-and-switch-git-branch
                 filter)))
       (compile cmd)))
 
-  ;;;###autoload
+      ;;;###autoload
   (defun my:compile-recognitions-api-integration-tests (filter)
     (interactive "sFilter: ")
     (let ((cmd (my:get-integration-test-command-with-filter
@@ -273,12 +279,15 @@ m/git:check-and-switch-git-branch
                 filter)))
       (compile cmd)))
 
-  ;;;###autoload
+      ;;;###autoload
   (defun m/gsi:compile-tours-api-unit-tests ()
     (interactive)
     (compile "dotnet test /home/trevor/projects/goddard/src/ipaas-tours-api/Goddard.ToursWebApi.UnitTests/Goddard.ToursWebApi.UnitTests.csproj"))
-
-  ;;;###autoload
+      ;;;###autoload
+  (defun m/gsi:compile-franchisee-portal-api-unit-tests ()
+    (interactive)
+    (compile "dotnet test /home/trevor/projects/goddard/src/ipaas-franchiseeportal-api/test/FranchiseePortal.Tests/FranchiseePortal.Tests.csproj"))
+      ;;;###autoload
   (defun m/gsi:compile-tours-api-integration-tests (filter)
     (interactive "sFilter: ")
     (let ((cmd (my:get-integration-test-command-with-filter "/home/trevor/projects/goddard/src/ipaas-tours-api/Goddard.ToursWebApi.IntegrationTests/Goddard.ToursWebApi.IntegrationTests.csproj" filter)))
@@ -409,6 +418,12 @@ tja-compile-leads-api-integration-test
     (interactive)
     (open-or-start-vterm-buffer "*vterm* *FACULTY API*"
                                 "/home/trevor/projects/goddard/src/ipaas-faculty-api/"
+                                ". ./local-startup.sh"))
+  ;;;###autoload
+  (defun m/gsi:vterm-run-testimonials-api ()
+    (interactive)
+    (open-or-start-vterm-buffer "*vterm* *TESTIMONIALS API*"
+                                "/home/trevor/projects/goddard/src/ipaas-testimonials-api/"
                                 ". ./local-startup.sh"))
 
   ;;;###autoload

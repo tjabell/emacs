@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;; This is borrowed and modified from org-agenda-list and org-clock-get-clocktable in org-agenda.el
 ;; Then modified to print out an org clock report for the day
 (defun m/org:org-clockify-report ()

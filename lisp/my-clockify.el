@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (require 'json)
 (require 'cl-lib)
 (require 'request)
